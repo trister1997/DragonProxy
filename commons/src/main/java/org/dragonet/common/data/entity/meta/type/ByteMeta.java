@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -16,24 +16,29 @@ import org.dragonet.common.data.entity.meta.EntityMetaData;
 import org.dragonet.common.data.entity.meta.IEntityMetaDataObject;
 import org.dragonet.common.utilities.BinaryStream;
 
-public class ByteMeta implements IEntityMetaDataObject {
+public class ByteMeta implements IEntityMetaDataObject
+{
 
     public byte data;
 
-    public ByteMeta(byte data) {
+    public ByteMeta(byte data)
+    {
         this.data = data;
     }
 
-    public int type() {
+    public int type()
+    {
         return EntityMetaData.Constants.DATA_TYPE_BYTE;
     }
 
-    public void encode(BinaryStream out) {
+    public void encode(BinaryStream out)
+    {
         out.putByte(data);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "ByteMeta{" + new Integer(data) + "}";
     }
 

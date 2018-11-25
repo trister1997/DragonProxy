@@ -11,25 +11,30 @@ import org.dragonet.protocol.packets.ModalFormResponsePacket;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class BedrockPacketProcessorRegister {
+public final class BedrockPacketProcessorRegister
+{
 
     private final static Map<Class<? extends PEPacket>, BedrockPacketProcessor<? extends PEPacket>> processors = new HashMap<>();
 
-    static {
+    static
+    {
         processors.put(ContainerClosePacket.class, new ContainerCloseProcessor());
         processors.put(InventoryTransactionPacket.class, new InventoryTransactionProcessor());
         processors.put(ModalFormResponsePacket.class, new ModalFormResponseProcessor());
     }
 
-    public static <P extends PEPacket> BedrockPacketProcessor<P> getHandler(PEPacket packet) {
-        if(packet == null) return null;
-        if(processors.containsKey(packet.getClass())) {
+    public static <P extends PEPacket> BedrockPacketProcessor<P> getHandler(PEPacket packet)
+    {
+        if (packet == null) return null;
+        if (processors.containsKey(packet.getClass()))
+        {
             return (BedrockPacketProcessor<P>) processors.get(packet.getClass());
         }
         return null;
     }
 
-    public static void setProcessor(Class<? extends PEPacket> clazz, BedrockPacketProcessor<? extends PEPacket> processor) {
+    public static void setProcessor(Class<? extends PEPacket> clazz, BedrockPacketProcessor<? extends PEPacket> processor)
+    {
         processors.put(clazz, processor);
     }
 

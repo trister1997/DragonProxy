@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,20 +14,22 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerNotifyClientPacket;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.AdventureSettingsPacket;
+import org.dragonet.protocol.packets.LevelEventPacket;
+import org.dragonet.protocol.packets.SetPlayerGameTypePacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.AdventureSettingsPacket;
-import org.dragonet.protocol.packets.LevelEventPacket;
-import org.dragonet.protocol.packets.SetPlayerGameTypePacket;
+public class PCNotifyClientPacketTranslator implements IPCPacketTranslator<ServerNotifyClientPacket>
+{
 
-public class PCNotifyClientPacketTranslator implements IPCPacketTranslator<ServerNotifyClientPacket> {
-
-    public PEPacket[] translate(UpstreamSession session, ServerNotifyClientPacket packet) {
-        switch (packet.getNotification()) {
+    public PEPacket[] translate(UpstreamSession session, ServerNotifyClientPacket packet)
+    {
+        switch (packet.getNotification())
+        {
             case CHANGE_GAMEMODE:
                 GameMode gm = (GameMode) packet.getValue();
                 SetPlayerGameTypePacket pkgm = new SetPlayerGameTypePacket();

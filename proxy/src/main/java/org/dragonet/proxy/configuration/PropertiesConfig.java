@@ -6,38 +6,37 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PropertiesConfig {
+public class PropertiesConfig
+{
 
     private final File file;
     private final Properties config;
 
-    public PropertiesConfig(String defaultResourcePath, String fileName, boolean saveDefault) throws IOException {
+    public PropertiesConfig(String defaultResourcePath, String fileName, boolean saveDefault) throws IOException
+    {
         Properties defaultConfig = new Properties();
         defaultConfig.load(PropertiesConfig.class.getResourceAsStream(defaultResourcePath));
         config = new Properties(defaultConfig);
         file = new File(fileName);
-        if (file.exists()) {
+        if (file.exists())
+        {
             FileInputStream input = new FileInputStream(file);
             config.load(new InputStreamReader(input, Charset.forName("UTF-8")));
-        } else if (saveDefault) {
+        }
+        else if (saveDefault)
+        {
             FileOutputStream fos = new FileOutputStream(fileName);
             InputStream ris = PropertiesConfig.class.getResourceAsStream(defaultResourcePath);
             int d = -1;
@@ -48,21 +47,30 @@ public class PropertiesConfig {
         }
     }
 
-    public void save() throws IOException {
+    public void save() throws IOException
+    {
         FileOutputStream out = null;
-        try {
+        try
+        {
             out = new FileOutputStream(file);
             config.store(out, "");
-        } catch (FileNotFoundException ex) {
+        }
+        catch (FileNotFoundException ex)
+        {
             Logger.getLogger(PropertiesConfig.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             Logger.getLogger(PropertiesConfig.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        finally
+        {
             out.close();
         }
     }
 
-    public Properties getConfig() {
+    public Properties getConfig()
+    {
         return config;
     }
 }

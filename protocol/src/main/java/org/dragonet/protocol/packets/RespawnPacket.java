@@ -7,26 +7,31 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/22.
  */
-public class RespawnPacket extends PEPacket {
+public class RespawnPacket extends PEPacket
+{
 
     public Vector3F position;
 
-    public RespawnPacket() {
+    public RespawnPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.RESPAWN_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVector3F(position);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         position = getVector3F();
     }
 }

@@ -7,7 +7,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class MovePlayerPacket extends PEPacket {
+public class MovePlayerPacket extends PEPacket
+{
 
     public static final byte MODE_NORMAL = 0;
     public static final byte MODE_RESET = 1;
@@ -23,17 +24,20 @@ public class MovePlayerPacket extends PEPacket {
     public boolean onGround;
     public long ridingRuntimeId;
 
-    public MovePlayerPacket() {
+    public MovePlayerPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.MOVE_PLAYER_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putVector3F(position);
         putLFloat(pitch);
@@ -42,14 +46,16 @@ public class MovePlayerPacket extends PEPacket {
         putByte(mode);
         putBoolean(onGround);
         putUnsignedVarLong(ridingRuntimeId);
-        if (mode == MODE_TELEPORT) {
+        if (mode == MODE_TELEPORT)
+        {
             putLInt(0);
             putLInt(0);
         }
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         position = getVector3F();
         pitch = getLFloat();

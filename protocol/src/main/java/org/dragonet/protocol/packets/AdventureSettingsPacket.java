@@ -6,7 +6,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class AdventureSettingsPacket extends PEPacket {
+public class AdventureSettingsPacket extends PEPacket
+{
 
     public static final int PERMISSION_NORMAL = 0;
     public static final int PERMISSION_OPERATOR = 1;
@@ -52,17 +53,20 @@ public class AdventureSettingsPacket extends PEPacket {
     public int customFlags;
     public long eid;
 
-    public AdventureSettingsPacket() {
+    public AdventureSettingsPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ADVENTURE_SETTINGS_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarInt(flags);
         putUnsignedVarInt(commandsPermission);
         putUnsignedVarInt(actionPermissions);
@@ -72,7 +76,8 @@ public class AdventureSettingsPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         flags = (int) getUnsignedVarInt();
         commandsPermission = (int) getUnsignedVarInt();
         actionPermissions = (int) getUnsignedVarInt();
@@ -81,27 +86,39 @@ public class AdventureSettingsPacket extends PEPacket {
         eid = getLLong();
     }
 
-    public boolean getFlag(int flag) {
-        if ((flag & BITFLAG_SECOND_SET) != 0) {
+    public boolean getFlag(int flag)
+    {
+        if ((flag & BITFLAG_SECOND_SET) != 0)
+        {
             return (this.actionPermissions & flag) != 0;
         }
 
         return (this.flags & flag) != 0;
     }
 
-    public void setFlag(int flag, boolean value) {
+    public void setFlag(int flag, boolean value)
+    {
         boolean flags = (flag & BITFLAG_SECOND_SET) != 0;
 
-        if (value) {
-            if (flags) {
+        if (value)
+        {
+            if (flags)
+            {
                 this.actionPermissions |= flag;
-            } else {
+            }
+            else
+            {
                 this.flags |= flag;
             }
-        } else {
-            if (flags) {
+        }
+        else
+        {
+            if (flags)
+            {
                 this.actionPermissions &= ~flag;
-            } else {
+            }
+            else
+            {
                 this.flags &= ~flag;
             }
         }

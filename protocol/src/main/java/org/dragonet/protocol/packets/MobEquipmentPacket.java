@@ -1,13 +1,14 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
 /**
  * Created on 2017/10/22.
  */
-public class MobEquipmentPacket extends PEPacket {
+public class MobEquipmentPacket extends PEPacket
+{
 
     public long rtid;
     public Slot item;
@@ -16,12 +17,14 @@ public class MobEquipmentPacket extends PEPacket {
     public int windowId;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.MOB_EQUIPMENT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putSlot(item);
         putByte((byte) (inventorySlot & 0xFF));
@@ -30,7 +33,8 @@ public class MobEquipmentPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         item = getSlot();
         inventorySlot = getByte();

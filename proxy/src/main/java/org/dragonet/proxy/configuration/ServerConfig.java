@@ -12,7 +12,8 @@
  */
 package org.dragonet.proxy.configuration;
 
-public class ServerConfig {
+public class ServerConfig
+{
 
     public String lang = "default";
     public String udp_bind_ip = "0.0.0.0";

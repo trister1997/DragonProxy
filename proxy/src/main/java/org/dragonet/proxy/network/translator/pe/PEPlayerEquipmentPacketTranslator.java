@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,19 +14,23 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
 import com.github.steveice10.packetlib.packet.Packet;
-import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 import org.dragonet.protocol.packets.MobEquipmentPacket;
 import org.dragonet.proxy.network.CacheKey;
+import org.dragonet.proxy.network.UpstreamSession;
+import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 
-public class PEPlayerEquipmentPacketTranslator implements IPEPacketTranslator<MobEquipmentPacket> {
+public class PEPlayerEquipmentPacketTranslator implements IPEPacketTranslator<MobEquipmentPacket>
+{
 
-    public Packet[] translate(UpstreamSession session, MobEquipmentPacket packet) {
+    public Packet[] translate(UpstreamSession session, MobEquipmentPacket packet)
+    {
 //		System.out.println(org.dragonet.proxy.utilities.DebugTools.getAllFields(packet));
-        if (packet.hotbarSlot > 8) {
+        if (packet.hotbarSlot > 8)
+        {
             return null;
         }
-        if (packet.windowId == 0) {
+        if (packet.windowId == 0)
+        {
             session.getDataCache().put(CacheKey.PLAYER_SELECTED_SLOT, packet.hotbarSlot);
             return new Packet[]{new ClientPlayerChangeHeldItemPacket(packet.hotbarSlot)};
         }

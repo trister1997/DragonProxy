@@ -13,28 +13,24 @@
 package org.dragonet.proxy.utilities;
 
 import io.sentry.Sentry;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Date;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import org.dragonet.proxy.DragonProxy;
 
-public class ProxyLogger {
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
+import java.util.logging.*;
+
+public class ProxyLogger
+{
 
     private final java.util.logging.Logger logger;
-    private DragonProxy proxy;
     public boolean colorful = false;
     public boolean debug = false;
+    private DragonProxy proxy;
 
-    public ProxyLogger(DragonProxy proxy) {
+    public ProxyLogger(DragonProxy proxy)
+    {
         this.proxy = proxy;
         this.logger = java.util.logging.Logger.getLogger(proxy.getClass().getName());
         logger.setUseParentHandlers(false);
@@ -46,22 +42,25 @@ public class ProxyLogger {
         //Console
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.INFO);
-        consoleHandler.setFormatter(new SimpleFormatter() {
+        consoleHandler.setFormatter(new SimpleFormatter()
+        {
             private static final String format = "[%1$tT][%2$-5s] %3$s %n";
 
             @Override
-            public synchronized String format(LogRecord lr) {
+            public synchronized String format(LogRecord lr)
+            {
                 return String.format(format,
-                        new Date(lr.getMillis()),
-                        lr.getLevel().getLocalizedName(),
-                        lr.getMessage()
+                    new Date(lr.getMillis()),
+                    lr.getLevel().getLocalizedName(),
+                    lr.getMessage()
                 );
             }
         });
         logger.addHandler(consoleHandler);
 
         //File
-        try {
+        try
+        {
             File logDir = new File("logs");
             logDir.mkdir();
             File logFile = new File(logDir, "latest.log");
@@ -70,25 +69,30 @@ public class ProxyLogger {
                 logger.warning("Your log file is larger than " + maxLogFileSize + "Mo, you should backup and clean it !");
             FileHandler fileHandler = new FileHandler(logFile.getCanonicalPath(), true);
             fileHandler.setLevel(Level.INFO);
-            fileHandler.setFormatter(new SimpleFormatter() {
+            fileHandler.setFormatter(new SimpleFormatter()
+            {
                 private static final String format = "[%1$tF %1$tT][%2$-5s] %3$s %n";
 
                 @Override
-                public synchronized String format(LogRecord lr) {
+                public synchronized String format(LogRecord lr)
+                {
                     return String.format(format,
-                            new Date(lr.getMillis()),
-                            lr.getLevel().getLocalizedName(),
-                            lr.getMessage()
+                        new Date(lr.getMillis()),
+                        lr.getLevel().getLocalizedName(),
+                        lr.getMessage()
                     );
                 }
             });
             logger.addHandler(fileHandler);
-        } catch (IOException | SecurityException ex) {
+        }
+        catch (IOException | SecurityException ex)
+        {
             Logger.getLogger(ProxyLogger.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //Sentry
-        if (System.getenv().containsKey("DP_SENTRY_CLIENT_KEY")) {
+        if (System.getenv().containsKey("DP_SENTRY_CLIENT_KEY"))
+        {
             Handler sentryHandler = new io.sentry.jul.SentryHandler();
             sentryHandler.setLevel(Level.SEVERE);
             logger.addHandler(sentryHandler);
@@ -96,24 +100,29 @@ public class ProxyLogger {
         }
     }
 
-    public void info(String message) {
+    public void info(String message)
+    {
         logger.info(org.dragonet.common.maths.MCColor.printConsole(message, proxy.getConfig().log_colors));
     }
 
-    public void warning(String message) {
+    public void warning(String message)
+    {
         logger.warning(org.dragonet.common.maths.MCColor.printConsole(message, proxy.getConfig().log_colors));
     }
 
-    public void severe(String message) {
+    public void severe(String message)
+    {
         logger.severe(org.dragonet.common.maths.MCColor.printConsole(message, proxy.getConfig().log_colors));
     }
 
-    public void debug(String message) {
+    public void debug(String message)
+    {
         if (debug)
             logger.info(org.dragonet.common.maths.MCColor.printConsole(message, proxy.getConfig().log_colors));
     }
 
-    public void stop() {
+    public void stop()
+    {
         for (Handler handler : logger.getHandlers())
             handler.close();
     }

@@ -25,7 +25,11 @@ package co.aikar.timings;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.dragonet.common.utilities.JsonUtil;
+import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.network.UpstreamSession;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -38,18 +42,16 @@ import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 import static co.aikar.timings.TimingsManager.HISTORY;
-import com.google.gson.JsonArray;
-import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.common.utilities.JsonUtil;
 
-public class TimingsExport extends Thread {
+public class TimingsExport extends Thread
+{
 
     private final UpstreamSession sender;
     private final JsonObject out;
     private final TimingsHistory[] history;
 
-    private TimingsExport(UpstreamSession sender, JsonObject out, TimingsHistory[] history) {
+    private TimingsExport(UpstreamSession sender, JsonObject out, TimingsHistory[] history)
+    {
         super("Timings paste thread");
         this.sender = sender;
         this.out = out;
@@ -61,7 +63,8 @@ public class TimingsExport extends Thread {
      *
      * @param sender Sender that issued the command
      */
-    public static void reportTimings(UpstreamSession sender) {
+    public static void reportTimings(UpstreamSession sender)
+    {
         JsonObject out = new JsonObject();
         out.addProperty("version", DragonProxy.getInstance().getVersion());
         out.addProperty("maxplayers", 2); //TODO
@@ -69,7 +72,8 @@ public class TimingsExport extends Thread {
         out.addProperty("end", System.currentTimeMillis() / 1000);
         out.addProperty("sampletime", (System.currentTimeMillis() - TimingsManager.timingStart) / 1000);
 
-        if (!Timings.isPrivacy()) {
+        if (!Timings.isPrivacy())
+        {
             out.addProperty("server", "DragonProxy : name"); //TODO
             out.addProperty("motd", DragonProxy.getInstance().getMotd());
             out.addProperty("online-mode", DragonProxy.getInstance().getAuthMode().equals("online"));
@@ -90,7 +94,7 @@ public class TimingsExport extends Thread {
         system.addProperty("runtime", ManagementFactory.getRuntimeMXBean().getUptime());
         system.addProperty("flags", String.join(" ", runtimeBean.getInputArguments()));
         system.add("gc", JsonUtil.mapToObject(ManagementFactory.getGarbageCollectorMXBeans(), (input)
-                -> new JsonUtil.JSONPair(input.getName(), JsonUtil.toArray(input.getCollectionCount(), input.getCollectionTime()))));
+            -> new JsonUtil.JSONPair(input.getName(), JsonUtil.toArray(input.getCollectionCount(), input.getCollectionTime()))));
         out.add("system", system);
 
         TimingsHistory[] history = HISTORY.toArray(new TimingsHistory[HISTORY.size() + 1]);
@@ -99,7 +103,8 @@ public class TimingsExport extends Thread {
         JsonObject timings = new JsonObject();
         for (TimingIdentifier.TimingGroup group : TimingIdentifier.GROUP_MAP.values())
         {
-            for (Timing id : group.timings.stream().toArray(Timing[]::new)) {
+            for (Timing id : group.timings.stream().toArray(Timing[]::new))
+            {
                 if (!id.timed && !id.isSpecial())
                     continue;
 
@@ -109,14 +114,14 @@ public class TimingsExport extends Thread {
 
         JsonObject idmap = new JsonObject();
         idmap.add("groups", JsonUtil.mapToObject(TimingIdentifier.GROUP_MAP.values(), (group)
-                -> new JsonUtil.JSONPair(group.id, group.name)));
+            -> new JsonUtil.JSONPair(group.id, group.name)));
         idmap.add("handlers", timings);
         idmap.add("worlds", JsonUtil.mapToObject(TimingsHistory.levelMap.entrySet(), (entry)
-                -> new JsonUtil.JSONPair(entry.getValue(), entry.getKey())));
+            -> new JsonUtil.JSONPair(entry.getValue(), entry.getKey())));
         idmap.add("tileentity", JsonUtil.mapToObject(TimingsHistory.blockEntityMap.entrySet(), (entry)
-                -> new JsonUtil.JSONPair(entry.getKey(), entry.getValue())));
+            -> new JsonUtil.JSONPair(entry.getKey(), entry.getValue())));
         idmap.add("entity", JsonUtil.mapToObject(TimingsHistory.entityMap.entrySet(), (entry)
-                -> new JsonUtil.JSONPair(entry.getKey(), entry.getValue())));
+            -> new JsonUtil.JSONPair(entry.getKey(), entry.getValue())));
         out.add("idmap", idmap);
 
         //Information about plugins, needed but empty
@@ -124,11 +129,14 @@ public class TimingsExport extends Thread {
 
         //Information on the proxy Config
         JsonObject config = new JsonObject();
-        if (!Timings.getIgnoredConfigSections().contains("all")) {
+        if (!Timings.getIgnoredConfigSections().contains("all"))
+        {
             JsonObject jsonConfig = JsonUtil.toObject(DragonProxy.getInstance().getConfig());
             Timings.getIgnoredConfigSections().forEach(jsonConfig::remove);
             config.add("DragonProxy", jsonConfig);
-        } else {
+        }
+        else
+        {
             config.add("DragonProxy", null);
         }
         out.add("config", config);
@@ -136,7 +144,8 @@ public class TimingsExport extends Thread {
         new TimingsExport(sender, out, history).start();
     }
 
-    private static long getCost() {
+    private static long getCost()
+    {
         int passes = 200;
         Timing SAMPLER1 = TimingsManager.getTiming(null, "Timings sampler 1", null);
         Timing SAMPLER2 = TimingsManager.getTiming(null, "Timings sampler 2", null);
@@ -146,7 +155,8 @@ public class TimingsExport extends Thread {
         Timing SAMPLER6 = TimingsManager.getTiming(null, "Timings sampler 6", null);
 
         long start = System.nanoTime();
-        for (int i = 0; i < passes; i++) {
+        for (int i = 0; i < passes; i++)
+        {
             SAMPLER1.startTiming();
             SAMPLER2.startTiming();
             SAMPLER3.startTiming();
@@ -174,27 +184,33 @@ public class TimingsExport extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         if (this.sender != null)
             this.sender.sendChat("Starting upload timings !");
         this.out.add("data", JsonUtil.mapToArray(this.history, TimingsHistory::export));
 
         String response = null;
-        try {
+        try
+        {
             HttpURLConnection con = (HttpURLConnection) new URL("http://timings.aikar.co/post").openConnection();
             con.setDoOutput(true);
             con.setRequestProperty("User-Agent", "Nukkit/" + "test" + "/" + InetAddress.getLocalHost().getHostName()); //need to keep nukkit for system to work
             con.setRequestMethod("POST");
             con.setInstanceFollowRedirects(false);
 
-            OutputStream request = new GZIPOutputStream(con.getOutputStream()) {{ this.def.setLevel(7); }};
+            OutputStream request = new GZIPOutputStream(con.getOutputStream())
+            {{
+                this.def.setLevel(7);
+            }};
 
             request.write(new Gson().toJson(this.out).getBytes("UTF-8"));
             request.close();
 
             response = getResponse(con);
 
-            if (con.getResponseCode() != 302) {
+            if (con.getResponseCode() != 302)
+            {
                 if (this.sender != null)
                     this.sender.sendChat("Timings upload error " + con.getResponseCode() + con.getResponseMessage() + " !");
                 if (response != null)
@@ -221,7 +237,9 @@ public class TimingsExport extends Thread {
             writer.close();
 
             DragonProxy.getInstance().getLogger().info("Timings file writed at " + fileName);
-        } catch (IOException exception) {
+        }
+        catch (IOException exception)
+        {
             DragonProxy.getInstance().getLogger().info("Timings report error !");
             if (this.sender != null)
                 this.sender.sendChat("Timings error !");
@@ -232,9 +250,11 @@ public class TimingsExport extends Thread {
         }
     }
 
-    private String getResponse(HttpURLConnection con) throws IOException {
+    private String getResponse(HttpURLConnection con) throws IOException
+    {
         InputStream is = null;
-        try {
+        try
+        {
             is = con.getInputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -244,12 +264,16 @@ public class TimingsExport extends Thread {
                 bos.write(b, 0, bytesRead);
             return bos.toString();
 
-        } catch (IOException exception) {
+        }
+        catch (IOException exception)
+        {
             if (this.sender != null)
                 this.sender.sendChat("Timings error !");
             DragonProxy.getInstance().getLogger().warning(con.getResponseMessage() + "\n" + exception);
             return null;
-        } finally {
+        }
+        finally
+        {
             if (is != null)
                 is.close();
         }

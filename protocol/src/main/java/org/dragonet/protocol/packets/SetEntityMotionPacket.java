@@ -7,28 +7,33 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class SetEntityMotionPacket extends PEPacket {
+public class SetEntityMotionPacket extends PEPacket
+{
 
     public long rtid;
     public Vector3F motion;
 
-    public SetEntityMotionPacket() {
+    public SetEntityMotionPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.SET_ENTITY_MOTION_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putVector3F(motion);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         motion = getVector3F();
     }

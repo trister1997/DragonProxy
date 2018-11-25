@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -15,28 +15,36 @@ package org.dragonet.proxy.network.translator.pc;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
 import org.dragonet.common.data.entity.PEEntityAttribute;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.UpdateAttributesPacket;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.UpdateAttributesPacket;
 
-public class PCEntityPropertiesPacketTranslator implements IPCPacketTranslator<ServerEntityPropertiesPacket> {
+public class PCEntityPropertiesPacketTranslator implements IPCPacketTranslator<ServerEntityPropertiesPacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerEntityPropertiesPacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerEntityPropertiesPacket packet)
+    {
 
         CachedEntity entity = session.getEntityCache().getByRemoteEID(packet.getEntityId());
-        if (entity == null) {
-            if (packet.getEntityId() == (int) session.getDataCache().get(CacheKey.PLAYER_EID)) {
+        if (entity == null)
+        {
+            if (packet.getEntityId() == (int) session.getDataCache().get(CacheKey.PLAYER_EID))
+            {
                 entity = session.getEntityCache().getClientEntity();
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
 
-        for (Attribute attr : packet.getAttributes()) {
-            switch (attr.getType()) {
+        for (Attribute attr : packet.getAttributes())
+        {
+            switch (attr.getType())
+            {
                 case GENERIC_FOLLOW_RANGE:
                     entity.attributes.put(PEEntityAttribute.FOLLOW_RANGE, PEEntityAttribute.findAttribute(PEEntityAttribute.FOLLOW_RANGE).setValue((float) attr.getValue()));
                     break;
@@ -55,7 +63,8 @@ public class PCEntityPropertiesPacketTranslator implements IPCPacketTranslator<S
             }
         }
 
-        if (entity.spawned) {
+        if (entity.spawned)
+        {
             UpdateAttributesPacket pk = new UpdateAttributesPacket();
             pk.rtid = entity.proxyEid;
             pk.entries = entity.attributes.values();

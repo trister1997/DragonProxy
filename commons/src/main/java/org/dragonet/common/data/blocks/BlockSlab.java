@@ -2,14 +2,18 @@ package org.dragonet.common.data.blocks;
 
 import org.dragonet.common.maths.AxisAlignedBB;
 
-public class BlockSlab extends Block {
-    public BlockSlab(int meta) {
+public class BlockSlab extends Block
+{
+    public BlockSlab(int meta)
+    {
         super(meta);
     }
 
     @Override
-    protected AxisAlignedBB recalculateBoundingBox() {
-        if ((this.meta & 0x08) > 0) {
+    protected AxisAlignedBB recalculateBoundingBox()
+    {
+        if ((this.meta & 0x08) > 0)
+        {
             return new AxisAlignedBB(
                 this.x,
                 this.y + 0.5,
@@ -18,7 +22,9 @@ public class BlockSlab extends Block {
                 this.y + 1,
                 this.z + 1
             );
-        } else {
+        }
+        else
+        {
             return new AxisAlignedBB(
                 this.x,
                 this.y,

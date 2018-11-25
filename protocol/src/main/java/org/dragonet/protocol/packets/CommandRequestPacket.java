@@ -6,26 +6,31 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/11/15.
  */
-public class CommandRequestPacket extends PEPacket {
+public class CommandRequestPacket extends PEPacket
+{
 
     public String command;
 
-    public CommandRequestPacket() {
+    public CommandRequestPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.COMMAND_REQUEST_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putString(command);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         command = getString();
     }
 }

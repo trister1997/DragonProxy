@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,27 +14,25 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerRespawnPacket;
-import java.util.ArrayList;
 import org.dragonet.common.data.entity.PEEntityAttribute;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.*;
+import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.AdventureSettingsPacket;
-import org.dragonet.protocol.packets.ChangeDimensionPacket;
-import org.dragonet.protocol.packets.PlayStatusPacket;
-import org.dragonet.protocol.packets.RemoveEntityPacket;
-import org.dragonet.protocol.packets.SetDifficultyPacket;
-import org.dragonet.protocol.packets.SetPlayerGameTypePacket;
-import org.dragonet.protocol.packets.UpdateAttributesPacket;
-import org.dragonet.proxy.DragonProxy;
 
-public class PCRespawnPacketTranslator implements IPCPacketTranslator<ServerRespawnPacket> {
+import java.util.ArrayList;
 
-    public PEPacket[] translate(UpstreamSession session, ServerRespawnPacket packet) {
+public class PCRespawnPacketTranslator implements IPCPacketTranslator<ServerRespawnPacket>
+{
+
+    public PEPacket[] translate(UpstreamSession session, ServerRespawnPacket packet)
+    {
 
         CachedEntity entity = session.getEntityCache().getClientEntity();
-        if (entity.dimention != packet.getDimension()) {
+        if (entity.dimention != packet.getDimension())
+        {
             // the player have changed dimention
             DragonProxy.getInstance().getLogger().info(session.getUsername() + " change dim " + entity.dimention + " to " + packet.getDimension());
 //            entity.dimention = packet.getDimension();
@@ -64,10 +62,12 @@ public class PCRespawnPacketTranslator implements IPCPacketTranslator<ServerResp
             // send entity attributes
             UpdateAttributesPacket attr = new UpdateAttributesPacket();
             attr.rtid = entity.proxyEid;
-            if (entity.attributes.isEmpty()) {
+            if (entity.attributes.isEmpty())
+            {
                 attr.entries = new ArrayList();
                 attr.entries.addAll(PEEntityAttribute.getDefault());
-            } else
+            }
+            else
                 attr.entries = entity.attributes.values();
             session.sendPacket(attr);
 
@@ -85,7 +85,8 @@ public class PCRespawnPacketTranslator implements IPCPacketTranslator<ServerResp
 //            session.sendPacket(new ChangeDimensionPacket());
 
             return null;
-        } else
+        }
+        else
             return new PEPacket[]{new PlayStatusPacket(PlayStatusPacket.PLAYER_SPAWN)};
     }
 }

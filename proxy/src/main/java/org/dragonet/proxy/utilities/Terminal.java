@@ -1,7 +1,8 @@
 package org.dragonet.proxy.utilities;
 
 @Deprecated
-public class Terminal {
+public class Terminal
+{
 
     public static final String ITALIC = "\u001B[3m";
     public static final String UNDERLINE = "\u001B[4m";
@@ -14,7 +15,8 @@ public class Terminal {
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
 
-    public Terminal() {
+    public Terminal()
+    {
 
     }
 }

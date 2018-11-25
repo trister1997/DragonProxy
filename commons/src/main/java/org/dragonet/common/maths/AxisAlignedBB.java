@@ -3,7 +3,8 @@ package org.dragonet.common.maths;
 /**
  * auth||: MagicDroidX Nukkit Project
  */
-public class AxisAlignedBB implements Cloneable {
+public class AxisAlignedBB implements Cloneable
+{
 
     public double minX;
     public double minY;
@@ -12,7 +13,8 @@ public class AxisAlignedBB implements Cloneable {
     public double maxY;
     public double maxZ;
 
-    public AxisAlignedBB(Vector3 pos1, Vector3 pos2) {
+    public AxisAlignedBB(Vector3 pos1, Vector3 pos2)
+    {
         this.minX = Math.min(pos1.x, pos2.x);
         this.minY = Math.min(pos1.y, pos2.y);
         this.minZ = Math.min(pos1.z, pos2.z);
@@ -21,7 +23,8 @@ public class AxisAlignedBB implements Cloneable {
         this.maxZ = Math.max(pos1.z, pos2.z);
     }
 
-    public AxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public AxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+    {
         this.minX = minX;
         this.minY = minY;
         this.minZ = minZ;
@@ -30,7 +33,8 @@ public class AxisAlignedBB implements Cloneable {
         this.maxZ = maxZ;
     }
 
-    public AxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public AxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+    {
         this.minX = minX;
         this.minY = minY;
         this.minZ = minZ;
@@ -40,7 +44,8 @@ public class AxisAlignedBB implements Cloneable {
         return this;
     }
 
-    public AxisAlignedBB addCoord(double x, double y, double z) {
+    public AxisAlignedBB addCoord(double x, double y, double z)
+    {
         double minX = this.minX;
         double minY = this.minY;
         double minZ = this.minZ;
@@ -66,11 +71,13 @@ public class AxisAlignedBB implements Cloneable {
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public AxisAlignedBB grow(double x, double y, double z) {
+    public AxisAlignedBB grow(double x, double y, double z)
+    {
         return new AxisAlignedBB(this.minX - x, this.minY - y, this.minZ - z, this.maxX + x, this.maxY + y, this.maxZ + z);
     }
 
-    public AxisAlignedBB expand(double x, double y, double z) {
+    public AxisAlignedBB expand(double x, double y, double z)
+    {
         this.minX -= x;
         this.minY -= y;
         this.minZ -= z;
@@ -81,7 +88,8 @@ public class AxisAlignedBB implements Cloneable {
         return this;
     }
 
-    public AxisAlignedBB offset(double x, double y, double z) {
+    public AxisAlignedBB offset(double x, double y, double z)
+    {
         this.minX += x;
         this.minY += y;
         this.minZ += z;
@@ -92,11 +100,13 @@ public class AxisAlignedBB implements Cloneable {
         return this;
     }
 
-    public AxisAlignedBB shrink(double x, double y, double z) {
+    public AxisAlignedBB shrink(double x, double y, double z)
+    {
         return new AxisAlignedBB(this.minX + x, this.minY + y, this.minZ + z, this.maxX - x, this.maxY - y, this.maxZ - z);
     }
 
-    public AxisAlignedBB contract(double x, double y, double z) {
+    public AxisAlignedBB contract(double x, double y, double z)
+    {
         this.minX += x;
         this.minY += y;
         this.minZ += z;
@@ -107,7 +117,8 @@ public class AxisAlignedBB implements Cloneable {
         return this;
     }
 
-    public AxisAlignedBB setBB(AxisAlignedBB bb) {
+    public AxisAlignedBB setBB(AxisAlignedBB bb)
+    {
         this.minX = bb.minX;
         this.minY = bb.minY;
         this.minZ = bb.minZ;
@@ -117,21 +128,25 @@ public class AxisAlignedBB implements Cloneable {
         return this;
     }
 
-    public AxisAlignedBB getOffsetBoundingBox(double x, double y, double z) {
+    public AxisAlignedBB getOffsetBoundingBox(double x, double y, double z)
+    {
         return new AxisAlignedBB(this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
     }
 
-    public double calculateXOffset(AxisAlignedBB bb, double x) {
+    public double calculateXOffset(AxisAlignedBB bb, double x)
+    {
         if (bb.maxY <= this.minY || bb.minY >= this.maxY)
             return x;
         if (bb.maxZ <= this.minZ || bb.minZ >= this.maxZ)
             return x;
-        if (x > 0 && bb.maxX <= this.minX) {
+        if (x > 0 && bb.maxX <= this.minX)
+        {
             double x1 = this.minX - bb.maxX;
             if (x1 < x)
                 x = x1;
         }
-        if (x < 0 && bb.minX >= this.maxX) {
+        if (x < 0 && bb.minX >= this.maxX)
+        {
             double x2 = this.maxX - bb.minX;
             if (x2 > x)
                 x = x2;
@@ -140,17 +155,20 @@ public class AxisAlignedBB implements Cloneable {
         return x;
     }
 
-    public double calculateYOffset(AxisAlignedBB bb, double y) {
+    public double calculateYOffset(AxisAlignedBB bb, double y)
+    {
         if (bb.maxX <= this.minX || bb.minX >= this.maxX)
             return y;
         if (bb.maxZ <= this.minZ || bb.minZ >= this.maxZ)
             return y;
-        if (y > 0 && bb.maxY <= this.minY) {
+        if (y > 0 && bb.maxY <= this.minY)
+        {
             double y1 = this.minY - bb.maxY;
             if (y1 < y)
                 y = y1;
         }
-        if (y < 0 && bb.minY >= this.maxY) {
+        if (y < 0 && bb.minY >= this.maxY)
+        {
             double y2 = this.maxY - bb.minY;
             if (y2 > y)
                 y = y2;
@@ -159,17 +177,20 @@ public class AxisAlignedBB implements Cloneable {
         return y;
     }
 
-    public double calculateZOffset(AxisAlignedBB bb, double z) {
+    public double calculateZOffset(AxisAlignedBB bb, double z)
+    {
         if (bb.maxX <= this.minX || bb.minX >= this.maxX)
             return z;
         if (bb.maxY <= this.minY || bb.minY >= this.maxY)
             return z;
-        if (z > 0 && bb.maxZ <= this.minZ) {
+        if (z > 0 && bb.maxZ <= this.minZ)
+        {
             double z1 = this.minZ - bb.maxZ;
             if (z1 < z)
                 z = z1;
         }
-        if (z < 0 && bb.minZ >= this.maxZ) {
+        if (z < 0 && bb.minZ >= this.maxZ)
+        {
             double z2 = this.maxZ - bb.minZ;
             if (z2 > z)
                 z = z2;
@@ -178,7 +199,8 @@ public class AxisAlignedBB implements Cloneable {
         return z;
     }
 
-    public boolean intersectsWith(AxisAlignedBB bb) {
+    public boolean intersectsWith(AxisAlignedBB bb)
+    {
         if (bb.maxX > this.minX && bb.minX < this.maxX)
             if (bb.maxY > this.minY && bb.minY < this.maxY)
                 return bb.maxZ > this.minZ && bb.minZ < this.maxZ;
@@ -186,28 +208,34 @@ public class AxisAlignedBB implements Cloneable {
         return false;
     }
 
-    public boolean isVectorInside(Vector3 vector) {
+    public boolean isVectorInside(Vector3 vector)
+    {
         return vector.x >= this.minX && vector.x <= this.maxX && vector.y >= this.minY && vector.y <= this.maxY && vector.z >= this.minZ && vector.z <= this.maxZ;
 
     }
 
-    public double getAverageEdgeLength() {
+    public double getAverageEdgeLength()
+    {
         return (this.maxX - this.minX + this.maxY - this.minY + this.maxZ - this.minZ) / 3;
     }
 
-    public boolean isVectorInYZ(Vector3 vector) {
+    public boolean isVectorInYZ(Vector3 vector)
+    {
         return vector.y >= this.minY && vector.y <= this.maxY && vector.z >= this.minZ && vector.z <= this.maxZ;
     }
 
-    public boolean isVectorInXZ(Vector3 vector) {
+    public boolean isVectorInXZ(Vector3 vector)
+    {
         return vector.x >= this.minX && vector.x <= this.maxX && vector.z >= this.minZ && vector.z <= this.maxZ;
     }
 
-    public boolean isVectorInXY(Vector3 vector) {
+    public boolean isVectorInXY(Vector3 vector)
+    {
         return vector.x >= this.minX && vector.x <= this.maxX && vector.y >= this.minY && vector.y <= this.maxY;
     }
 
-    public MovingObjectPosition calculateIntercept(Vector3 pos1, Vector3 pos2) {
+    public MovingObjectPosition calculateIntercept(Vector3 pos1, Vector3 pos2)
+    {
         Vector3 v1 = pos1.getIntermediateWithXValue(pos2, this.minX);
         Vector3 v2 = pos1.getIntermediateWithXValue(pos2, this.maxX);
         Vector3 v3 = pos1.getIntermediateWithYValue(pos2, this.minY);
@@ -276,15 +304,20 @@ public class AxisAlignedBB implements Cloneable {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "AxisAlignedBB(" + this.minX + ", " + this.minY + ", " + this.minZ + ", " + this.maxX + ", " + this.maxY + ", " + this.maxZ + ")";
     }
 
     @Override
-    public AxisAlignedBB clone() {
-        try {
+    public AxisAlignedBB clone()
+    {
+        try
+        {
             return (AxisAlignedBB) super.clone();
-        } catch (CloneNotSupportedException e) {
+        }
+        catch (CloneNotSupportedException e)
+        {
             e.printStackTrace();
         }
         return null;

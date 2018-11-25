@@ -6,46 +6,56 @@ import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import org.dragonet.proxy.DragonProxy;
 
-import java.util.concurrent.Executors;
-
-public class PingThread extends Thread{
+public class PingThread extends Thread
+{
 
     private static PingThread instance;
     private ServerStatusInfo info;
     private Client client;
 
-    public PingThread(){
+    public PingThread()
+    {
         super("PingThread");
         instance = this;
     }
 
-    public static PingThread getInstance(){
+    public static PingThread getInstance()
+    {
         return instance;
     }
 
-    public ServerStatusInfo getInfo() {
+    public ServerStatusInfo getInfo()
+    {
         return info;
     }
 
-    private void setClient(){
+    private void setClient()
+    {
         this.client = new Client(DragonProxy.getInstance().getConfig().remote_server_addr, DragonProxy.getInstance().getConfig().remote_server_port, new MinecraftProtocol(SubProtocol.STATUS), new TcpSessionFactory());
-        this.client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
+        this.client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) ->
+        {
             this.info = info;
             this.client.getSession().disconnect(null);
         });
     }
 
     @Override
-    public void run() {
-        while(true){
-            try {
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
                 this.setClient();
                 client.getSession().connect();
-            } catch (Exception e) { e.printStackTrace(); }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
     }

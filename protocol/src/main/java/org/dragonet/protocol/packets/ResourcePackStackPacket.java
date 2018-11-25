@@ -6,22 +6,26 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/23.
  */
-public class ResourcePackStackPacket extends PEPacket {
+public class ResourcePackStackPacket extends PEPacket
+{
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putBoolean(false);
         putUnsignedVarInt(0);
         putUnsignedVarInt(0);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
 
     }
 }

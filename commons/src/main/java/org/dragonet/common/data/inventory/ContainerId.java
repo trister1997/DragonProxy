@@ -3,7 +3,8 @@ package org.dragonet.common.data.inventory;
 /**
  * Created on 2017/10/21.
  */
-public enum ContainerId {
+public enum ContainerId
+{
 
     NONE(1),
     INVENTORY(0),
@@ -18,11 +19,13 @@ public enum ContainerId {
 
     private int id;
 
-    private ContainerId(int id) {
+    private ContainerId(int id)
+    {
         this.id = id;
     }
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 }

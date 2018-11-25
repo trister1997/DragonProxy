@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,6 +14,7 @@ package org.dragonet.protocol;
 
 import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.common.utilities.Zlib;
+import org.dragonet.protocol.packets.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,14 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.dragonet.protocol.ProtocolInfo.*;
-import org.dragonet.protocol.packets.*;
 
 
-public final class Protocol {
+public final class Protocol
+{
 
     public static final Map<Byte, Class<? extends PEPacket>> packets = new HashMap<>();
 
-    static {
+    static
+    {
         packets.put(DISCONNECT_PACKET, DisconnectPacket.class);
         packets.put(LOGIN_PACKET, LoginPacket.class);
         packets.put(PLAY_STATUS_PACKET, PlayStatusPacket.class);
@@ -60,9 +62,11 @@ public final class Protocol {
         packets.put(LEVEL_EVENT_PACKET, LevelEventPacket.class);
         packets.put(PLAY_SOUND_PACKET, PlaySoundPacket.class);
         packets.put(STOP_SOUND_PACKET, StopSoundPacket.class);
+        packets.put(ADD_BEHAVIOR_TREE_PACKET, AddBehaviorTreePacket.class);
         packets.put(ADD_ENTITY_PACKET, AddEntityPacket.class);
         packets.put(ADD_PLAYER_PACKET, AddPlayerPacket.class);
         packets.put(PLAYER_LIST_PACKET, PlayerListPacket.class);
+        packets.put(EVENT_PACKET, EventPacket.class);
         packets.put(SET_HEALTH_PACKET, SetHealthPacket.class);
         packets.put(RESPAWN_PACKET, RespawnPacket.class);
         packets.put(BLOCK_ENTITY_DATA_PACKET, BlockEntityDataPacket.class);
@@ -78,6 +82,7 @@ public final class Protocol {
         packets.put(SET_DIFFICULTY_PACKET, SetDifficultyPacket.class);
         packets.put(SET_TITLE_PACKET, SetTitlePacket.class);
         packets.put(SPAWN_EXPERIENCE_ORB_PACKET, SpawnExperienceOrb.class);
+        packets.put(CLIENTBOUND_MAP_ITEM_DATA_PACKET, ClientboundMapItemDataPacket.class);
         packets.put(EXPLODE_PACKET, ExplodePacket.class);
         packets.put(ENTITY_FALL_PACKET, EntityFallPacket.class);
 
@@ -101,21 +106,26 @@ public final class Protocol {
         packets.put(BATCH_PACKET, BatchPacket.class);
     }
 
-    public static PEPacket[] decode(byte[] data) throws Exception {
+    public static PEPacket[] decode(byte[] data) throws Exception
+    {
         if (data == null || data.length < 1)
             return null;
 
         byte[] inflated;
-        try {
+        try
+        {
             inflated = Zlib.inflate(Arrays.copyOfRange(data, 1, data.length));
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
             return null;
         }
 
         ArrayList<PEPacket> packets = new ArrayList<>(2);
         BinaryStream stream = new BinaryStream(inflated);
-        while (stream.offset < inflated.length) {
+        while (stream.offset < inflated.length)
+        {
             byte[] buffer = stream.get((int) stream.getUnsignedVarInt());
             PEPacket decoded = decodeSingle(buffer);
 
@@ -128,7 +138,8 @@ public final class Protocol {
         return packets.size() > 0 ? packets.toArray(new PEPacket[0]) : null;
     }
 
-    public static PEPacket decodeSingle(byte[] buffer) {
+    public static PEPacket decodeSingle(byte[] buffer)
+    {
 //		try {
 //			FileOutputStream fos = new FileOutputStream("raw_" + System.currentTimeMillis() + ".bin");
 //			fos.write(buffer);
@@ -136,18 +147,23 @@ public final class Protocol {
 //		} catch (Exception e) {
 //		}
         byte pid = (byte) new BinaryStream(buffer).getUnsignedVarInt();
-        if (packets.containsKey(pid)) {
+        if (packets.containsKey(pid))
+        {
             Class<? extends PEPacket> c = packets.get(pid);
-            try {
+            try
+            {
                 PEPacket pk = c.newInstance();
                 pk.setBuffer(buffer);
                 pk.decode();
                 return pk;
-            } catch (SecurityException | InstantiationException | IllegalAccessException
-                | IllegalArgumentException ex) {
+            }
+            catch (SecurityException | InstantiationException | IllegalAccessException
+                | IllegalArgumentException ex)
+            {
                 ex.printStackTrace();
             }
-        } else
+        }
+        else
             System.out.println("can not decode for pid 0x" + Integer.toHexString(pid));
         return null;
     }

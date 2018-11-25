@@ -10,12 +10,14 @@ import org.dragonet.common.data.itemsblocks.IItemDataTranslator;
 /**
  * @author vincent
  */
-public class StructureBlockDataTranslator extends IItemDataTranslator {
+public class StructureBlockDataTranslator extends IItemDataTranslator
+{
 
     //https://minecraft.gamepedia.com/Structure_Block
 
     @Override
-    public Integer translateToPE(Integer damage) {
+    public Integer translateToPE(Integer damage)
+    {
         // Here is the magic
         int variant = damage & 0x03;
         variant = translateVariant(variant);
@@ -23,12 +25,14 @@ public class StructureBlockDataTranslator extends IItemDataTranslator {
     }
 
     @Override
-    public Integer translateToPC(Integer damage) {
+    public Integer translateToPC(Integer damage)
+    {
         // Here too
         return damage;
     }
 
-    private int translateVariant(int input) {
+    private int translateVariant(int input)
+    {
         if (input == 0) // Save
             input = 2;
         else if (input == 1) // Load

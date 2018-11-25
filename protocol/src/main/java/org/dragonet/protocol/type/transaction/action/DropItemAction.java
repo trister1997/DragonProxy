@@ -5,9 +5,11 @@ import org.dragonet.common.data.inventory.Slot;
 /**
  * @author CreeperFace
  */
-public class DropItemAction extends InventoryAction {
+public class DropItemAction extends InventoryAction
+{
 
-    public DropItemAction(Slot source, Slot target) {
+    public DropItemAction(Slot source, Slot target)
+    {
         super(source, target);
     }
 }

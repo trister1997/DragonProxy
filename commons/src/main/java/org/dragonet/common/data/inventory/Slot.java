@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -17,7 +17,8 @@ import org.dragonet.common.data.nbt.tag.CompoundTag;
 /**
  * Created on 2017/10/21.
  */
-public class Slot {
+public class Slot
+{
 
     public static final Slot AIR = new Slot();
     public int id;
@@ -25,37 +26,44 @@ public class Slot {
     public int count;
     public CompoundTag tag;
 
-    public Slot() {
+    public Slot()
+    {
 
     }
 
-    public Slot(int id) {
+    public Slot(int id)
+    {
         this.id = id;
     }
 
-    public Slot(int id, int damage) {
+    public Slot(int id, int damage)
+    {
         this.id = id;
         this.damage = damage;
     }
 
-    public Slot(int id, int damage, int count) {
+    public Slot(int id, int damage, int count)
+    {
         this.id = id;
         this.damage = damage;
         this.count = count;
     }
 
-    public Slot(int id, int damage, int count, CompoundTag tag) {
+    public Slot(int id, int damage, int count, CompoundTag tag)
+    {
         this.id = id;
         this.damage = damage;
         this.count = count;
         this.tag = tag;
     }
 
-    public Slot clone() {
+    public Slot clone()
+    {
         return new Slot(id, damage, count, tag);
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuffer buffer = new StringBuffer();
         buffer.append("Slot{");
         buffer.append("id=" + id);

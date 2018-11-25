@@ -21,7 +21,20 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.whirvis.jraknet.protocol.Reliability;
 import com.whirvis.jraknet.session.RakNetClientSession;
+import org.dragonet.common.data.blocks.BlockEnum;
+import org.dragonet.common.data.entity.EntityType;
+import org.dragonet.common.data.inventory.ContainerId;
+import org.dragonet.common.data.inventory.Slot;
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
+import org.dragonet.common.utilities.Binary;
+import org.dragonet.common.utilities.LoginChainDecoder;
+import org.dragonet.common.utilities.Zlib;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.ProtocolInfo;
+import org.dragonet.protocol.packets.*;
+import org.dragonet.protocol.type.chunk.ChunkData;
+import org.dragonet.protocol.type.chunk.Section;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.Lang;
 import org.dragonet.proxy.events.defaults.packets.PackettoPlayerEvent;
@@ -29,68 +42,30 @@ import org.dragonet.proxy.events.defaults.player.PlayerAuthenticationEvent;
 import org.dragonet.proxy.events.defaults.player.PlayerKickEvent;
 import org.dragonet.proxy.events.defaults.player.PlayerLoginEvent;
 import org.dragonet.proxy.events.defaults.player.PlayerQuitEvent;
-import org.dragonet.proxy.utilities.CLSAuthenticationService;
-
-import org.dragonet.common.data.entity.EntityType;
+import org.dragonet.proxy.network.cache.ChunkCache;
 import org.dragonet.proxy.network.cache.EntityCache;
 import org.dragonet.proxy.network.cache.JukeboxCache;
 import org.dragonet.proxy.network.cache.WindowCache;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.protocol.packets.DisconnectPacket;
-import org.dragonet.protocol.packets.FullChunkDataPacket;
-import org.dragonet.protocol.packets.LoginPacket;
-import org.dragonet.protocol.packets.PlayStatusPacket;
-import org.dragonet.protocol.packets.ResourcePackStackPacket;
-import org.dragonet.protocol.packets.ResourcePacksInfoPacket;
-import org.dragonet.protocol.packets.SetSpawnPositionPacket;
-import org.dragonet.protocol.packets.StartGamePacket;
-import org.dragonet.protocol.packets.TextPacket;
-import org.dragonet.protocol.packets.UpdateBlockPacket;
-import org.dragonet.protocol.type.chunk.ChunkData;
-import org.dragonet.protocol.type.chunk.Section;
-import org.dragonet.common.utilities.Binary;
-import org.dragonet.common.maths.BlockPosition;
-import org.dragonet.common.utilities.LoginChainDecoder;
-import org.dragonet.common.utilities.Zlib;
+import org.dragonet.proxy.utilities.CLSAuthenticationService;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.Deflater;
-import org.dragonet.common.data.blocks.BlockEnum;
-import org.dragonet.common.data.inventory.ContainerId;
-import org.dragonet.common.data.inventory.Slot;
-import org.dragonet.protocol.packets.BatchPacket;
-import org.dragonet.protocol.packets.InventoryContentPacket;
-import org.dragonet.proxy.network.cache.ChunkCache;
 
 /**
  * Maintaince the connection between the proxy and Minecraft: Pocket Edition
  * clients.
  */
-public class UpstreamSession {
+public class UpstreamSession
+{
 
     private final DragonProxy proxy;
     private final String raknetID;
     private final RakNetClientSession raknetClient;
-    private boolean loggedIn = false;
-    private boolean spawned = false;
-    private boolean connecting = false;
-    private Queue<PEPacket> cachedPackets = new ConcurrentLinkedQueue();
     private final InetSocketAddress remoteAddress;
     private final PEPacketProcessor packetProcessor;
-    private LoginChainDecoder profile;
-    private String username;
-    private IDownstreamSession downstream;
-    private MinecraftProtocol protocol;
-
     /*
      * =============================================================================
      * =================== | Caches for Protocol Compatibility | ==================
@@ -102,9 +77,18 @@ public class UpstreamSession {
     private final WindowCache windowCache = new WindowCache(this);
     private final ChunkCache chunkCache = new ChunkCache(this);
     private final JukeboxCache jukeboxCache = new JukeboxCache();
+    private boolean loggedIn = false;
+    private boolean spawned = false;
+    private boolean connecting = false;
+    private Queue<PEPacket> cachedPackets = new ConcurrentLinkedQueue();
+    private LoginChainDecoder profile;
+    private String username;
+    private IDownstreamSession downstream;
+    private MinecraftProtocol protocol;
 
     public UpstreamSession(DragonProxy proxy, String raknetID, RakNetClientSession raknetClient,
-            InetSocketAddress remoteAddress) {
+                           InetSocketAddress remoteAddress)
+    {
         this.proxy = proxy;
         this.raknetID = raknetID;
         this.remoteAddress = remoteAddress;
@@ -112,91 +96,112 @@ public class UpstreamSession {
         this.packetProcessor = new PEPacketProcessor(this);
     }
 
-    public DragonProxy getProxy() {
+    public DragonProxy getProxy()
+    {
         return proxy;
     }
 
-    public String getRaknetID() {
+    public String getRaknetID()
+    {
         return raknetID;
     }
 
-    public RakNetClientSession getRaknetClient() {
+    public RakNetClientSession getRaknetClient()
+    {
         return raknetClient;
     }
 
-    public boolean isLoggedIn() {
+    public boolean isLoggedIn()
+    {
         return loggedIn;
     }
 
-    public boolean isSpawned() {
+    public boolean isSpawned()
+    {
         return spawned;
     }
 
-    public InetSocketAddress getRemoteAddress() {
+    public InetSocketAddress getRemoteAddress()
+    {
         return remoteAddress;
     }
 
-    public PEPacketProcessor getPacketProcessor() {
+    public PEPacketProcessor getPacketProcessor()
+    {
         return packetProcessor;
     }
 
-    public LoginChainDecoder getProfile() {
+    public LoginChainDecoder getProfile()
+    {
         return profile;
     }
 
-    public String getUsername() {
+    public String getUsername()
+    {
         return username;
     }
 
-    public IDownstreamSession getDownstream() {
+    public IDownstreamSession getDownstream()
+    {
         return downstream;
     }
 
-    public Map<String, Object> getDataCache() {
+    public Map<String, Object> getDataCache()
+    {
         return dataCache;
     }
 
-    public Map<UUID, PlayerListEntry> getPlayerInfoCache() {
+    public Map<UUID, PlayerListEntry> getPlayerInfoCache()
+    {
         return playerInfoCache;
     }
 
-    public EntityCache getEntityCache() {
+    public EntityCache getEntityCache()
+    {
         return entityCache;
     }
 
-    public WindowCache getWindowCache() {
+    public WindowCache getWindowCache()
+    {
         return windowCache;
     }
 
-    public ChunkCache getChunkCache() {
+    public ChunkCache getChunkCache()
+    {
         return chunkCache;
     }
 
-    public MinecraftProtocol getProtocol() {
+    public MinecraftProtocol getProtocol()
+    {
         return protocol;
     }
-    
-    public JukeboxCache getJukeboxCache() {
-    	return jukeboxCache;
+
+    public JukeboxCache getJukeboxCache()
+    {
+        return jukeboxCache;
     }
 
-    public void sendPacket(PEPacket packet) {
+    public void sendPacket(PEPacket packet)
+    {
         sendPacket(packet, false);
     }
 
     //if sending a packer before spawn, you should set high_priority to true !
-    public void sendPacket(PEPacket packet, boolean high_priority) {
+    public void sendPacket(PEPacket packet, boolean high_priority)
+    {
         if (packet == null)
             return;
 
-        if(!proxy.getConfig().disable_packet_events){
+        if (!proxy.getConfig().disable_packet_events)
+        {
             PackettoPlayerEvent packetEvent = new PackettoPlayerEvent(this, packet);
             proxy.getEventManager().callEvent(packetEvent);
             packet = packetEvent.getPacket();
         }
 
         //cache in case of not spawned and no high priority
-        if (!spawned && !high_priority) {
+        if (!spawned && !high_priority)
+        {
             putCachePacket(packet);
             return;
         }
@@ -204,14 +209,18 @@ public class UpstreamSession {
         while (!cachedPackets.isEmpty())
             sendPacket(cachedPackets.poll(), true); //TODO sendAllPackets
 
-        try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
+        try (Timing timing = Timings.getSendDataPacketTiming(packet))
+        {
 
             packet.encode();
 
             byte[] buffer;
-            try {
+            try
+            {
                 buffer = Zlib.deflate(Binary.appendBytes(Binary.writeUnsignedVarInt(packet.getBuffer().length), packet.getBuffer()), Deflater.BEST_COMPRESSION);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 timing.stopTiming();
                 e.printStackTrace();
                 return;
@@ -220,16 +229,19 @@ public class UpstreamSession {
         }
     }
 
-    public void sendAllPackets(PEPacket[] packets, boolean high_priority) {
+    public void sendAllPackets(PEPacket[] packets, boolean high_priority)
+    {
         if (packets.length < 5 || true) //<- this disable batched packets
             for (PEPacket packet : packets)
                 sendPacket(packet, high_priority);
-        else {
+        else
+        {
             BatchPacket batchPacket = new BatchPacket();
 //            System.out.println("BatchPacket :");
             for (PEPacket packet : packets)
 //                System.out.println(" - " + packet.getClass().getSimpleName());
-                if (high_priority) {
+                if (high_priority)
+                {
                     batchPacket.packets.add(packet);
                     break;
                 }
@@ -237,11 +249,13 @@ public class UpstreamSession {
         }
     }
 
-    public void connectToServer(String address, int port) {
+    public void connectToServer(String address, int port)
+    {
         if (address == null)
             return;
         connecting = true;
-        if (downstream != null && downstream.isConnected()) {
+        if (downstream != null && downstream.isConnected())
+        {
             spawned = false;
             downstream.disconnect();
             return;
@@ -251,7 +265,8 @@ public class UpstreamSession {
         downstream.connect(address, port);
     }
 
-    public void onConnected() {
+    public void onConnected()
+    {
         connecting = false;
     }
 
@@ -260,11 +275,13 @@ public class UpstreamSession {
      *
      * @param reason
      */
-    public void disconnect(String reason) {
+    public void disconnect(String reason)
+    {
         PlayerKickEvent kickEvent = new PlayerKickEvent(this);
         proxy.getEventManager().callEvent(kickEvent);
-        if (!connecting) {
-            if(kickEvent.isCancelled​())return; //not cancellable for pre pre login phase
+        if (!connecting)
+        {
+            if (kickEvent.isCancelled​()) return; //not cancellable for pre pre login phase
             sendPacket(new DisconnectPacket(false, reason), true);
             raknetClient.update(); //Force the DisconnectPacket to be sent before we close the connection
         }
@@ -275,39 +292,53 @@ public class UpstreamSession {
      *
      * @param reason The reason of disconnection.
      */
-    public void onDisconnect(String reason) {
+    public void onDisconnect(String reason)
+    {
         PlayerQuitEvent playerQuit = new PlayerQuitEvent(this);
         proxy.getEventManager().callEvent(playerQuit);
 
         proxy.getLogger().info(proxy.getLang().get(Lang.CLIENT_DISCONNECTED,
-                proxy.getAuthMode().equals("cls") ? "unknown" : username, remoteAddress, reason));
+            proxy.getAuthMode().equals("cls") ? "unknown" : username, remoteAddress, reason));
         if (downstream != null)
             downstream.disconnect();
         proxy.getSessionRegister().removeSession(this);
         getChunkCache().purge();
     }
 
-    public void authenticate(String email, String password, Proxy authProxy) {
-        proxy.getGeneralThreadPool().execute(() -> {
-            try {
+    public void authenticate(String email, String password, Proxy authProxy)
+    {
+        proxy.getGeneralThreadPool().execute(() ->
+        {
+            try
+            {
                 if (authProxy == null)
+                {
                     protocol = new MinecraftProtocol(email, password, Proxy.NO_PROXY);
+                }
                 else
+                {
                     protocol = new MinecraftProtocol(email, password, authProxy);
-            } catch (RequestException ex) {
+                }
+            }
+            catch (RequestException ex)
+            {
                 ex.printStackTrace();
-                if (ex.getMessage().toLowerCase().contains("invalid")) {
+                if (ex.getMessage().toLowerCase().contains("invalid"))
+                {
                     sendChat(proxy.getLang().get(Lang.MESSAGE_ONLINE_LOGIN_FAILD));
                     disconnect(proxy.getLang().get(Lang.MESSAGE_ONLINE_LOGIN_FAILD));
                     return;
-                } else {
+                }
+                else
+                {
                     sendChat(proxy.getLang().get(Lang.MESSAGE_ONLINE_ERROR));
                     disconnect(proxy.getLang().get(Lang.MESSAGE_ONLINE_ERROR));
                     return;
                 }
             }
 
-            if (!username.equals(protocol.getProfile().getName())) {
+            if (!username.equals(protocol.getProfile().getName()))
+            {
                 username = protocol.getProfile().getName();
                 sendChat(proxy.getLang().get(Lang.MESSAGE_ONLINE_USERNAME, username));
             }
@@ -319,8 +350,10 @@ public class UpstreamSession {
         });
     }
 
-    public void onLogin(LoginPacket packet) {
-        if (username != null) {
+    public void onLogin(LoginPacket packet)
+    {
+        if (username != null)
+        {
             disconnect("Already logged in, this must be an error! ");
             return;
         }
@@ -328,9 +361,10 @@ public class UpstreamSession {
         getDataCache().put(CacheKey.PACKET_LOGIN_PACKET, packet);
 
         PlayStatusPacket status = new PlayStatusPacket();
-        proxy.getLogger().info("Player " + packet.decoded.username + " login with protocol " + packet.protocol  + "(actual " + ProtocolInfo.CURRENT_PROTOCOL + ")");
-        if (packet.protocol < ProtocolInfo.CURRENT_PROTOCOL) {
-            proxy.getLogger().severe("Player " + packet.decoded.username + " login with protocol " + "Unsupported protocol " + packet.protocol  + " < " + ProtocolInfo.CURRENT_PROTOCOL);
+        proxy.getLogger().info("Player " + packet.decoded.username + " login with protocol " + packet.protocol + "(actual " + ProtocolInfo.CURRENT_PROTOCOL + ")");
+        if (packet.protocol < ProtocolInfo.CURRENT_PROTOCOL)
+        {
+            proxy.getLogger().severe("Player " + packet.decoded.username + " login with protocol " + "Unsupported protocol " + packet.protocol + " < " + ProtocolInfo.CURRENT_PROTOCOL);
             status.status = PlayStatusPacket.LOGIN_FAILED_CLIENT;
             sendPacket(status, true);
             disconnect(proxy.getLang().get(Lang.MESSAGE_UNSUPPORTED_CLIENT));
@@ -341,7 +375,8 @@ public class UpstreamSession {
         profile = packet.decoded;
 
         // Verify the integrity of the LoginPacket
-        if (proxy.getConfig().authenticate_players && !packet.decoded.isLoginVerified()) {
+        if (proxy.getConfig().authenticate_players && !packet.decoded.isLoginVerified())
+        {
             status.status = PlayStatusPacket.LOGIN_FAILED_INVALID_TENANT;
             sendPacket(status, true);
             disconnect(proxy.getLang().get(Lang.LOGIN_VERIFY_FAILED));
@@ -362,16 +397,18 @@ public class UpstreamSession {
         // now wait for response
     }
 
-    public void postLogin() {
+    public void postLogin()
+    {
         sendPacket(new ResourcePackStackPacket(), true);
 
         loggedIn = true;
         proxy.getLogger().info(proxy.getLang().get(Lang.MESSAGE_CLIENT_CONNECTED, username, remoteAddress));
         PlayerAuthenticationEvent authEvent = new PlayerAuthenticationEvent(this);
         proxy.getEventManager().callEvent(authEvent);
-        if(authEvent.isCancelled​())return;
+        if (authEvent.isCancelled​()) return;
 
-        if (proxy.getAuthMode().equals("online")) {
+        if (proxy.getAuthMode().equals("online"))
+        {
             proxy.getLogger().debug("Login online mode, sending placeholder datas");
             StartGamePacket pkStartGame = new StartGamePacket();
             pkStartGame.eid = getEntityCache().getClientEntity().proxyEid; // well we use 1 now
@@ -395,7 +432,8 @@ public class UpstreamSession {
 
             ChunkData data = new ChunkData();
             data.sections = new Section[16];
-            for (int cy = 0; cy < 16; cy++) {
+            for (int cy = 0; cy < 16; cy++)
+            {
                 data.sections[cy] = new Section();
                 if (cy < 6)
                     Arrays.fill(data.sections[cy].blockIds, (byte) 1);
@@ -413,28 +451,35 @@ public class UpstreamSession {
             sendPacket(pkStat, true);
 
             sendChat(proxy.getLang().get(Lang.MESSAGE_LOGIN_PROMPT));
-        } else if (proxy.getAuthMode().equals("cls")) {
+        }
+        else if (proxy.getAuthMode().equals("cls"))
+        {
             // CLS LOGIN!
-            if (!CLSAuthenticationService.getInstance().authenticate(this)) {
-                if (getDataCache().containsKey("cls_link_server") && getDataCache().containsKey("cls_link_pin")) {
+            if (!CLSAuthenticationService.getInstance().authenticate(this))
+            {
+                if (getDataCache().containsKey("cls_link_server") && getDataCache().containsKey("cls_link_pin"))
+                {
                     disconnect("You must link your Mojang account, please visit :\n"
-                            + (String) getDataCache().get("cls_link_server") + "\n"
-                            + "Your pin code is: " + (String) getDataCache().get("cls_link_pin"));
+                        + (String) getDataCache().get("cls_link_server") + "\n"
+                        + "Your pin code is: " + (String) getDataCache().get("cls_link_pin"));
                     return;
                 }
                 disconnect(proxy.getLang().get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE)));
                 proxy.getLogger().severe(proxy.getLang()
-                        .get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE))
-                        .replace("§c", "").replace("§0", ""));
+                    .get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_UNREACHABLE))
+                    .replace("§c", "").replace("§0", ""));
                 return;
             }
             AuthenticationService authSvc = new AuthenticationService((String) dataCache.get("mojang_clientToken"));
             authSvc.setUsername((String) dataCache.get("mojang_displayName"));
             authSvc.setAccessToken((String) dataCache.get("mojang_accessToken"));
-            try {
+            try
+            {
                 authSvc.login();
                 getDataCache().put("mojang_accessToken", authSvc.getAccessToken());
-            } catch (RequestException ex) {
+            }
+            catch (RequestException ex)
+            {
                 ex.printStackTrace();
                 disconnect(proxy.getLang().get(Lang.MESSAGE_SERVER_ERROR, proxy.getLang().get(Lang.ERROR_CLS_ERROR)));
                 return;
@@ -443,27 +488,33 @@ public class UpstreamSession {
 
             CLSAuthenticationService.getInstance().refresh(this, authSvc.getAccessToken());
 
-            protocol = new MinecraftProtocol(authSvc.getSelectedProfile(), authSvc.getClientToken(), authSvc.getAccessToken());
+            protocol = new MinecraftProtocol(authSvc.getClientToken());
 
             proxy.getLogger().debug("Initially joining [" + proxy.getConfig().remote_server_addr + "]... ");
             connectToServer(proxy.getConfig().remote_server_addr, proxy.getConfig().remote_server_port);
-        } else {
+        }
+        else
+        {
             protocol = new MinecraftProtocol(username);
             proxy.getLogger().debug("Initially joining [" + proxy.getConfig().remote_server_addr + "]... ");
             connectToServer(proxy.getConfig().remote_server_addr, proxy.getConfig().remote_server_port);
         }
     }
 
-    public void setSpawned() {
-        if (!spawned) {
+    public void setSpawned()
+    {
+        if (!spawned)
+        {
             spawned = true;
             PlayStatusPacket play = new PlayStatusPacket(PlayStatusPacket.PLAYER_SPAWN);
             sendPacket(play, true);
         }
     }
 
-    public void sendChat(String chat) {
-        if (chat.contains("\n")) {
+    public void sendChat(String chat)
+    {
+        if (chat.contains("\n"))
+        {
             String[] lines = chat.split("\n");
             for (String line : lines)
                 sendChat(line);
@@ -475,7 +526,8 @@ public class UpstreamSession {
         sendPacket(text, true);
     }
 
-    public void sendFakeBlock(int x, int y, int z, int id, int meta) {
+    public void sendFakeBlock(int x, int y, int z, int id, int meta)
+    {
         UpdateBlockPacket pkBlock = new UpdateBlockPacket();
         pkBlock.id = id;
         pkBlock.data = meta;
@@ -484,7 +536,8 @@ public class UpstreamSession {
         sendPacket(pkBlock);
     }
 
-    public void sendCreativeInventory() {
+    public void sendCreativeInventory()
+    {
         // main inventory
 //        ContainerId.CREATIVE.getId();
 //        InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
@@ -513,14 +566,17 @@ public class UpstreamSession {
         sendPacket(inventoryContentPacket3);
     }
 
-    public void handlePacketBinary(byte[] packet) {
+    public void handlePacketBinary(byte[] packet)
+    {
         packetProcessor.putPacket(packet);
     }
 
-    public void putCachePacket(PEPacket packet) {
+    public void putCachePacket(PEPacket packet)
+    {
         if (packet == null)
             return;
-        if (spawned) {
+        if (spawned)
+        {
             //            System.out.println("Not caching since already spawned! ");
             sendPacket(packet);
             return;
@@ -528,7 +584,8 @@ public class UpstreamSession {
         cachedPackets.offer(packet);
     }
 
-    public void onTick() {
+    public void onTick()
+    {
         entityCache.onTick();
         chunkCache.onTick();
         if (packetProcessor != null)

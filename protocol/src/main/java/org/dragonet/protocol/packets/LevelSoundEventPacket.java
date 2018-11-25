@@ -6,7 +6,8 @@ import org.dragonet.protocol.ProtocolInfo;
 
 import java.util.Arrays;
 
-public class LevelSoundEventPacket extends PEPacket {
+public class LevelSoundEventPacket extends PEPacket
+{
 
     public Sound sound;
     public Vector3F position;
@@ -16,12 +17,14 @@ public class LevelSoundEventPacket extends PEPacket {
     public boolean isGlobal;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.LEVEL_SOUND_EVENT_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.sound = Sound.fromID(getByte());
         this.position = getVector3F();
         this.extraData = getVarInt();
@@ -31,7 +34,8 @@ public class LevelSoundEventPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putByte((byte) this.sound.soundID);
         putVector3F(this.position);
         putVarInt(this.extraData);
@@ -40,7 +44,8 @@ public class LevelSoundEventPacket extends PEPacket {
         putBoolean(this.isGlobal);
     }
 
-    public enum Sound {
+    public enum Sound
+    {
 
         ITEM_USE_ON,
         HIT,
@@ -222,15 +227,18 @@ public class LevelSoundEventPacket extends PEPacket {
 
         public final int soundID;
 
-        Sound() {
+        Sound()
+        {
             this.soundID = this.ordinal();
         }
 
-        Sound(int id) {
+        Sound(int id)
+        {
             this.soundID = id;
         }
 
-        public static Sound fromID(int soundID) {
+        public static Sound fromID(int soundID)
+        {
             return Arrays.stream(values()).filter(sound -> sound.soundID == soundID).findFirst().orElse(null);
         }
 

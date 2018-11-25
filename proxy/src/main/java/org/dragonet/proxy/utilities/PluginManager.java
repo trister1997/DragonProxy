@@ -1,18 +1,21 @@
 package org.dragonet.proxy.utilities;
 
-import java.nio.file.Path;
-
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginDescriptorFinder;
 
-public class PluginManager extends DefaultPluginManager{
+import java.nio.file.Path;
 
-    public PluginManager(Path pluginFolder){
+public class PluginManager extends DefaultPluginManager
+{
+
+    public PluginManager(Path pluginFolder)
+    {
         super(pluginFolder);
     }
 
     @Override
-    protected PluginDescriptorFinder createPluginDescriptorFinder() {
+    protected PluginDescriptorFinder createPluginDescriptorFinder()
+    {
         return new YmlPluginDescriptorFinder();
     }
 

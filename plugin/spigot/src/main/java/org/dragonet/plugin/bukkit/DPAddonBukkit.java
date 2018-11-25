@@ -21,28 +21,31 @@ import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.plugin.bukkit.commands.DragonProxyFormCommand;
 import org.dragonet.plugin.bukkit.compat.luckperms.LuckPermsCompat;
 import org.dragonet.plugin.bukkit.events.ModalFormResponseEvent;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class DPAddonBukkit extends JavaPlugin implements Listener {
+public class DPAddonBukkit extends JavaPlugin implements Listener
+{
 
     private static DPAddonBukkit instance;
+    private final Set<UUID> bedrockPlayers = new HashSet<>();
+    private DPPluginMessageListener pluginMessageListener;
 
-    public static DPAddonBukkit getInstance() {
+    public static DPAddonBukkit getInstance()
+    {
         return instance;
     }
 
-    private DPPluginMessageListener pluginMessageListener;
-
-    private final Set<UUID> bedrockPlayers = new HashSet<>();
-    
-    private boolean isPluginLoaded(String pluginName) {
-      return getServer().getPluginManager().getPlugin(pluginName) != null;
-  }
+    private boolean isPluginLoaded(String pluginName)
+    {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
-    public void onEnable() {
+    public void onEnable()
+    {
         instance = this;
 
         getLogger().info("Registering event listener... ");
@@ -52,13 +55,15 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
         getServer().getMessenger().registerIncomingPluginChannel(this, "DragonProxy", pluginMessageListener);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "DragonProxy");
         this.getCommand("form").setExecutor(new DragonProxyFormCommand(this));
-        
-        if (isPluginLoaded("LuckPerms")) {
+
+        if (isPluginLoaded("LuckPerms"))
+        {
             LuckPermsCompat.addContextCalculator(bedrockPlayers);
         }
     }
 
-    public void detectedBedrockPlayer(Player player) {
+    public void detectedBedrockPlayer(Player player)
+    {
         getLogger().info("Detected bedrock player: " + player.getName() + " " + player.getUniqueId().toString());
         bedrockPlayers.add(player.getUniqueId());
 
@@ -72,20 +77,25 @@ public class DPAddonBukkit extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeft(PlayerQuitEvent event) {
-        if(bedrockPlayers.contains(event.getPlayer().getUniqueId())) {
-            if (bedrockPlayers.remove(event.getPlayer().getUniqueId())) {
+    public void onPlayerLeft(PlayerQuitEvent event)
+    {
+        if (bedrockPlayers.contains(event.getPlayer().getUniqueId()))
+        {
+            if (bedrockPlayers.remove(event.getPlayer().getUniqueId()))
+            {
                 getLogger().info("Disconnected Bedrock player " + event.getPlayer().getUniqueId().toString());
             }
         }
     }
 
     @EventHandler
-    public void onModalFormResponse(ModalFormResponseEvent event) {
+    public void onModalFormResponse(ModalFormResponseEvent event)
+    {
         getLogger().info("Player " + event.getBedrockPlayer().getPlayer().getName() + " validate form " + event.getValues());
     }
 
-    public boolean isBedrockPlayer(UUID uuid) {
+    public boolean isBedrockPlayer(UUID uuid)
+    {
         return bedrockPlayers.contains(uuid);
     }
 }

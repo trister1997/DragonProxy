@@ -1,15 +1,13 @@
 package org.dragonet.common.data.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created on 2017/10/21.
  */
-public class PEEntityAttribute {
+public class PEEntityAttribute
+{
 
     public static final int ABSORPTION = 0;
     public static final int SATURATION = 1;
@@ -27,7 +25,8 @@ public class PEEntityAttribute {
     private static final HashMap<Integer, PEEntityAttribute> attributes = new HashMap<>();
     private static final HashMap<String, PEEntityAttribute> nameMap = new HashMap<>();
 
-    static {
+    static
+    {
         addAttribute(ABSORPTION, "minecraft:absorption", 0.00f, Float.MAX_VALUE, 0.00f);
         addAttribute(SATURATION, "minecraft:player.saturation", 0.00f, 20.00f, 20.00f);
         addAttribute(EXHAUSTION, "minecraft:player.exhaustion", 0.00f, 5.00f, 0.00f);
@@ -48,32 +47,13 @@ public class PEEntityAttribute {
     public float defaultValue;
     public float currentValue;
 
-    public PEEntityAttribute() {
+    public PEEntityAttribute()
+    {
 
     }
 
-    // public
-    public static final void addAttribute(int id, String name, float min, float max, float defaultValue) {
-        PEEntityAttribute attr = new PEEntityAttribute(id, name, min, max, defaultValue);
-        attributes.put(id, attr);
-        nameMap.put(name, attr);
-    }
-
-    public static final PEEntityAttribute findAttribute(int id) {
-        if (!attributes.containsKey(id)) {
-            return null;
-        }
-        return attributes.get(id).clone();
-    }
-
-    public static final PEEntityAttribute findAttribute(String name) {
-        if (!nameMap.containsKey(name)) {
-            return null;
-        }
-        return nameMap.get(name).clone();
-    }
-
-    public PEEntityAttribute(int id, String name, float min, float max, float defaultValue) {
+    public PEEntityAttribute(int id, String name, float min, float max, float defaultValue)
+    {
         this.id = id;
         this.name = name;
         this.min = min;
@@ -83,7 +63,8 @@ public class PEEntityAttribute {
         this.currentValue = defaultValue;
     }
 
-    public PEEntityAttribute(int id, String name, float min, float max, float defaultValue, float currentValue) {
+    public PEEntityAttribute(int id, String name, float min, float max, float defaultValue, float currentValue)
+    {
         this.id = id;
         this.name = name;
         this.min = min;
@@ -92,16 +73,45 @@ public class PEEntityAttribute {
         this.currentValue = currentValue;
     }
 
-    public PEEntityAttribute setValue(float currentValue) {
+    // public
+    public static final void addAttribute(int id, String name, float min, float max, float defaultValue)
+    {
+        PEEntityAttribute attr = new PEEntityAttribute(id, name, min, max, defaultValue);
+        attributes.put(id, attr);
+        nameMap.put(name, attr);
+    }
+
+    public static final PEEntityAttribute findAttribute(int id)
+    {
+        if (!attributes.containsKey(id))
+        {
+            return null;
+        }
+        return attributes.get(id).clone();
+    }
+
+    public static final PEEntityAttribute findAttribute(String name)
+    {
+        if (!nameMap.containsKey(name))
+        {
+            return null;
+        }
+        return nameMap.get(name).clone();
+    }
+
+    public static ArrayList<PEEntityAttribute> getDefault()
+    {
+        return new ArrayList(attributes.values());
+    }
+
+    public PEEntityAttribute setValue(float currentValue)
+    {
         this.currentValue = currentValue;
         return this;
     }
 
-    public static ArrayList<PEEntityAttribute> getDefault() {
-        return new ArrayList(attributes.values());
-    }
-
-    public PEEntityAttribute clone() {
+    public PEEntityAttribute clone()
+    {
         return new PEEntityAttribute(id, name, min, max, defaultValue, currentValue);
     }
 }

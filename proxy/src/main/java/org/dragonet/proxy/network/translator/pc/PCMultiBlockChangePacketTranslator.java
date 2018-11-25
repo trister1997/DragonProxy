@@ -15,32 +15,36 @@ package org.dragonet.proxy.network.translator.pc;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
-
+import org.dragonet.common.data.itemsblocks.ItemEntry;
+import org.dragonet.common.maths.BlockPosition;
+import org.dragonet.common.maths.ChunkPos;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.UpdateBlockPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
-import org.dragonet.common.data.itemsblocks.ItemEntry;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.UpdateBlockPacket;
-import org.dragonet.common.maths.BlockPosition;
-import org.dragonet.common.maths.ChunkPos;
 
-public class PCMultiBlockChangePacketTranslator implements IPCPacketTranslator<ServerMultiBlockChangePacket> {
+public class PCMultiBlockChangePacketTranslator implements IPCPacketTranslator<ServerMultiBlockChangePacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerMultiBlockChangePacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerMultiBlockChangePacket packet)
+    {
         UpdateBlockPacket[] packets = new UpdateBlockPacket[packet.getRecords().length];
         // int generalFlag = packet.getRecords().length > 64 ?
         // UpdateBlockPacket.FLAG_ALL_PRIORITY : UpdateBlockPacket.FLAG_NEIGHBORS;
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; i++)
+        {
             Position pos = packet.getRecords()[i].getPosition();
             BlockState block = packet.getRecords()[i].getBlock();
-            try {
+            try
+            {
                 ChunkPos chunk = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
                 session.getChunkCache().update(pos, block);
 
                 ItemEntry entry = session.getChunkCache().translateBlock(pos);
 
-                if (entry == null) {
+                if (entry == null)
+                {
                     entry = ItemBlockTranslator.translateToPC(block.getId(), block.getData());
                 }
                 packets[i] = new UpdateBlockPacket();
@@ -48,9 +52,11 @@ public class PCMultiBlockChangePacketTranslator implements IPCPacketTranslator<S
                 packets[i].id = entry.getId();
                 packets[i].flags = UpdateBlockPacket.FLAG_NEIGHBORS;
                 packets[i].data = entry.getPEDamage();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 session.getProxy().getLogger().debug("Error when updating block [" + pos.getX() + "," + pos.getY() + ","
-                        + pos.getZ() + "] " + block.toString());
+                    + pos.getZ() + "] " + block.toString());
                 session.getProxy().getLogger().debug(ex.getMessage());
             }
 

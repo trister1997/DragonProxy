@@ -6,13 +6,14 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network;
 
-public final class CacheKey {
+public final class CacheKey
+{
 
     // PEPackets
     public static final String PACKET_JOIN_GAME_PACKET = "achedJoinGamePacket";

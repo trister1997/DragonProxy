@@ -80,7 +80,8 @@
                     <dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
                     <verbose>true</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${basedir}/src/main/resources/buildNumber.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${basedir}/src/main/resources/buildNumber.properties
+                    </generateGitPropertiesFilename>
                     <format>properties</format>
                     <skipPoms>true</skipPoms>
                     <injectAllReactorProjects>false</injectAllReactorProjects>
@@ -131,7 +132,7 @@
             <artifactId>sentry</artifactId>
             <version>1.7.0</version>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>2.2.0</version>

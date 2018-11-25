@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -19,20 +19,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CachedWindow {
+public class CachedWindow
+{
 
     public final int windowId;
-    public boolean isOpen = false;
     /**
      * The type of this window on remote side, -1 for player inventory.
      */
     public final WindowType pcType;
     public final int size;
-    public String title = "Window";
     public final Map<Integer, Integer> properties = Collections.synchronizedMap(new HashMap<Integer, Integer>());
+    public boolean isOpen = false;
+    public String title = "Window";
     public ItemStack[] slots;
 
-    public CachedWindow(int windowId, WindowType pcType, int size) {
+    public CachedWindow(int windowId, WindowType pcType, int size)
+    {
         this.windowId = windowId;
         this.pcType = pcType;
         this.size = size;

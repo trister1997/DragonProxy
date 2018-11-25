@@ -6,7 +6,8 @@ import org.dragonet.common.maths.Vector3F;
 /**
  * @author CreeperFace
  */
-public class UseItemOnEntityData implements TransactionData {
+public class UseItemOnEntityData implements TransactionData
+{
 
     public long entityRuntimeId;
     public int actionType;

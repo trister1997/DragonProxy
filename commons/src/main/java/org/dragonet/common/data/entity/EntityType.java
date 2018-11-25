@@ -6,19 +6,20 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.common.data.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 
-public enum EntityType {
+import java.util.HashMap;
+import java.util.Map;
+
+public enum EntityType
+{
     NONE(0, 0),
     CHICKEN(10, 0),
     COW(11, 0),
@@ -41,7 +42,7 @@ public enum EntityType {
     POLAR_BEAR(28, 0),
     LLAMA(29, 0),
     PARROT(30, 0),
-    //UNKNOWN(31, 0),
+    DOLPHIN(31, 0),
     ZOMBIE(32, 0),
     GIANT_ZOMBIE(32, 0),
     CREEPER(33, 0),
@@ -69,7 +70,7 @@ public enum EntityType {
     ENDERMITE(55, 0),
     LEARN_TO_CODE_MASCOTE(56, 0),
     VINDICATOR(57, 0),
-    //UNKNOWN(58, 0),
+    PHANTOM(58, 0),
     //UNKNOWN(59, 0),
     //UNKNOWN(60, 0),
     ARMOR_STAND(61, 0),
@@ -84,7 +85,7 @@ public enum EntityType {
     ENDER_EYE(70, 0),
     ENDER_CRYSTAL(71, 0),
     FIREWORKS_ROCKET(72, 0),
-    //UNKNOWN(73, 0),
+    THROWN_TRIDENT(73, 0),
     //UNKNOWN(74, 0),
     //UNKNOWN(75, 0),
     SHULKER_BULLET(76, 0),
@@ -115,46 +116,65 @@ public enum EntityType {
     LLAMA_SPIT(102, 0),
     EVOCATION_FANG(103, 0),
     EVOCATION_ILLAGER(104, 0),
-    VEX(105, 0);
+    VEX(105, 0),
+    ICE_BOMB(106, 0),
+    BALLOON(107, 0),
+    PUFFERFISH(108, 0),
+    SALMON(109, 0),
+    DROWNED(110, 0),
+    TROPICAL_FISH(111, 0),
+    COD(112, 0);
 
     private static final Map<Integer, EntityType> PC_TO_PE = new HashMap<>();
-    private final int peType;
-    private final float offset;
 
-    static {
-        for (EntityType peType : EntityType.values()) {
-            try {
+    static
+    {
+        for (EntityType peType : EntityType.values())
+        {
+            try
+            {
                 MobType pcType = MobType.valueOf(peType.name());
                 int pcTypeId = MagicValues.value(Integer.class, pcType);
                 PC_TO_PE.put(pcTypeId, peType);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
             }
         }
     }
 
-    EntityType(int peType, float offset) {
+    private final int peType;
+    private final float offset;
+
+    EntityType(int peType, float offset)
+    {
         this.peType = peType;
         this.offset = offset;
     }
 
-    public static EntityType convertToPE(MobType pcType) {
-        
+    public static EntityType convertToPE(MobType pcType)
+    {
+
         return convertToPE(MagicValues.value(Integer.class, pcType));
     }
 
-    public static EntityType convertToPE(int pcType) {
-        if (!PC_TO_PE.containsKey(pcType)) {
+    public static EntityType convertToPE(int pcType)
+    {
+        if (!PC_TO_PE.containsKey(pcType))
+        {
             return null;
         }
         return PC_TO_PE.get(pcType);
     }
 
-    public int getPeType() {
+    public int getPeType()
+    {
         return peType;
     }
 
     // Y offset for spawning (more flexible than utilities/Constants.java)
-    public float getOffset() {
+    public float getOffset()
+    {
         return offset;
     }
 }

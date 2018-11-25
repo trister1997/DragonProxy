@@ -1,33 +1,39 @@
 package org.dragonet.protocol.packets;
 
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.ProtocolInfo;
 import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.common.utilities.LoginChainDecoder;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.ProtocolInfo;
 
 /**
  * Created on 2017/10/21.
  */
-public class LoginPacket extends PEPacket {
+public class LoginPacket extends PEPacket
+{
 
     public int protocol;
     public LoginChainDecoder decoded;
 
-    public LoginPacket() {
+    public LoginPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.LOGIN_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         protocol = getInt();
 
-        if (protocol != ProtocolInfo.CURRENT_PROTOCOL) {
-            if (protocol > 0xffff) { // guess MCPE <= 1.1
+        if (protocol != ProtocolInfo.CURRENT_PROTOCOL)
+        {
+            if (protocol > 0xffff)
+            { // guess MCPE <= 1.1
                 offset -= 6;
                 protocol = getInt();
             }
@@ -43,7 +49,8 @@ public class LoginPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         // TODO
     }
 }

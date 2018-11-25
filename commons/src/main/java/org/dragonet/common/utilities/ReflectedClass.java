@@ -5,16 +5,11 @@
  */
 package org.dragonet.common.utilities;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author vincent
  */
 public class ReflectedClass
@@ -45,7 +40,12 @@ public class ReflectedClass
 
     public <K> K cast(Object theObject)
     {
-        return (K)this.theClass.cast(theObject);
+        return (K) this.theClass.cast(theObject);
+    }
+
+    public Object getContext()
+    {
+        return this.theContext;
     }
 
     public ReflectedClass setContext(Object theContext)
@@ -54,34 +54,35 @@ public class ReflectedClass
         return this;
     }
 
-    public Object getContext()
-    {
-        return this.theContext;
-    }
-
     public void newInstance()
     {
-        try {
+        try
+        {
             this.theContext = this.theClass.newInstance();
-        } catch (
-                SecurityException |
+        }
+        catch (
+            SecurityException |
                 InstantiationException |
                 IllegalAccessException |
-                IllegalArgumentException ex) {
+                IllegalArgumentException ex)
+        {
             Logger.getLogger(ReflectedClass.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void newInstance(Class<?>[] theClasses, Object... theObject)
     {
-        try {
+        try
+        {
             this.theContext = this.theClass.getConstructor(theClasses).newInstance(theObject);
-        } catch (NoSuchMethodException |
-                SecurityException |
-                InstantiationException |
-                IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException ex) {
+        }
+        catch (NoSuchMethodException |
+            SecurityException |
+            InstantiationException |
+            IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException ex)
+        {
             Logger.getLogger(ReflectedClass.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -102,7 +103,7 @@ public class ReflectedClass
 
     public <K> K getField(String theFieldName)
     {
-        return (K)getField(theFieldName, theContext, theClass);
+        return (K) getField(theFieldName, theContext, theClass);
     }
 
     public void setField(String theFieldName, Object theValue)
@@ -126,7 +127,7 @@ public class ReflectedClass
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(theField, theField.getModifiers() & ~Modifier.FINAL);
-            return (K)theField.get(theContext);
+            return (K) theField.get(theContext);
         }
         catch (NoSuchFieldException Ex)
         {
@@ -176,7 +177,8 @@ public class ReflectedClass
 
     public boolean methodExist(String theName, Object... theParams)
     {
-        try {
+        try
+        {
             Class[] theClassTab = new Class[theParams.length];
             for (int i = 0; i < theParams.length; i++)
                 theClassTab[i] = theParams[i].getClass();
@@ -184,9 +186,11 @@ public class ReflectedClass
             Method theMethod = this.theClass.getDeclaredMethod(theName, theClassTab);
 
             return theMethod != null;
-        } catch (NoSuchMethodException |
-                SecurityException |
-                IllegalArgumentException ex) {
+        }
+        catch (NoSuchMethodException |
+            SecurityException |
+            IllegalArgumentException ex)
+        {
             Logger.getLogger(ReflectedClass.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -194,7 +198,8 @@ public class ReflectedClass
 
     public <K> K invokeMethod(String theName, Object... theParams)
     {
-        try {
+        try
+        {
             Class[] theClassTab = new Class[theParams.length];
             for (int i = 0; i < theParams.length; i++)
                 theClassTab[i] = theParams[i].getClass();
@@ -203,11 +208,13 @@ public class ReflectedClass
             theMethod.setAccessible(true);
 
             return (K) theMethod.invoke(this.theContext, theParams);
-        } catch (NoSuchMethodException |
-                SecurityException |
-                IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException ex) {
+        }
+        catch (NoSuchMethodException |
+            SecurityException |
+            IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException ex)
+        {
             Logger.getLogger(ReflectedClass.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -218,7 +225,8 @@ public class ReflectedClass
         listFields(this.theClass);
     }
 
-    private void listFields(Object theObject){
+    private void listFields(Object theObject)
+    {
         try
         {
             StringBuffer stringBuffer = new StringBuffer();
@@ -227,16 +235,16 @@ public class ReflectedClass
             {
                 theField.setAccessible(true);
                 stringBuffer.append("- ").append(theField.getName())
-                        .append(" (").append(theField.getType()).append(") = ")
-                        .append(theField.get(theObject)).append("\n");
+                    .append(" (").append(theField.getType()).append(") = ")
+                    .append(theField.get(theObject)).append("\n");
             }
             stringBuffer.append("Declared Fields : \n");
             for (Field theField : theObject.getClass().getDeclaredFields())
             {
                 theField.setAccessible(true);
                 stringBuffer.append("- ").append(theField.getName())
-                        .append(" (").append(theField.getType()).append(") = ")
-                        .append(theField.get(theObject)).append("\n");
+                    .append(" (").append(theField.getType()).append(") = ")
+                    .append(theField.get(theObject)).append("\n");
             }
             System.out.println(stringBuffer);
         }
@@ -251,7 +259,8 @@ public class ReflectedClass
         listMethods(theClass);
     }
 
-    private void listMethods(Class theClass){
+    private void listMethods(Class theClass)
+    {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("Methods : \n");
         for (Method theMethod : theClass.getMethods())

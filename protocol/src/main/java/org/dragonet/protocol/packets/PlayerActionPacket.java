@@ -1,13 +1,14 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
 /**
  * Created on 2017/10/22.
  */
-public class PlayerActionPacket extends PEPacket {
+public class PlayerActionPacket extends PEPacket
+{
 
     public static final int ACTION_START_BREAK = 0;
     public static final int ACTION_ABORT_BREAK = 1;
@@ -37,17 +38,20 @@ public class PlayerActionPacket extends PEPacket {
     public BlockPosition position;
     public int face;
 
-    public PlayerActionPacket() {
+    public PlayerActionPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAYER_ACTION_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putVarInt(action);
         putBlockPosition(position);
@@ -55,7 +59,8 @@ public class PlayerActionPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         action = getVarInt();
         position = getBlockPosition();

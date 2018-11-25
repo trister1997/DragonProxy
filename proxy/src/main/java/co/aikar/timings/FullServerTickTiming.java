@@ -26,13 +26,15 @@ package co.aikar.timings;
 import static co.aikar.timings.TimingIdentifier.DEFAULT_GROUP;
 import static co.aikar.timings.TimingsManager.*;
 
-public class FullServerTickTiming extends Timing {
+public class FullServerTickTiming extends Timing
+{
     private static final TimingIdentifier IDENTIFIER = new TimingIdentifier(DEFAULT_GROUP.name, "Full Server Tick", null);
     final TimingData minuteData;
     double avgFreeMemory = -1D;
     double avgUsedMemory = -1D;
 
-    FullServerTickTiming() {
+    FullServerTickTiming()
+    {
         super(IDENTIFIER);
         this.minuteData = new TimingData(this.id);
 
@@ -40,10 +42,14 @@ public class FullServerTickTiming extends Timing {
     }
 
     @Override
-    public Timing startTiming() {
-        if (TimingsManager.needsFullReset) {
+    public Timing startTiming()
+    {
+        if (TimingsManager.needsFullReset)
+        {
             TimingsManager.resetTimings();
-        } else if (TimingsManager.needsRecheckEnabled) {
+        }
+        else if (TimingsManager.needsRecheckEnabled)
+        {
             TimingsManager.recheckEnabled();
         }
         super.startTiming();
@@ -51,26 +57,35 @@ public class FullServerTickTiming extends Timing {
     }
 
     @Override
-    public void stopTiming() {
+    public void stopTiming()
+    {
         super.stopTiming();
-        if (!this.enabled) {
+        if (!this.enabled)
+        {
             return;
         }
 
-        if (TimingsHistory.timedTicks % 20 == 0) {
+        if (TimingsHistory.timedTicks % 20 == 0)
+        {
             final Runtime runtime = Runtime.getRuntime();
             double usedMemory = runtime.totalMemory() - runtime.freeMemory();
             double freeMemory = runtime.maxMemory() - usedMemory;
 
-            if (this.avgFreeMemory == -1) {
+            if (this.avgFreeMemory == -1)
+            {
                 this.avgFreeMemory = freeMemory;
-            } else {
+            }
+            else
+            {
                 this.avgFreeMemory = (this.avgFreeMemory * (59 / 60D)) + (freeMemory * (1 / 60D));
             }
 
-            if (this.avgUsedMemory == -1) {
+            if (this.avgUsedMemory == -1)
+            {
                 this.avgUsedMemory = usedMemory;
-            } else {
+            }
+            else
+            {
                 this.avgUsedMemory = (this.avgUsedMemory * (59 / 60D)) + (usedMemory * (1 / 60D));
             }
         }
@@ -90,19 +105,22 @@ public class FullServerTickTiming extends Timing {
         Timings.timingsTickTimer.tick(violated);
         tick(violated);
 
-        if (TimingsHistory.timedTicks % 1200 == 0) {
+        if (TimingsHistory.timedTicks % 1200 == 0)
+        {
             MINUTE_REPORTS.add(new TimingsHistory.MinuteReport());
             TimingsHistory.resetTicks(false);
             this.minuteData.reset();
         }
 
-        if (TimingsHistory.timedTicks % Timings.getHistoryInterval() == 0) {
+        if (TimingsHistory.timedTicks % Timings.getHistoryInterval() == 0)
+        {
             TimingsManager.HISTORY.add(new TimingsHistory());
             TimingsManager.resetTimings();
         }
     }
 
-    boolean isViolated() {
+    boolean isViolated()
+    {
         return this.record.curTickTotal > 50000000;
     }
 }

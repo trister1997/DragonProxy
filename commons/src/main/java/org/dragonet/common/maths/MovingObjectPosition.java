@@ -1,8 +1,7 @@
 package org.dragonet.common.maths;
 
-import org.dragonet.common.maths.Vector3;
-
-public class MovingObjectPosition {
+public class MovingObjectPosition
+{
     /**
      * 0 = block, 1 = entity
      */
@@ -20,7 +19,8 @@ public class MovingObjectPosition {
 
     public Vector3 hitVector;
 
-    public static MovingObjectPosition fromBlock(int x, int y, int z, int side, Vector3 hitVector) {
+    public static MovingObjectPosition fromBlock(int x, int y, int z, int side, Vector3 hitVector)
+    {
         MovingObjectPosition objectPosition = new MovingObjectPosition();
         objectPosition.typeOfHit = 0;
         objectPosition.blockX = x;

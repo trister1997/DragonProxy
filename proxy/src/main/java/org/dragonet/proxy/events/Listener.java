@@ -1,5 +1,6 @@
 package org.dragonet.proxy.events;
 
-public interface Listener {
+public interface Listener
+{
 
 }

@@ -6,35 +6,37 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
-
 import org.dragonet.common.data.blocks.GlobalBlockPalette;
 import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
-import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.LevelSoundEventPacket;
 import org.dragonet.protocol.packets.PlaySoundPacket;
+import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.network.UpstreamSession;
+import org.dragonet.proxy.network.translator.IPCPacketTranslator;
 
 
-public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerPlayBuiltinSoundPacket> {
+public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerPlayBuiltinSoundPacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerPlayBuiltinSoundPacket packet) {
-    	LevelSoundEventPacket pk = new LevelSoundEventPacket();
+    public PEPacket[] translate(UpstreamSession session, ServerPlayBuiltinSoundPacket packet)
+    {
+        LevelSoundEventPacket pk = new LevelSoundEventPacket();
 
         //System.out.println("BuiltIn Sound packet: " + packet.getSound().name());
 
         pk.position = new Vector3F((float) packet.getX(), (float) packet.getY(), (float) packet.getZ());
 
-        switch (packet.getSound()) {
+        switch (packet.getSound())
+        {
 
             case BLOCK_CHEST_OPEN:
                 pk.sound = LevelSoundEventPacket.Sound.CHEST_OPEN;
@@ -61,7 +63,7 @@ public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerP
                 pk.sound = LevelSoundEventPacket.Sound.BOW_HIT;
                 break;
             case ENTITY_GENERIC_EXTINGUISH_FIRE:
-            	pk.sound = LevelSoundEventPacket.Sound.FIZZ;
+                pk.sound = LevelSoundEventPacket.Sound.FIZZ;
                 break;
             case BLOCK_FIRE_EXTINGUISH:
                 pk.sound = LevelSoundEventPacket.Sound.EXTINGUISH_FIRE;
@@ -151,7 +153,7 @@ public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerP
                 pk.sound = LevelSoundEventPacket.Sound.REMEDY;
                 break;
             case ENTITY_SHEEP_SHEAR:
-            	pk.sound = LevelSoundEventPacket.Sound.SHEAR;
+                pk.sound = LevelSoundEventPacket.Sound.SHEAR;
                 break;
             case ENTITY_MOOSHROOM_SHEAR:
                 pk.sound = LevelSoundEventPacket.Sound.SHEAR;
@@ -347,12 +349,12 @@ public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerP
                 pk.sound = LevelSoundEventPacket.Sound.PISTON_IN;
                 break;
             case ENTITY_BOBBER_THROW:
-            	pk.sound = LevelSoundEventPacket.Sound.SPLASH;
-            	break;
+                pk.sound = LevelSoundEventPacket.Sound.SPLASH;
+                break;
             case ENTITY_EGG_THROW:
-            	pk.sound = LevelSoundEventPacket.Sound.THROW;
-            	break;
-        	// Throw need test or else translates
+                pk.sound = LevelSoundEventPacket.Sound.THROW;
+                break;
+            // Throw need test or else translates
             case ENTITY_ENDERPEARL_THROW:
                 pk.sound = LevelSoundEventPacket.Sound.THROW;
                 break;
@@ -385,18 +387,22 @@ public class PCSoundEventPacketTranslator implements IPCPacketTranslator<ServerP
         }
 
         //System.out.println("Converted sound packet " + pk.sound.name() + " (" + pk.sound.soundID + ") - " + pk.position + " - " + pk.extraData + " - " + pk.pitch);
-        if(pk.sound == null) {
-        	if(!DragonProxy.getInstance().getSoundTranslator().isIgnored(packet.getSound()) && DragonProxy.getInstance().getSoundTranslator().isTranslatable(packet.getSound())) {
-        		PlaySoundPacket npacket = new PlaySoundPacket();
-        		npacket.blockPosition = new BlockPosition((int) packet.getX(), (int) packet.getY(), (int) packet.getZ());
-        		npacket.name = DragonProxy.getInstance().getSoundTranslator().translate(packet.getSound());
-        		npacket.volume = packet.getVolume();
-        		npacket.pitch = packet.getPitch();
-        		return new PEPacket[]{npacket}; // USE PlaySoundPacket if sound id is not founded
-        	}
-        	return null;
-        } else {
-        	return new PEPacket[]{pk};
+        if (pk.sound == null)
+        {
+            if (!DragonProxy.getInstance().getSoundTranslator().isIgnored(packet.getSound()) && DragonProxy.getInstance().getSoundTranslator().isTranslatable(packet.getSound()))
+            {
+                PlaySoundPacket npacket = new PlaySoundPacket();
+                npacket.blockPosition = new BlockPosition((int) packet.getX(), (int) packet.getY(), (int) packet.getZ());
+                npacket.name = DragonProxy.getInstance().getSoundTranslator().translate(packet.getSound());
+                npacket.volume = packet.getVolume();
+                npacket.pitch = packet.getPitch();
+                return new PEPacket[]{npacket}; // USE PlaySoundPacket if sound id is not founded
+            }
+            return null;
+        }
+        else
+        {
+            return new PEPacket[]{pk};
         }
     }
 

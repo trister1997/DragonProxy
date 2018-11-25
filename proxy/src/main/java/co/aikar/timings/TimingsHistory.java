@@ -23,23 +23,22 @@
  */
 package co.aikar.timings;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import static co.aikar.timings.Timings.fullServerTickTimer;
-import static co.aikar.timings.TimingsManager.MINUTE_REPORTS;
+import org.dragonet.common.utilities.JsonUtil;
+import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.network.UpstreamSession;
 
 import java.lang.management.ManagementFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.common.utilities.JsonUtil;
 
-public class TimingsHistory {
+import static co.aikar.timings.Timings.fullServerTickTimer;
+import static co.aikar.timings.TimingsManager.MINUTE_REPORTS;
+
+public class TimingsHistory
+{
 
     public static long lastMinuteTime;
     public static long timedTicks;
@@ -62,14 +61,17 @@ public class TimingsHistory {
     private final TimingsHistoryEntry[] entries;
     private final JsonObject levels = new JsonObject();
 
-    TimingsHistory() {
+    TimingsHistory()
+    {
         this.endTime = System.currentTimeMillis() / 1000;
         this.startTime = TimingsManager.historyStart / 1000;
 
-        if (timedTicks % 1200 != 0 || MINUTE_REPORTS.isEmpty()) {
+        if (timedTicks % 1200 != 0 || MINUTE_REPORTS.isEmpty())
+        {
             this.minuteReports = MINUTE_REPORTS.toArray(new MinuteReport[MINUTE_REPORTS.size() + 1]);
             this.minuteReports[this.minuteReports.length - 1] = new MinuteReport();
-        } else
+        }
+        else
             this.minuteReports = MINUTE_REPORTS.toArray(new MinuteReport[MINUTE_REPORTS.size()]);
 
         long ticks = 0;
@@ -87,7 +89,8 @@ public class TimingsHistory {
         levels.add("world 1", new JsonArray());
     }
 
-    static void resetTicks(boolean fullReset) {
+    static void resetTicks(boolean fullReset)
+    {
         if (fullReset)
             timedTicks = 0;
         lastMinuteTime = System.nanoTime();
@@ -97,14 +100,16 @@ public class TimingsHistory {
         activatedEntityTicks = 0;
     }
 
-    JsonObject export() {
+    JsonObject export()
+    {
         JsonObject json = new JsonObject();
         json.addProperty("s", this.startTime);
         json.addProperty("e", this.endTime);
         json.addProperty("tk", this.totalTicks);
         json.addProperty("tm", this.totalTime);
         json.add("w", this.levels);
-        json.add("h", JsonUtil.mapToArray(this.entries, (entry) -> {
+        json.add("h", JsonUtil.mapToArray(this.entries, (entry) ->
+        {
             if (entry.data.count == 0)
                 return null;
             return entry.export();
@@ -113,7 +118,8 @@ public class TimingsHistory {
         return json;
     }
 
-    static class MinuteReport {
+    static class MinuteReport
+    {
 
         final long time = System.currentTimeMillis() / 1000;
 
@@ -125,23 +131,25 @@ public class TimingsHistory {
         final double freeMemory = Timings.fullServerTickTimer.avgFreeMemory;
         final double loadAvg = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 
-        JsonArray export() {
+        JsonArray export()
+        {
             return JsonUtil.toArray(this.time,
-                    Math.round(this.tps * 100D) / 100D,
-                    Math.round(this.pingRecord.avg * 100D) / 100D,
-                    this.fst.export(),
-                    JsonUtil.toArray(this.ticksRecord.timed,
-                            this.ticksRecord.player,
-                            this.ticksRecord.entity,
-                            this.ticksRecord.activatedEntity,
-                            this.ticksRecord.tileEntity),
-                    this.usedMemory,
-                    this.freeMemory,
-                    this.loadAvg);
+                Math.round(this.tps * 100D) / 100D,
+                Math.round(this.pingRecord.avg * 100D) / 100D,
+                this.fst.export(),
+                JsonUtil.toArray(this.ticksRecord.timed,
+                    this.ticksRecord.player,
+                    this.ticksRecord.entity,
+                    this.ticksRecord.activatedEntity,
+                    this.ticksRecord.tileEntity),
+                this.usedMemory,
+                this.freeMemory,
+                this.loadAvg);
         }
     }
 
-    private static class TicksRecord {
+    private static class TicksRecord
+    {
 
         final long timed;
         final long player;
@@ -149,7 +157,8 @@ public class TimingsHistory {
         final long activatedEntity;
         final long tileEntity;
 
-        TicksRecord() {
+        TicksRecord()
+        {
             this.timed = timedTicks - (TimingsManager.MINUTE_REPORTS.size() * 1200);
             this.player = playerTicks;
             this.entity = entityTicks;
@@ -158,11 +167,13 @@ public class TimingsHistory {
         }
     }
 
-    private static class PingRecord {
+    private static class PingRecord
+    {
 
         final double avg;
 
-        PingRecord() {
+        PingRecord()
+        {
             final Collection<UpstreamSession> onlinePlayers = DragonProxy.getInstance().getSessionRegister().getAll().values();
             int totalPing = 0;
 //            for (UpstreamSession player : onlinePlayers) {

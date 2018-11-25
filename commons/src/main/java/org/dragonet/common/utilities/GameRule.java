@@ -3,27 +3,27 @@ package org.dragonet.common.utilities;
 /**
  * Created on 2017/10/21.
  */
-public class GameRule {
+public class GameRule
+{
 
     public String name;
     public GameRuleType type;
     public Object value;
 
-    public enum GameRuleType {
-        UNKNOWN, BOOLEAN, VARUINT, FLOAT
-    }
-
-    public GameRule(String name, GameRuleType type, Object value) {
+    public GameRule(String name, GameRuleType type, Object value)
+    {
         this.name = name;
         this.type = type;
         this.value = value;
     }
 
-    public static GameRule read(BinaryStream source) {
+    public static GameRule read(BinaryStream source)
+    {
         String name = source.getString();
         GameRuleType type = GameRuleType.values()[(int) source.getUnsignedVarInt()];
         Object value;
-        switch (type) {
+        switch (type)
+        {
             case BOOLEAN:
                 value = source.getBoolean();
                 break;
@@ -40,13 +40,16 @@ public class GameRule {
         return new GameRule(name, type, value);
     }
 
-    public void write(BinaryStream out) {
-        if (type.ordinal() == 0) {
+    public void write(BinaryStream out)
+    {
+        if (type.ordinal() == 0)
+        {
             return; // wtf
         }
         out.putString(name);
         out.putUnsignedVarInt(type.ordinal());
-        switch (type) {
+        switch (type)
+        {
             case BOOLEAN:
                 out.putBoolean((boolean) value);
                 break;
@@ -57,5 +60,10 @@ public class GameRule {
                 out.putLFloat((Float) value);
                 break;
         }
+    }
+
+    public enum GameRuleType
+    {
+        UNKNOWN, BOOLEAN, VARUINT, FLOAT
     }
 }

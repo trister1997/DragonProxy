@@ -3,12 +3,8 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-public class BlockEventPacket extends PEPacket {
-
-    @Override
-    public int pid() {
-        return ProtocolInfo.BLOCK_EVENT_PACKET;
-    }
+public class BlockEventPacket extends PEPacket
+{
 
     public int x;
     public int y;
@@ -17,12 +13,20 @@ public class BlockEventPacket extends PEPacket {
     public int case2;
 
     @Override
-    public void decodePayload() {
+    public int pid()
+    {
+        return ProtocolInfo.BLOCK_EVENT_PACKET;
+    }
+
+    @Override
+    public void decodePayload()
+    {
 
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.reset();
         this.putBlockPosition(this.x, this.y, this.z);
         this.putVarInt(this.case1);

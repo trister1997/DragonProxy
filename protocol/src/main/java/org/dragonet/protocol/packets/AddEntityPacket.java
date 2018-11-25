@@ -1,18 +1,19 @@
 package org.dragonet.protocol.packets;
 
-import java.util.Collection;
-
 import org.dragonet.common.data.entity.PEEntityAttribute;
+import org.dragonet.common.data.entity.PEEntityLink;
 import org.dragonet.common.data.entity.meta.EntityMetaData;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.entity.PEEntityLink;
+
+import java.util.Collection;
 
 /**
  * Created on 2017/10/21.
  */
-public class AddEntityPacket extends PEPacket {
+public class AddEntityPacket extends PEPacket
+{
 
     public long eid;
     public long rtid;
@@ -21,21 +22,25 @@ public class AddEntityPacket extends PEPacket {
     public Vector3F motion;
     public float pitch;
     public float yaw;
+    public float headYaw;
     public Collection<PEEntityAttribute> attributes;
     public EntityMetaData meta;
     public PEEntityLink[] links;
 
-    public AddEntityPacket() {
+    public AddEntityPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ADD_ENTITY_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarLong(eid);
         putUnsignedVarLong(rtid);
         putUnsignedVarInt(type);
@@ -43,32 +48,44 @@ public class AddEntityPacket extends PEPacket {
         putVector3F(motion);
         putLFloat(pitch);
         putLFloat(yaw);
+        putLFloat(headYaw);
 
-        if (attributes != null && attributes.size() > 0) {
+        if (attributes != null && attributes.size() > 0)
+        {
             putUnsignedVarInt(attributes.size());
-            for (PEEntityAttribute attr : attributes) {
+            for (PEEntityAttribute attr : attributes)
+            {
                 putString(attr.name);
                 putLFloat(attr.min);
                 putLFloat(attr.currentValue);
                 putLFloat(attr.max);
             }
-        } else {
+        }
+        else
+        {
             putUnsignedVarInt(0);
         }
 
-        if (meta != null) {
+        if (meta != null)
+        {
             meta.encode();
             put(meta.getBuffer());
-        } else {
+        }
+        else
+        {
             putUnsignedVarInt(0);
         }
 
-        if (links != null && links.length > 0) {
+        if (links != null && links.length > 0)
+        {
             putUnsignedVarInt(links.length);
-            for (PEEntityLink l : links) {
+            for (PEEntityLink l : links)
+            {
                 putEntityLink(l);
             }
-        } else {
+        }
+        else
+        {
             putUnsignedVarInt(0);
         }
     }
@@ -77,7 +94,8 @@ public class AddEntityPacket extends PEPacket {
      * decode will NOT work since meta decoding is not implemented
      */
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
 //        eid = getVarLong();
 //        rtid = getUnsignedVarLong();
 //        type = (int) getUnsignedVarInt();

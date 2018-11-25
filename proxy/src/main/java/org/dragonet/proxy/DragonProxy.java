@@ -12,16 +12,8 @@
  */
 package org.dragonet.proxy;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
+import com.github.steveice10.mc.protocol.MinecraftConstants;
+import com.whirvis.jraknet.windows.UniversalWindowsProgram;
 import org.apache.commons.lang3.SystemUtils;
 import org.dragonet.common.data.blocks.Block;
 import org.dragonet.common.data.blocks.GlobalBlockPalette;
@@ -41,106 +33,50 @@ import org.dragonet.proxy.utilities.ProxyLogger;
 import org.dragonet.proxy.utilities.pingpassthrough.PingThread;
 import org.yaml.snakeyaml.Yaml;
 
-import com.github.steveice10.mc.protocol.MinecraftConstants;
-import com.whirvis.jraknet.windows.UniversalWindowsProgram;
+import java.io.*;
+import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class DragonProxy {
+public class DragonProxy
+{
 
     public static final boolean IS_RELEASE = false; // TODO: remove
 
     private static DragonProxy instance;
     private static String[] launchArgs;
     private final Properties properties;
-    private boolean isContainer = false;
-    private String version;
-    private ProxyLogger logger;
     private final TickerThread ticker = new TickerThread(this);
-    private ServerConfig config;
-    private Lang lang;
     private final SessionRegister sessionRegister;
     private final RaknetInterface network;
-    private boolean shuttingDown;
     private final ScheduledExecutorService generalThreadPool;
     private final CommandRegister commandRegister;
     private final SkinFetcher skinFetcher;
     private final String authMode;
-    private ConsoleCommandReader console;
-    private String motd;
-    private boolean debug = false;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
     private final SoundTranslator soundTranslator;
+    private boolean isContainer = false;
+    private String version;
+    private ProxyLogger logger;
+    private ServerConfig config;
+    private Lang lang;
+    private boolean shuttingDown;
+    private ConsoleCommandReader console;
+    private String motd;
+    private boolean debug = false;
 
-    public static void main(String[] args) {
-        launchArgs = args;
-        getInstance();
-    }
-
-    public static DragonProxy getInstance() {
-        if (instance == null)
-            instance = new DragonProxy();
-        return instance;
-    }
-
-    public ProxyLogger getLogger() {
-        return logger;
-    }
-
-    public ServerConfig getConfig() {
-        return config;
-    }
-
-    public Lang getLang() {
-        return lang;
-    }
-
-    public SessionRegister getSessionRegister() {
-        return sessionRegister;
-    }
-
-    public RaknetInterface getNetwork() {
-        return network;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    public SoundTranslator getSoundTranslator() {
-        return soundTranslator;
-    }
-
-    public boolean isShuttingDown() {
-        return shuttingDown;
-    }
-
-    public ScheduledExecutorService getGeneralThreadPool() {
-        return generalThreadPool;
-    }
-
-    public CommandRegister getCommandRegister() {
-        return commandRegister;
-    }
-
-    public String getAuthMode() {
-        return authMode;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    private DragonProxy() {
+    private DragonProxy()
+    {
         instance = this;
         logger = new ProxyLogger(this);
 
-        try {
+        try
+        {
             File fileConfig = new File("config.yml");
-            if (!fileConfig.exists()) {
+            if (!fileConfig.exists())
+            {
                 // Create default config
                 FileOutputStream fos = new FileOutputStream(fileConfig);
                 InputStream ins = DragonProxy.class.getResourceAsStream("/config.yml");
@@ -151,11 +87,15 @@ public class DragonProxy {
                 fos.close();
             }
             config = new Yaml().loadAs(new FileInputStream(fileConfig), ServerConfig.class);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             logger.info("Failed to load configuration file! Make sure the file is writable.");
             ex.printStackTrace();
             System.exit(1);
-        } catch (org.yaml.snakeyaml.error.YAMLException ex) {
+        }
+        catch (org.yaml.snakeyaml.error.YAMLException ex)
+        {
             logger.info("Failed to load configuration file! Make sure it's up to date !");
             System.exit(1);
         }
@@ -164,22 +104,33 @@ public class DragonProxy {
         properties = new Properties();
 
         if (inputStream != null)
-            try {
+            try
+            {
                 properties.load(inputStream);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 throw new RuntimeException("Failed to read properties file", e);
-            } finally {
-                try {
+            }
+            finally
+            {
+                try
+                {
                     inputStream.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     // Ignore
                 }
             }
 
         // Load language file
-        try {
+        try
+        {
             lang = new Lang(config.lang);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             logger.info("Failed to load language file: " + config.lang + "!");
             ex.printStackTrace();
         }
@@ -199,7 +150,8 @@ public class DragonProxy {
         if (!IS_RELEASE)
             logger.info("This is a development build. It may contain bugs. Do not use on production.");
 
-        if (config.auto_login) {
+        if (config.auto_login)
+        {
             logger.info("******************************************");
             logger.info("");
             logger.info("\tYou're using autologin, make sure you are the only who can connect on this server !");
@@ -210,7 +162,8 @@ public class DragonProxy {
         // Check for startup arguments
         checkArguments(launchArgs);
 
-        if (config.log_debug && !debug) {
+        if (config.log_debug && !debug)
+        {
             logger.debug = true;
             debug = true;
             logger.info("Proxy running in debug mode.");
@@ -223,7 +176,8 @@ public class DragonProxy {
 
         // Check profile, used for docker profile
         if (System.getProperties().containsKey("org.dragonet.proxy.profile"))
-            if (System.getProperties().get("org.dragonet.proxy.profile").equals("container")) {
+            if (System.getProperties().get("org.dragonet.proxy.profile").equals("container"))
+            {
                 isContainer = true;
                 version += "-docker";
             }
@@ -238,7 +192,7 @@ public class DragonProxy {
         authMode = config.mode.toLowerCase();
         if (!authMode.equals("cls") && !authMode.equals("online") && !authMode.equals("offline") && !authMode.equals("hybrid"))
             logger.info("Invalid login 'mode' option detected, must be cls/online/offline. You set it to '" + authMode
-                    + "'! ");
+                + "'! ");
 
         // Init metrics (https://bstats.org/plugin/server-implementation/DragonProxy)
         new MetricsManager(this);
@@ -269,18 +223,19 @@ public class DragonProxy {
         // start and load all plugins of application
         pluginManager.loadPlugins();
         pluginManager.startPlugins();
-        
+
         // Add loopback exemption for Minecraft on Windows 10
-        if(!UniversalWindowsProgram.MINECRAFT.isLoopbackExempt()) {
-        	logger.info(lang.get(Lang.MESSAGE_MCW10_LOOPBACK));
+        if (!UniversalWindowsProgram.MINECRAFT.isLoopbackExempt())
+        {
+            logger.info(lang.get(Lang.MESSAGE_MCW10_LOOPBACK));
         }
 
         // Bind
         logger.info(lang.get(Lang.INIT_BINDING, config.udp_bind_ip, config.udp_bind_port));
         // RakNet.enableLogging();
         network = new RaknetInterface(this, config.udp_bind_ip, // IP
-                config.udp_bind_port, // Port
-                motd, config.auto_login ? 1 : config.max_players);
+            config.udp_bind_port, // Port
+            motd, config.auto_login ? 1 : config.max_players);
 
         if (DragonProxy.getInstance().getConfig().ping_passthrough)
             generalThreadPool.scheduleAtFixedRate(new PingThread(), 1, 1, TimeUnit.SECONDS);
@@ -299,33 +254,118 @@ public class DragonProxy {
 //        });
     }
 
-    public Properties getProperties() {
+    public static void main(String[] args)
+    {
+        launchArgs = args;
+        getInstance();
+    }
+
+    public static DragonProxy getInstance()
+    {
+        if (instance == null)
+            instance = new DragonProxy();
+        return instance;
+    }
+
+    public ProxyLogger getLogger()
+    {
+        return logger;
+    }
+
+    public ServerConfig getConfig()
+    {
+        return config;
+    }
+
+    public Lang getLang()
+    {
+        return lang;
+    }
+
+    public SessionRegister getSessionRegister()
+    {
+        return sessionRegister;
+    }
+
+    public RaknetInterface getNetwork()
+    {
+        return network;
+    }
+
+    public PluginManager getPluginManager()
+    {
+        return pluginManager;
+    }
+
+    public EventManager getEventManager()
+    {
+        return eventManager;
+    }
+
+    public SoundTranslator getSoundTranslator()
+    {
+        return soundTranslator;
+    }
+
+    public boolean isShuttingDown()
+    {
+        return shuttingDown;
+    }
+
+    public ScheduledExecutorService getGeneralThreadPool()
+    {
+        return generalThreadPool;
+    }
+
+    public CommandRegister getCommandRegister()
+    {
+        return commandRegister;
+    }
+
+    public String getAuthMode()
+    {
+        return authMode;
+    }
+
+    public boolean isDebug()
+    {
+        return debug;
+    }
+
+    public Properties getProperties()
+    {
         return this.properties;
     }
 
-    public String getVersion() {
+    public String getVersion()
+    {
         return this.version;
     }
 
-    public String getMotd() {
+    public String getMotd()
+    {
         return this.motd;
     }
 
-    public void onTick() {
+    public void onTick()
+    {
         sessionRegister.onTick();
     }
 
-    public void checkArguments(String[] args) {
+    public void checkArguments(String[] args)
+    {
         if (args != null)
             for (String arg : args)
-                if (arg.toLowerCase().contains("--debug")) {
+                if (arg.toLowerCase().contains("--debug"))
+                {
                     debug = true;
                     getLogger().debug = true;
                     logger.info("Proxy is running in debug mode.");
                 }
     }
 
-    public void shutdown() {
+    public void shutdown()
+    {
         this.logger.info(lang.get(Lang.SHUTTING_DOWN));
 
         this.pluginManager.stopPlugins();
@@ -348,7 +388,8 @@ public class DragonProxy {
     /**
      * @return the skinFetcher
      */
-    public SkinFetcher getSkinFetcher() {
+    public SkinFetcher getSkinFetcher()
+    {
         return skinFetcher;
     }
 }

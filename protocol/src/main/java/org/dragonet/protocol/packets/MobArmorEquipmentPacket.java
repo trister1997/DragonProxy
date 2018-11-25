@@ -1,10 +1,11 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.inventory.Slot;
 
-public class MobArmorEquipmentPacket extends PEPacket {
+public class MobArmorEquipmentPacket extends PEPacket
+{
 
     public long rtid;
     public Slot helmet;
@@ -13,12 +14,14 @@ public class MobArmorEquipmentPacket extends PEPacket {
     public Slot boots;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.MOB_ARMOR_EQUIPMENT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putSlot(helmet);
         putSlot(chestplate);
@@ -28,7 +31,8 @@ public class MobArmorEquipmentPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         helmet = getSlot();
         chestplate = getSlot();

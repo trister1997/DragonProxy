@@ -1,11 +1,5 @@
 package org.dragonet.proxy.utilities;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
 import org.pf4j.PluginDescriptorFinder;
@@ -13,53 +7,75 @@ import org.pf4j.PluginException;
 import org.pf4j.util.FileUtils;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
-public class YmlPluginDescriptorFinder implements PluginDescriptorFinder {
+
+public class YmlPluginDescriptorFinder implements PluginDescriptorFinder
+{
 
     protected String propertiesFileName = "plugin.yml";
 
-    public YmlPluginDescriptorFinder() {
+    public YmlPluginDescriptorFinder()
+    {
     }
 
     @Override
-    public boolean isApplicable(Path pluginPath) {
+    public boolean isApplicable(Path pluginPath)
+    {
         return Files.exists(pluginPath) && (Files.isDirectory(pluginPath) || FileUtils.isJarFile(pluginPath));
     }
 
     @Override
-    public PluginDescriptor find(Path pluginPath) throws PluginException {
+    public PluginDescriptor find(Path pluginPath) throws PluginException
+    {
         return readYml(pluginPath);
     }
 
-    protected DefaultPluginDescriptor readYml(Path pluginPath) throws PluginException {
-       JarFile jarFile = null;
-        try{
+    protected DefaultPluginDescriptor readYml(Path pluginPath) throws PluginException
+    {
+        JarFile jarFile = null;
+        try
+        {
             jarFile = new JarFile(pluginPath.toString());
-        }catch(Exception ex){
+        }
+        catch (Exception ex)
+        {
             throw new PluginException("Cannot find the plugin.yml");
         }
         ZipEntry entry = jarFile.getEntry(propertiesFileName);
-        if (entry == null) {
-            try{
+        if (entry == null)
+        {
+            try
+            {
                 jarFile.close();
-            }catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 ex.printStackTrace();
             }
             throw new PluginException("Cannot find the plugin.yml");
         }
 
-        try{
+        try
+        {
             ConfigContent content = new Yaml().loadAs(jarFile.getInputStream(entry), ConfigContent.class);
             jarFile.close();
             return new DefaultPluginDescriptor(content.name, content.description, content.main, content.version, content.requires, content.author, null);
-        }catch(IOException e){
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
             throw new PluginException(e);
         }
 
     }
 
-    private static class ConfigContent{
+    private static class ConfigContent
+    {
         public String name;
         public String description = "";
         public String main;

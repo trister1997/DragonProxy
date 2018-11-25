@@ -6,13 +6,14 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.common.maths;
 
-public class MCColor {
+public class MCColor
+{
 
     public static final String ESCAPE = "§";
     public static final String BLACK = ESCAPE + "0";
@@ -38,11 +39,13 @@ public class MCColor {
     public static final String ITALIC = ESCAPE + "o";
     public static final String RESET = ESCAPE + "r";
 
-    public MCColor() {
+    public MCColor()
+    {
 
     }
 
-    public static String toANSI(String string) {
+    public static String toANSI(String string)
+    {
         string = string.replace(BOLD, "");
         string = string.replace(OBFUSCATED, (char) 0x1b + "[6m");
         string = string.replace(ITALIC, (char) 0x1b + "[3m");
@@ -69,11 +72,13 @@ public class MCColor {
     }
 
     //remove &?, §? and ansi colors codes
-    public static String stripColors(String message) {
-        return message = message.replaceAll("(&([a-fk-or0-9]))","").replaceAll("(§([a-fk-or0-9]))","").replaceAll("s/\\x1b\\[[0-9;]*[a-zA-Z]//g","");
+    public static String stripColors(String message)
+    {
+        return message = message.replaceAll("(&([a-fk-or0-9]))", "").replaceAll("(§([a-fk-or0-9]))", "").replaceAll("s/\\x1b\\[[0-9;]*[a-zA-Z]//g", "");
     }
 
-    public static String printConsole(String message, boolean colors) {
+    public static String printConsole(String message, boolean colors)
+    {
         return colors ? toANSI(message + MCColor.RESET) : stripColors(message + MCColor.RESET);
     }
 }

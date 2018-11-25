@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -15,13 +15,16 @@ package org.dragonet.proxy.commands.defaults;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.commands.Command;
 
-public class StopCommand extends Command {
+public class StopCommand extends Command
+{
 
-    public StopCommand(String name) {
+    public StopCommand(String name)
+    {
         super(name, "Stop the proxy");
     }
 
-    public void execute(DragonProxy proxy, String[] args) {
+    public void execute(DragonProxy proxy, String[] args)
+    {
         proxy.shutdown();
     }
 }

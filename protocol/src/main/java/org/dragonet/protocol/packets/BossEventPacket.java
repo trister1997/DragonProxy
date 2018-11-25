@@ -3,7 +3,8 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-public class BossEventPacket extends PEPacket {
+public class BossEventPacket extends PEPacket
+{
 
     public static final int TYPE_SHOW = 0;
     public static final int TYPE_REGISTER_PLAYER = 1;
@@ -25,16 +26,19 @@ public class BossEventPacket extends PEPacket {
     public int overlay;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.BOSS_EVENT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.reset();
         this.putEntityUniqueId(this.bossEid);
         this.putUnsignedVarInt(this.type);
-        switch (this.type) {
+        switch (this.type)
+        {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.putEntityUniqueId(this.playerEid);
@@ -58,10 +62,12 @@ public class BossEventPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.bossEid = this.getEntityUniqueId();
         this.type = (int) this.getUnsignedVarInt();
-        switch (this.type) {
+        switch (this.type)
+        {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.playerEid = this.getEntityUniqueId();

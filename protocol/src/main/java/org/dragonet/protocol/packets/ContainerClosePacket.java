@@ -6,30 +6,36 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class ContainerClosePacket extends PEPacket {
+public class ContainerClosePacket extends PEPacket
+{
 
     public int windowId;
 
-    public ContainerClosePacket() {
+    public ContainerClosePacket()
+    {
 
     }
 
-    public ContainerClosePacket(int windowId) {
+    public ContainerClosePacket(int windowId)
+    {
         this.windowId = windowId;
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.CONTAINER_CLOSE_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putByte((byte) (windowId & 0xFF));
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         windowId = getByte();
     }
 }

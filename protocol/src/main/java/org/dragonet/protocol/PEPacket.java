@@ -5,41 +5,49 @@ import org.dragonet.common.utilities.BinaryStream;
 /**
  * Created on 2017/10/21.
  */
-public abstract class PEPacket extends BinaryStream {
+public abstract class PEPacket extends BinaryStream
+{
 
     private boolean encoded;
     private boolean decoded;
 
-    public PEPacket() {
+    public PEPacket()
+    {
         super();
     }
 
-    public boolean isEncoded() {
+    public boolean isEncoded()
+    {
         return encoded;
     }
 
-    public boolean isDecoded() {
+    public boolean isDecoded()
+    {
         return decoded;
     }
 
-    public void encode() {
+    public void encode()
+    {
         reset();
         encodeHeader();
         encodePayload();
         encoded = true;
     }
 
-    public void decode() {
+    public void decode()
+    {
         decodeHeader();
         decodePayload();
         decoded = true;
     }
 
-    public void encodeHeader() {
+    public void encodeHeader()
+    {
         putUnsignedVarInt((pid() & 0xFF));
     }
 
-    public void decodeHeader() {
+    public void decodeHeader()
+    {
         getUnsignedVarInt();
     }
 

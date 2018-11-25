@@ -5,57 +5,69 @@ import org.dragonet.common.data.nbt.stream.NBTOutputStream;
 
 import java.io.IOException;
 
-public class IntTag extends NumberTag<Integer> {
+public class IntTag extends NumberTag<Integer>
+{
 
     public int data;
 
-    @Override
-    public Integer getData() {
-        return data;
-    }
-
-    @Override
-    public void setData(Integer data) {
-        this.data = data == null ? 0 : data;
-    }
-
-    public IntTag(String name) {
+    public IntTag(String name)
+    {
         super(name);
     }
 
-    public IntTag(String name, int data) {
+    public IntTag(String name, int data)
+    {
         super(name);
         this.data = data;
     }
 
     @Override
-    void write(NBTOutputStream dos) throws IOException {
+    public Integer getData()
+    {
+        return data;
+    }
+
+    @Override
+    public void setData(Integer data)
+    {
+        this.data = data == null ? 0 : data;
+    }
+
+    @Override
+    void write(NBTOutputStream dos) throws IOException
+    {
         dos.writeInt(data);
     }
 
     @Override
-    void load(NBTInputStream dis) throws IOException {
+    void load(NBTInputStream dis) throws IOException
+    {
         data = dis.readInt();
     }
 
     @Override
-    public byte getId() {
+    public byte getId()
+    {
         return TAG_Int;
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue()
+    {
         return this.data;
     }
 
     @Override
-    public Tag copy() {
+    public Tag copy()
+    {
         return new IntTag(getName(), data);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj))
+        {
             IntTag o = (IntTag) obj;
             return data == o.data;
         }

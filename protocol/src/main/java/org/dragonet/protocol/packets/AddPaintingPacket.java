@@ -1,10 +1,11 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
-public class AddPaintingPacket extends PEPacket {
+public class AddPaintingPacket extends PEPacket
+{
 
     public long eid;
     public long rtid;
@@ -13,12 +14,14 @@ public class AddPaintingPacket extends PEPacket {
     public String title;
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
 
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.reset();
         this.putEntityUniqueId(this.eid);
         this.putEntityRuntimeId(this.rtid);
@@ -28,7 +31,8 @@ public class AddPaintingPacket extends PEPacket {
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ADD_PAINTING_PACKET;
     }
 

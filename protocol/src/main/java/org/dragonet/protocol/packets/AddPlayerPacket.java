@@ -1,11 +1,11 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.entity.PEEntityLink;
 import org.dragonet.common.data.entity.meta.EntityMetaData;
+import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.entity.PEEntityLink;
-import org.dragonet.common.data.inventory.Slot;
 
 import java.util.UUID;
 
@@ -13,12 +13,11 @@ import java.util.UUID;
  * Created on 2017/10/21.
  * https://github.com/NiclasOlofsson/MiNET/blob/master/src/MiNET/MiNET/Net/MCPE%20Protocol%20Documentation.md#add-player-0x0c
  */
-public class AddPlayerPacket extends PEPacket {
+public class AddPlayerPacket extends PEPacket
+{
 
     public UUID uuid;
     public String username;
-    public String thirdpartyName;
-    public int platformID = 0;
     public long eid;
     public long rtid;
     public String platformChatID = "";
@@ -31,21 +30,22 @@ public class AddPlayerPacket extends PEPacket {
     public EntityMetaData meta;
     public PEEntityLink[] links;
 
-    public AddPlayerPacket() {
+    public AddPlayerPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ADD_PLAYER_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUUID(uuid);
         putString(username);
-        putString(thirdpartyName != null ? thirdpartyName : username);
-        putVarInt(platformID);
         putVarLong(eid);
         putUnsignedVarLong(rtid);
         putString(platformChatID);
@@ -55,10 +55,13 @@ public class AddPlayerPacket extends PEPacket {
         putLFloat(yaw);
         putLFloat(headYaw);
         putSlot(item);
-        if (meta != null) {
+        if (meta != null)
+        {
             meta.encode();
             put(meta.getBuffer());
-        } else {
+        }
+        else
+        {
             putUnsignedVarInt(0);
         }
         putUnsignedVarInt(0); //Flags
@@ -67,18 +70,23 @@ public class AddPlayerPacket extends PEPacket {
         putUnsignedVarInt(0); //Permission Level
         putUnsignedVarInt(0); //Custom stored permissions
         putLLong(0L);         //User Id
-        if (links != null && links.length > 0) {
+        if (links != null && links.length > 0)
+        {
             putUnsignedVarInt(links.length);
-            for (PEEntityLink l : links) {
+            for (PEEntityLink l : links)
+            {
                 putEntityLink(l);
             }
-        } else {
+        }
+        else
+        {
             putUnsignedVarInt(0);
         }
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         uuid = getUUID();
         username = getString();
         eid = getVarLong();

@@ -10,14 +10,18 @@ import java.io.DataInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class SkinDownloader {
+public class SkinDownloader
+{
 
-    public SkinDownloader() {
+    public SkinDownloader()
+    {
 
     }
 
-    public static byte[] download(String username) {
-        try {
+    public static byte[] download(String username)
+    {
+        try
+        {
             URL url = new URL(String.format("http://s3.amazonaws.com/MinecraftSkins/%s.png", username));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -27,7 +31,8 @@ public class SkinDownloader {
 
             byte[] buffer = new byte[4096];
             int count = 0;
-            while ((count = in.read(buffer)) > 0) {
+            while ((count = in.read(buffer)) > 0)
+            {
                 out.write(buffer, 0, count);
             }
             out.close();
@@ -35,7 +40,9 @@ public class SkinDownloader {
             connection.disconnect();
             return out.toByteArray();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return null;
         }
     }

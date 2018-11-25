@@ -5,12 +5,14 @@ import org.dragonet.common.data.inventory.Slot;
 /**
  * @author CreeperFace
  */
-public class SlotChangeAction extends InventoryAction {
+public class SlotChangeAction extends InventoryAction
+{
 
     protected int inventory;
     private int inventorySlot;
 
-    public SlotChangeAction(int inventory, int inventorySlot, Slot sourceItem, Slot targetItem) {
+    public SlotChangeAction(int inventory, int inventorySlot, Slot sourceItem, Slot targetItem)
+    {
         super(sourceItem, targetItem);
         this.inventorySlot = inventorySlot;
     }
@@ -18,7 +20,8 @@ public class SlotChangeAction extends InventoryAction {
     /**
      * Returns the inventorySlot in the inventory which this action modified.
      */
-    public int getSlot() {
+    public int getSlot()
+    {
         return inventorySlot;
     }
 }

@@ -1,11 +1,12 @@
 package org.dragonet.common.data.blocks;
 
 import org.dragonet.common.maths.AxisAlignedBB;
-
-import java.lang.reflect.Constructor;
 import org.dragonet.common.maths.BlockPosition;
 
-public class Block extends BlockPosition {
+import java.lang.reflect.Constructor;
+
+public class Block extends BlockPosition
+{
     public static final int SLABS = 44;
     public static final int WOOD_STAIRS = 53;
     public static final int COBBLESTONE_STAIRS = 67;
@@ -28,9 +29,18 @@ public class Block extends BlockPosition {
     public static final int PURPUR_SLAB = 205;
 
     public static Class[] list = null;
+    protected int meta = 0;
+    private AxisAlignedBB boundingBox = null;
+    private AxisAlignedBB collisionBoundingBox = null;
+    protected Block(Integer meta)
+    {
+        this.meta = (meta != null ? meta : 0);
+    }
 
-    public static void init() {
-        if (list == null) {
+    public static void init()
+    {
+        if (list == null)
+        {
             list = new Class[256];
             list[WOOD_STAIRS] = BlockStairs.class;
             list[COBBLESTONE_STAIRS] = BlockStairs.class;
@@ -55,30 +65,30 @@ public class Block extends BlockPosition {
         }
     }
 
-    private AxisAlignedBB boundingBox = null;
-    private AxisAlignedBB collisionBoundingBox = null;
-    protected int meta = 0;
-
-    protected Block(Integer meta) {
-        this.meta = (meta != null ? meta : 0);
-    }
-
-    public static Block get(int id, Integer meta, BlockPosition pos) {
+    public static Block get(int id, Integer meta, BlockPosition pos)
+    {
         Block block;
-        try {
+        try
+        {
             Class c = list[id];
-            if (c != null) {
+            if (c != null)
+            {
                 Constructor constructor = c.getDeclaredConstructor(int.class);
                 constructor.setAccessible(true);
                 block = (Block) constructor.newInstance(meta);
-            } else {
+            }
+            else
+            {
                 return null;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return null;
         }
 
-        if (pos != null) {
+        if (pos != null)
+        {
             block.x = pos.x;
             block.y = pos.y;
             block.z = pos.z;
@@ -87,42 +97,52 @@ public class Block extends BlockPosition {
         return block;
     }
 
-    public final int getDamage() {
+    public final int getDamage()
+    {
         return this.meta;
     }
 
-    public final void setDamage(Integer meta) {
+    public final void setDamage(Integer meta)
+    {
         this.meta = (meta == null ? 0 : meta & 0x0f);
     }
 
-    public boolean collidesWithBB(AxisAlignedBB bb) {
+    public boolean collidesWithBB(AxisAlignedBB bb)
+    {
         return collidesWithBB(bb, false);
     }
 
-    public AxisAlignedBB getBoundingBox() {
-        if (this.boundingBox == null) {
+    public AxisAlignedBB getBoundingBox()
+    {
+        if (this.boundingBox == null)
+        {
             this.boundingBox = this.recalculateBoundingBox();
         }
         return this.boundingBox;
     }
 
-    public AxisAlignedBB getCollisionBoundingBox() {
-        if (this.collisionBoundingBox == null) {
+    public AxisAlignedBB getCollisionBoundingBox()
+    {
+        if (this.collisionBoundingBox == null)
+        {
             this.collisionBoundingBox = this.recalculateCollisionBoundingBox();
         }
         return this.collisionBoundingBox;
     }
 
-    public boolean collidesWithBB(AxisAlignedBB bb, boolean collisionBB) {
+    public boolean collidesWithBB(AxisAlignedBB bb, boolean collisionBB)
+    {
         AxisAlignedBB bb1 = collisionBB ? this.getCollisionBoundingBox() : this.getBoundingBox();
         return bb1 != null && bb.clone().intersectsWith(bb1);
     }
 
-    protected AxisAlignedBB recalculateCollisionBoundingBox() {
+    protected AxisAlignedBB recalculateCollisionBoundingBox()
+    {
         return getBoundingBox();
     }
 
-    protected AxisAlignedBB recalculateBoundingBox() {
+    protected AxisAlignedBB recalculateBoundingBox()
+    {
         return new AxisAlignedBB(
             this.x,
             this.y,

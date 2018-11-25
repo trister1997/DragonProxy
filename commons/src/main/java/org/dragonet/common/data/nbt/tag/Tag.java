@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Array;
 
-public abstract class Tag {
+public abstract class Tag
+{
 
     public static final byte TAG_End = 0;
     public static final byte TAG_Byte = 1;
@@ -24,66 +25,23 @@ public abstract class Tag {
 
     private String name;
 
-    abstract void write(NBTOutputStream dos) throws IOException;
-
-    abstract void load(NBTInputStream dis) throws IOException;
-
-    public abstract Object getValue();
-
-    public abstract byte getId();
-
-    protected Tag(String name) {
-        if (name == null) {
+    protected Tag(String name)
+    {
+        if (name == null)
+        {
             this.name = "";
-        } else {
+        }
+        else
+        {
             this.name = name;
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Tag)) {
-            return false;
-        }
-        Tag o = (Tag) obj;
-        return getId() == o.getId() && !(name == null && o.name != null || name != null && o.name == null) && !(name != null && !name.equals(o.name));
-    }
-
-    public void print(PrintStream out) {
-        print("", out);
-    }
-
-    public void print(String prefix, PrintStream out) {
-        String name = getName();
-
-        out.print(prefix);
-        out.print(getTagName(getId()));
-        if (name.length() > 0) {
-            out.print("(\"" + name + "\")");
-        }
-        out.print(": ");
-        out.println(toString());
-    }
-
-    public Tag setName(String name) {
-        if (name == null) {
-            this.name = "";
-        } else {
-            this.name = name;
-        }
-        return this;
-    }
-
-    public String getName() {
-        if (name == null) {
-            return "";
-        }
-        return name;
-    }
-
-    public static Tag readNamedTag(NBTInputStream dis) throws IOException {
+    public static Tag readNamedTag(NBTInputStream dis) throws IOException
+    {
         byte type = dis.readByte();
-        if (type == 0) {
+        if (type == 0)
+        {
             return new EndTag();
         }
 
@@ -95,9 +53,11 @@ public abstract class Tag {
         return tag;
     }
 
-    public static void writeNamedTag(Tag tag, NBTOutputStream dos) throws IOException {
+    public static void writeNamedTag(Tag tag, NBTOutputStream dos) throws IOException
+    {
         dos.writeByte(tag.getId());
-        if (tag.getId() == Tag.TAG_End) {
+        if (tag.getId() == Tag.TAG_End)
+        {
             return;
         }
         dos.writeUTF(tag.getName());
@@ -105,8 +65,10 @@ public abstract class Tag {
         tag.write(dos);
     }
 
-    public static Tag newTag(byte type, String name) {
-        switch (type) {
+    public static Tag newTag(byte type, String name)
+    {
+        switch (type)
+        {
             case TAG_End:
                 return new EndTag();
             case TAG_Byte:
@@ -135,8 +97,10 @@ public abstract class Tag {
         return new EndTag();
     }
 
-    public static String getTagName(byte type) {
-        switch (type) {
+    public static String getTagName(byte type)
+    {
+        switch (type)
+        {
             case TAG_End:
                 return "TAG_End";
             case TAG_Byte:
@@ -165,17 +129,82 @@ public abstract class Tag {
         return "UNKNOWN";
     }
 
+    abstract void write(NBTOutputStream dos) throws IOException;
+
+    abstract void load(NBTInputStream dis) throws IOException;
+
+    public abstract Object getValue();
+
+    public abstract byte getId();
+
     @Override
-    public String toString() {
+    public boolean equals(Object obj)
+    {
+        if (obj == null || !(obj instanceof Tag))
+        {
+            return false;
+        }
+        Tag o = (Tag) obj;
+        return getId() == o.getId() && !(name == null && o.name != null || name != null && o.name == null) && !(name != null && !name.equals(o.name));
+    }
+
+    public void print(PrintStream out)
+    {
+        print("", out);
+    }
+
+    public void print(String prefix, PrintStream out)
+    {
+        String name = getName();
+
+        out.print(prefix);
+        out.print(getTagName(getId()));
+        if (name.length() > 0)
+        {
+            out.print("(\"" + name + "\")");
+        }
+        out.print(": ");
+        out.println(toString());
+    }
+
+    public String getName()
+    {
+        if (name == null)
+        {
+            return "";
+        }
+        return name;
+    }
+
+    public Tag setName(String name)
+    {
+        if (name == null)
+        {
+            this.name = "";
+        }
+        else
+        {
+            this.name = name;
+        }
+        return this;
+    }
+
+    @Override
+    public String toString()
+    {
         String name = this.getName() != null && !this.getName().equals("") ? "(" + this.getName() + ")" : "";
         String value = "";
-        if (this.getValue() != null) {
+        if (this.getValue() != null)
+        {
             value = this.getValue().toString();
-            if (this.getValue().getClass().isArray()) {
+            if (this.getValue().getClass().isArray())
+            {
                 StringBuilder build = new StringBuilder();
                 build.append("[");
-                for (int index = 0; index < Array.getLength(this.getValue()); index++) {
-                    if (index > 0) {
+                for (int index = 0; index < Array.getLength(this.getValue()); index++)
+                {
+                    if (index > 0)
+                    {
                         build.append(", ");
                     }
 

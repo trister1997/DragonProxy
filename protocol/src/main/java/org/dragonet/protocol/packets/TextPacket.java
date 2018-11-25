@@ -6,7 +6,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class TextPacket extends PEPacket {
+public class TextPacket extends PEPacket
+{
 
     public static final int TYPE_RAW = 0;
     public static final int TYPE_CHAT = 1;
@@ -21,33 +22,33 @@ public class TextPacket extends PEPacket {
     public int type;
     public boolean needsTranslation;
     public String source;
-    public String sourceThirdPartyName = "";
-    public int sourcePlatform = 0;
     public String message;
     public String[] params;
     public String xboxUserId;
     public String unk1;
 
-    public TextPacket() {
+    public TextPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.TEXT_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         type = getByte();
         needsTranslation = getBoolean();
-        switch (type) {
+        switch (type)
+        {
             case TYPE_CHAT:
             case TYPE_WHISPER:
             case TYPE_ANNOUNCEMENT:
                 source = getString();
-                sourceThirdPartyName = getString();
-                sourcePlatform = getVarInt();
             case TYPE_RAW:
             case TYPE_TIP:
             case TYPE_SYSTEM:
@@ -60,7 +61,8 @@ public class TextPacket extends PEPacket {
                 message = getString();
                 int count = (int) getUnsignedVarInt();
                 params = new String[count];
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < count; i++)
+                {
                     params[i] = getString();
                 }
                 break;
@@ -71,10 +73,12 @@ public class TextPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putByte((byte) (type & 0xFF));
         putBoolean(needsTranslation);
-        switch (type) {
+        switch (type)
+        {
             case TYPE_CHAT:
             case TYPE_WHISPER:
                 /**
@@ -82,8 +86,6 @@ public class TextPacket extends PEPacket {
                  */
             case TYPE_ANNOUNCEMENT:
                 putString(source);
-                putString(sourceThirdPartyName);
-                putVarInt(sourcePlatform);
             case TYPE_RAW:
             case TYPE_TIP:
             case TYPE_SYSTEM:
@@ -94,26 +96,36 @@ public class TextPacket extends PEPacket {
             case TYPE_POPUP:
             case TYPE_JUKEBOX_POPUP:
                 putString(message);
-                if (params != null && params.length > 0) {
+                if (params != null && params.length > 0)
+                {
                     putUnsignedVarInt(params.length);
-                    for (String s : params) {
+                    for (String s : params)
+                    {
                         putString(s);
                     }
-                } else {
+                }
+                else
+                {
                     putUnsignedVarInt(0);
                 }
                 break;
         }
 
-        if (xboxUserId != null) {
+        if (xboxUserId != null)
+        {
             putString(xboxUserId);
-        } else {
+        }
+        else
+        {
             putString("");
         }
 
-        if (unk1 != null) {
+        if (unk1 != null)
+        {
             putString(unk1);
-        } else {
+        }
+        else
+        {
             putString("");
         }
     }

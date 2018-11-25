@@ -6,30 +6,36 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/22.
  */
-public class SetHealthPacket extends PEPacket {
+public class SetHealthPacket extends PEPacket
+{
 
     public int health;
 
-    public SetHealthPacket() {
+    public SetHealthPacket()
+    {
 
     }
 
-    public SetHealthPacket(int health) {
+    public SetHealthPacket(int health)
+    {
         this.health = health;
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.SET_HEALTH_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarInt(health);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         health = getVarInt();
     }
 }

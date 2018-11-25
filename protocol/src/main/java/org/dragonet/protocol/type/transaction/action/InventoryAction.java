@@ -5,22 +5,23 @@ import org.dragonet.common.data.inventory.Slot;
 /**
  * @author CreeperFace
  */
-public abstract class InventoryAction {
-
-    private long creationTime;
+public abstract class InventoryAction
+{
 
     protected Slot sourceItem;
-
     protected Slot targetItem;
+    private long creationTime;
 
-    public InventoryAction(Slot sourceItem, Slot targetItem) {
+    public InventoryAction(Slot sourceItem, Slot targetItem)
+    {
         this.sourceItem = sourceItem;
         this.targetItem = targetItem;
 
         this.creationTime = System.currentTimeMillis();
     }
 
-    public long getCreationTime() {
+    public long getCreationTime()
+    {
         return creationTime;
     }
 
@@ -29,14 +30,16 @@ public abstract class InventoryAction {
      *
      * @return Item
      */
-    public Slot getSourceItem() {
+    public Slot getSourceItem()
+    {
         return sourceItem.clone();
     }
 
     /**
      * Returns the item that the action attempted to replace the source item with.
      */
-    public Slot getTargetItem() {
+    public Slot getTargetItem()
+    {
         return targetItem.clone();
     }
 }

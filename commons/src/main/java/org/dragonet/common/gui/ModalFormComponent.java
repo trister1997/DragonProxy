@@ -5,7 +5,8 @@ import com.google.gson.JsonObject;
 /**
  * Created on 2017/12/26.
  */
-public interface ModalFormComponent {
+public interface ModalFormComponent
+{
 
     String getType();
 

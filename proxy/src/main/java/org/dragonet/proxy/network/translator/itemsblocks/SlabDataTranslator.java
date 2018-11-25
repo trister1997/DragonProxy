@@ -2,15 +2,18 @@ package org.dragonet.proxy.network.translator.itemsblocks;
 
 import org.dragonet.common.data.itemsblocks.IItemDataTranslator;
 
-public class SlabDataTranslator extends IItemDataTranslator {
+public class SlabDataTranslator extends IItemDataTranslator
+{
 
     @Override
-    public Integer translateToPC(Integer damage) {
+    public Integer translateToPC(Integer damage)
+    {
         return damage;
     }
 
     @Override
-    public Integer translateToPE(Integer damage) {
+    public Integer translateToPE(Integer damage)
+    {
         if (damage == 6) return 7;
         if (damage == 7) return 6;
         if (damage == 14) return 15;

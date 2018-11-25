@@ -27,31 +27,31 @@ import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.common.utilities.LoginChainDecoder;
 import org.dragonet.common.utilities.ReflectedClass;
 import org.dragonet.plugin.bungeecord.compat.luckperms.LuckPermsCompat;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class DPAddonBungee extends Plugin implements Listener {
+public class DPAddonBungee extends Plugin implements Listener
+{
 
     private static DPAddonBungee instance;
-    private Config config;
-//    private List<InetAddress> whitelist = new ArrayList();
-
     public final Set<UUID> bedrockPlayers = Collections.synchronizedSet(new HashSet<>());
+//    private List<InetAddress> whitelist = new ArrayList();
+    private Config config;
 
-    public static DPAddonBungee getInstance() {
+    public static DPAddonBungee getInstance()
+    {
         return instance;
     }
-    
-    private boolean isPluginLoaded(String pluginName) {
-      return getProxy().getPluginManager().getPlugin(pluginName) != null;
-  }
+
+    private boolean isPluginLoaded(String pluginName)
+    {
+        return getProxy().getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
-    public void onLoad() {
+    public void onLoad()
+    {
         // Save the plugin instance
         instance = this;
 
@@ -70,41 +70,55 @@ public class DPAddonBungee extends Plugin implements Listener {
     }
 
     @Override
-    public void onEnable() {
+    public void onEnable()
+    {
         getProxy().getPluginManager().registerListener(this, this);
-        
-        if (isPluginLoaded("LuckPerms")) {
+
+        if (isPluginLoaded("LuckPerms"))
+        {
             LuckPermsCompat.addContextCalculator(bedrockPlayers);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerPreLogin(PreLoginEvent event) {
-        if (ProxyServer.getInstance().getConfig().isOnlineMode()) {
+    public void onPlayerPreLogin(PreLoginEvent event)
+    {
+        if (ProxyServer.getInstance().getConfig().isOnlineMode())
+        {
             event.registerIntent(this);
-            ProxyServer.getInstance().getScheduler().runAsync(this, new Runnable() {
+            ProxyServer.getInstance().getScheduler().runAsync(this, new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     String extraDataInHandshake = ((InitialHandler) event.getConnection()).getExtraDataInHandshake();
                     List<String> bypassIPs = config.getConfiguration().getStringList("auth_bypass_ip");
 
-                    if (!bypassIPs.isEmpty() && bypassIPs.contains(event.getConnection().getAddress().getHostString())) { // check if IP
+                    if (!bypassIPs.isEmpty() && bypassIPs.contains(event.getConnection().getAddress().getHostString()))
+                    { // check if IP
                         String[] xboxliveProfileParts = extraDataInHandshake.split("\0");
-                        if (xboxliveProfileParts.length == 2) {
+                        if (xboxliveProfileParts.length == 2)
+                        {
                             LoginChainDecoder decoder = new LoginChainDecoder(xboxliveProfileParts[1].getBytes(), null);
-                            try {
+                            try
+                            {
                                 decoder.decode(); //verify login chain, extract players UUID and name
-                            } catch (NullPointerException ex) {
+                            }
+                            catch (NullPointerException ex)
+                            {
 
                             }
-                            if (decoder.isLoginVerified()) {
+                            if (decoder.isLoginVerified())
+                            {
                                 ReflectedClass initialHandler = new ReflectedClass(event.getConnection());
                                 initialHandler.setField("name", decoder.username);
                                 initialHandler.setField("uniqueId", decoder.clientUniqueId);
                                 event.getConnection().setOnlineMode(false);
                                 getLogger().info("Bedrock player " + decoder.username + " uuid : " + decoder.clientUniqueId + " injected in InitialHandler !");
                                 bedrockPlayers.add(event.getConnection().getUniqueId());
-                            } else {
+                            }
+                            else
+                            {
                                 getLogger().info("Bedrock player Fail to verify XBox Identity " + decoder.username);
                                 event.getConnection().disconnect(TextComponent.fromLegacyText("Fail to verify XBox Identity, please login to XboxLive and retry."));
                             }
@@ -117,11 +131,13 @@ public class DPAddonBungee extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onServerConnected(ServerConnectedEvent event) {
+    public void onServerConnected(ServerConnectedEvent event)
+    {
         if (!bedrockPlayers.contains(event.getPlayer().getUniqueId()))
             return;
         // forward the DragonProxy Notification message!
-        getProxy().getScheduler().schedule(this, () -> {
+        getProxy().getScheduler().schedule(this, () ->
+        {
             BinaryStream bis = new BinaryStream();
             bis.putString("Notification");
             event.getPlayer().sendData("DragonProxy", bis.getBuffer());
@@ -129,7 +145,8 @@ public class DPAddonBungee extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onServerSwitch(ServerSwitchEvent event) {
+    public void onServerSwitch(ServerSwitchEvent event)
+    {
         if (!bedrockPlayers.contains(event.getPlayer().getUniqueId()))
             return;
         // We don't know that another server supports forwarding or not so we disable forwarding for now!
@@ -140,13 +157,15 @@ public class DPAddonBungee extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDisconnect(PlayerDisconnectEvent event) {
+    public void onPlayerDisconnect(PlayerDisconnectEvent event)
+    {
         if (bedrockPlayers.contains(event.getPlayer().getUniqueId()))
             if (bedrockPlayers.remove(event.getPlayer().getUniqueId()))
                 getLogger().info("Disconnected Bedrock player " + event.getPlayer().getUniqueId().toString());
     }
 
-    public boolean isBedrockPlayer(UUID uuid) {
+    public boolean isBedrockPlayer(UUID uuid)
+    {
         return bedrockPlayers.contains(uuid);
     }
 }

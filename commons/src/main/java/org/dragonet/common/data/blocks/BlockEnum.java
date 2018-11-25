@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.dragonet.common.data.inventory.Slot;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -16,14 +18,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.dragonet.common.data.inventory.Slot;
 
 /**
- *
  * @author Epic
  * Java reprensentation of all blocks
  */
-public enum BlockEnum {
+public enum BlockEnum
+{
 
     AIR("minecraft:air", 0, 0),
     STONE("minecraft:stone", 1, 0),
@@ -2050,25 +2051,15 @@ public enum BlockEnum {
     STRUCTURE_BLOCK_7("minecraft:structure_block", 252, 7),
     RESERVED6("minecraft:reserved6", 255, 0);
 
-    private String name;
-    private int id;
-    private int data;
-
-    private BlockEnum(String name, int id, int data) {
-        //
-    }
-
-    private BlockEnum(String name, int runtimeId, int id, int data) {
-        //
-    }
-
     private final static Set<Slot> blocks = new HashSet();
     private final static Set<Slot> creativeBlocks = new HashSet();
     private final static Map<Integer, Slot> idToBlock = new HashMap();
     private final static Map<String, Slot> nameToBlock = new HashMap();
 
-    static {
-        for (BlockEnum block : values()) {
+    static
+    {
+        for (BlockEnum block : values())
+        {
             Slot blockState = new Slot(block.id, block.data);
             blocks.add(blockState);
             idToBlock.put(block.id, blockState);
@@ -2079,49 +2070,72 @@ public enum BlockEnum {
         InputStream in = BlockEnum.class.getResourceAsStream("/creativeitems.json");
         Reader reader = new InputStreamReader(in);
         JsonObject oldBlocksListObject = gson.fromJson(reader, JsonObject.class);
-            JsonArray array = oldBlocksListObject.get("items").getAsJsonArray();
-            array.forEach(object -> {
-                if (object.isJsonObject()) {
-                    int id = 0;
-                    int damage = 0;
-                    if (object.getAsJsonObject().has("id"))
-                        id = object.getAsJsonObject().get("id").getAsInt();
-                    if (object.getAsJsonObject().has("damage"))
-                        damage = object.getAsJsonObject().get("damage").getAsInt();
-                    creativeBlocks.add(new Slot(id, damage, 1));
-                }
-            });
+        JsonArray array = oldBlocksListObject.get("items").getAsJsonArray();
+        array.forEach(object ->
+        {
+            if (object.isJsonObject())
+            {
+                int id = 0;
+                int damage = 0;
+                if (object.getAsJsonObject().has("id"))
+                    id = object.getAsJsonObject().get("id").getAsInt();
+                if (object.getAsJsonObject().has("damage"))
+                    damage = object.getAsJsonObject().get("damage").getAsInt();
+                creativeBlocks.add(new Slot(id, damage, 1));
+            }
+        });
     }
 
-    public String getName() {
-        return name;
+    private String name;
+    private int id;
+    private int data;
+    private BlockEnum(String name, int id, int data)
+    {
+        //
     }
 
-    public int getId() {
-        return id;
+    private BlockEnum(String name, int runtimeId, int id, int data)
+    {
+        //
     }
 
-    public int getData() {
-        return data;
-    }
-
-    public static Set<Slot> getBlocks() {
+    public static Set<Slot> getBlocks()
+    {
         return blocks;
     }
 
-    public static Set<Slot> getCreativeBlocks() {
+    public static Set<Slot> getCreativeBlocks()
+    {
         return creativeBlocks;
     }
 
-    public static Slot getSlots() {
+    public static Slot getSlots()
+    {
         return null;
     }
 
-    public static Map<Integer, Slot> getIdToBlock() {
+    public static Map<Integer, Slot> getIdToBlock()
+    {
         return idToBlock;
     }
 
-    public static Map<String, Slot> getNameToBlock() {
+    public static Map<String, Slot> getNameToBlock()
+    {
         return nameToBlock;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public int getData()
+    {
+        return data;
     }
 }

@@ -6,31 +6,39 @@ import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.Protocol;
 
-public class DPPluginMessageListener implements PluginMessageListener {
+public class DPPluginMessageListener implements PluginMessageListener
+{
 
     private final DPAddonBukkit plugin;
 
-    public DPPluginMessageListener(DPAddonBukkit plugin) {
+    public DPPluginMessageListener(DPAddonBukkit plugin)
+    {
         this.plugin = plugin;
     }
 
     @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] data) {
-        if(!channel.equals("DragonProxy")) return; // not likely to happen but...
+    public void onPluginMessageReceived(String channel, Player player, byte[] data)
+    {
+        if (!channel.equals("DragonProxy")) return; // not likely to happen but...
         BinaryStream bis = new BinaryStream(data);
         String command = bis.getString();
-        if(command.equals("Notification")) {
+        if (command.equals("Notification"))
+        {
             plugin.detectedBedrockPlayer(player);
-        } else if (command.equals("PacketForward")) {
+        }
+        else if (command.equals("PacketForward"))
+        {
             processPacketForward(player, bis.getByteArray());
         }
     }
 
-    private void processPacketForward(Player player, byte[] buffer) {
+    private void processPacketForward(Player player, byte[] buffer)
+    {
         final PEPacket packet = Protocol.decodeSingle(buffer);
-        if(packet == null) return;
+        if (packet == null) return;
         BedrockPlayer bedrockPlayer = BedrockPlayer.getForPlayer(player);
-        if(bedrockPlayer == null) {
+        if (bedrockPlayer == null)
+        {
             player.kickPlayer("Non-bedrock player sent packet forward packets!? ");
             return;
         }

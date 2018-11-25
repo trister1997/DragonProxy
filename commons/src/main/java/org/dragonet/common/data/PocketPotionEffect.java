@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,7 +14,8 @@ package org.dragonet.common.data;
 
 import java.util.HashMap;
 
-public class PocketPotionEffect {
+public class PocketPotionEffect
+{
     // vars
 
     public static final int SPEED = 1;
@@ -46,7 +47,8 @@ public class PocketPotionEffect {
 
     private static final HashMap<Integer, PocketPotionEffect> EFFECTS = new HashMap<>();
 
-    static {
+    static
+    {
         EFFECTS.put(SPEED, new PocketPotionEffect(SPEED));
         EFFECTS.put(SLOWNESS, new PocketPotionEffect(SLOWNESS));
         EFFECTS.put(HASTE, new PocketPotionEffect(HASTE));
@@ -69,31 +71,38 @@ public class PocketPotionEffect {
         EFFECTS.put(HEALTH_BOOST, new PocketPotionEffect(HEALTH_BOOST));
     }
 
+    private final int effect;
     public int amplifier;
     public int duration;
     public boolean particles;
-    private final int effect;
 
     // constructor
-    public PocketPotionEffect(int effect) {
+    public PocketPotionEffect(int effect)
+    {
         this.effect = effect;
     }
 
     // public
-    public static PocketPotionEffect getByID(int id) {
-        if (EFFECTS.containsKey(id)) {
+    public static PocketPotionEffect getByID(int id)
+    {
+        if (EFFECTS.containsKey(id))
+        {
             return EFFECTS.get((Integer) id).clone();
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
 
-    public int getEffect() {
+    public int getEffect()
+    {
         return effect;
     }
 
     // private
-    protected PocketPotionEffect clone() {
+    protected PocketPotionEffect clone()
+    {
         PocketPotionEffect eff = new PocketPotionEffect(effect);
         eff.amplifier = amplifier;
         eff.particles = particles;

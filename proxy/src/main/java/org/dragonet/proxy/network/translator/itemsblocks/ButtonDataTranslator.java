@@ -11,10 +11,12 @@ import org.dragonet.proxy.network.translator.ItemBlockTranslator;
 /**
  * @author vincent
  */
-public class ButtonDataTranslator extends IItemDataTranslator {
+public class ButtonDataTranslator extends IItemDataTranslator
+{
 
     @Override
-    public Integer translateToPE(Integer damage) {
+    public Integer translateToPE(Integer damage)
+    {
         // Here is the magic
         int facing = damage > 5 ? damage - 0x08 : damage;
         boolean activated = (damage & 0x08) > 0;
@@ -23,7 +25,8 @@ public class ButtonDataTranslator extends IItemDataTranslator {
     }
 
     @Override
-    public Integer translateToPC(Integer damage) {
+    public Integer translateToPC(Integer damage)
+    {
         // Here too
         return damage;
     }

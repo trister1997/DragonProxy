@@ -12,9 +12,11 @@
  */
 package org.dragonet.common.data.inventory;
 
-public final class InventoryType {
+public final class InventoryType
+{
 
-    public static final class PEInventory {
+    public static final class PEInventory
+    {
 
         public static final byte CHEST = (byte) 0;
         public static final byte DOUBLE_CHEST = (byte) 0;
@@ -27,13 +29,17 @@ public final class InventoryType {
         public static final byte ANVIL = (byte) 6;
         public static final byte ENCHANT_TABLE = (byte) 4;
 
-        public static final byte toPEInventory(byte bytePC, int slots) {
-            switch (bytePC) {
+        public static final byte toPEInventory(byte bytePC, int slots)
+        {
+            switch (bytePC)
+            {
                 case PCInventory.CHEST:
                     if (slots > 64) // Large
                     {
                         return PEInventory.DOUBLE_CHEST;
-                    } else {
+                    }
+                    else
+                    {
                         return PEInventory.CHEST;
                     }
                 case PCInventory.WORKBENCH:
@@ -56,7 +62,8 @@ public final class InventoryType {
 
     }
 
-    public static final class PCInventory {
+    public static final class PCInventory
+    {
 
         public static final byte CHEST = (byte) 0x0;
         public static final byte WORKBENCH = (byte) 0x1;
@@ -71,35 +78,58 @@ public final class InventoryType {
         public static final byte DROPPER = (byte) 0x10;
         public static final byte HORSE = (byte) 0xa;
 
-        public static final byte fromString(String str) {
-            if (str.equals("minecraft:chest")) {
+        public static final byte fromString(String str)
+        {
+            if (str.equals("minecraft:chest"))
+            {
                 return PCInventory.CHEST;
-            } else if (str.equals("minecraft:crafting_table")) {
+            }
+            else if (str.equals("minecraft:crafting_table"))
+            {
                 return PCInventory.WORKBENCH;
-            } else if (str.equals("minecraft:furnance")) {
+            }
+            else if (str.equals("minecraft:furnance"))
+            {
                 return PCInventory.FURNANCE;
-            } else if (str.equals("minecraft:dispenser")) {
+            }
+            else if (str.equals("minecraft:dispenser"))
+            {
                 return PCInventory.DISPENSER;
-            } else if (str.equals("minecraft:enchanting_table")) {
+            }
+            else if (str.equals("minecraft:enchanting_table"))
+            {
                 return PCInventory.ENCHANTING_TABLE;
-            } else if (str.equals("minecraft:brewing_stand")) {
+            }
+            else if (str.equals("minecraft:brewing_stand"))
+            {
                 return PCInventory.BREWING_STAND;
-            } else if (str.equals("minecraft:villager")) {
+            }
+            else if (str.equals("minecraft:villager"))
+            {
                 return PCInventory.NPC_TRADE;
-            } else if (str.equals("minecraft:beacon")) {
+            }
+            else if (str.equals("minecraft:beacon"))
+            {
                 return PCInventory.BEACON;
-            } else if (str.equals("minecraft:hopper")) {
+            }
+            else if (str.equals("minecraft:hopper"))
+            {
                 return PCInventory.HOPPER;
-            } else if (str.equals("minecraft:dropper")) {
+            }
+            else if (str.equals("minecraft:dropper"))
+            {
                 return PCInventory.DROPPER;
-            } else if (str.equals("EntityHorse")) {
+            }
+            else if (str.equals("EntityHorse"))
+            {
                 return PCInventory.HORSE;
             }
             return (byte) 0xFF;
         }
     }
 
-    public static final class SlotSize {
+    public static final class SlotSize
+    {
 
         public static final int CHEST = 27;
         public static final int DOUBLE_CHEST = 27 + 27;

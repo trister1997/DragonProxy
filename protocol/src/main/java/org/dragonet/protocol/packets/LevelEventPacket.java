@@ -7,7 +7,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class LevelEventPacket extends PEPacket {
+public class LevelEventPacket extends PEPacket
+{
 
     public static final int EVENT_SOUND_CLICK = 1000;
     public static final int EVENT_SOUND_CLICK_FAIL = 1001;
@@ -55,7 +56,7 @@ public class LevelEventPacket extends PEPacket {
     public static final int EVENT_PARTICLE_EYE_DESPAWN = 2003;
     public static final int EVENT_PARTICLE_SPAWN = 2004;
     public static final int EVENT_PARTICLE_BONEMEAL = 2005;
-    
+
     public static final int EVENT_GUARDIAN_CURSE = 2006;
 
     public static final int EVENT_PARTICLE_BLOCK_FORCE_FIELD = 2008;
@@ -92,24 +93,28 @@ public class LevelEventPacket extends PEPacket {
     public Vector3F position;
     public int data;
 
-    public LevelEventPacket() {
+    public LevelEventPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.LEVEL_EVENT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarInt(eventId);
         putVector3F(position);
         putVarInt(data);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         eventId = getVarInt();
         position = getVector3F();
         data = getVarInt();

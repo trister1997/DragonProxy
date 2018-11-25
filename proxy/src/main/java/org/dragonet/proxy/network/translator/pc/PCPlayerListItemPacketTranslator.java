@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,25 +14,28 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
+import org.dragonet.common.data.entity.Skin;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.PlayerListPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.PlayerListPacket;
-import org.dragonet.common.data.entity.Skin;
+public class PCPlayerListItemPacketTranslator implements IPCPacketTranslator<ServerPlayerListEntryPacket>
+{
 
-public class PCPlayerListItemPacketTranslator implements IPCPacketTranslator<ServerPlayerListEntryPacket> {
-
-    public PEPacket[] translate(UpstreamSession session, ServerPlayerListEntryPacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerPlayerListEntryPacket packet)
+    {
         PlayerListPacket pk = new PlayerListPacket();
-        if (packet.getAction() == PlayerListEntryAction.ADD_PLAYER) {
+        if (packet.getAction() == PlayerListEntryAction.ADD_PLAYER)
+        {
             PlayerListEntry[] entries = packet.getEntries();
             Set<org.dragonet.protocol.type.PlayerListEntry> peEntries = new HashSet();
-            for (PlayerListEntry entry : entries) {
+            for (PlayerListEntry entry : entries)
+            {
                 session.getPlayerInfoCache().put(entry.getProfile().getId(), entry);
                 org.dragonet.protocol.type.PlayerListEntry peEntry = new org.dragonet.protocol.type.PlayerListEntry();
                 peEntry.uuid = entry.getProfile().getId();
@@ -44,10 +47,13 @@ public class PCPlayerListItemPacketTranslator implements IPCPacketTranslator<Ser
             }
             pk.type = PlayerListPacket.TYPE_ADD;
             pk.entries = (org.dragonet.protocol.type.PlayerListEntry[]) peEntries.toArray(new org.dragonet.protocol.type.PlayerListEntry[peEntries.size()]);
-        } else if (packet.getAction() == PlayerListEntryAction.REMOVE_PLAYER) {
+        }
+        else if (packet.getAction() == PlayerListEntryAction.REMOVE_PLAYER)
+        {
             PlayerListEntry[] entries = packet.getEntries();
             Set<org.dragonet.protocol.type.PlayerListEntry> peEntries = new HashSet();
-            for (PlayerListEntry entry : entries) {
+            for (PlayerListEntry entry : entries)
+            {
                 session.getPlayerInfoCache().remove(entry.getProfile().getId());
                 org.dragonet.protocol.type.PlayerListEntry peEntry = new org.dragonet.protocol.type.PlayerListEntry();
                 peEntry.uuid = entry.getProfile().getId();

@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -20,9 +20,92 @@ import org.dragonet.common.utilities.BinaryStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityMetaData extends BinaryStream {
+public class EntityMetaData extends BinaryStream
+{
 
-    public static class Constants {
+    // vars
+    public HashMap<Integer, IEntityMetaDataObject> map;
+
+    // constructor
+    public EntityMetaData()
+    {
+        this.map = new HashMap<>();
+    }
+
+    // public
+    public static EntityMetaData from(BinaryStream source)
+    {
+        // TODO
+        return createDefault();
+    }
+
+    public static EntityMetaData createDefault()
+    {
+        EntityMetaData data = new EntityMetaData();
+        data.setGenericFlag(Constants.DATA_FLAG_BREATHING, true);
+        data.setGenericFlag(Constants.DATA_FLAG_AFFECTED_BY_GRAVITY, true);
+        data.setGenericFlag(Constants.DATA_FLAG_HAS_COLLISION, true);
+        data.setGenericFlag(Constants.DATA_FLAG_CAN_CLIMB, true);
+        data.set(Constants.DATA_AIR, new ShortMeta((short) 400));
+        data.set(Constants.DATA_MAX_AIR, new ShortMeta((short) 400));
+        // data.set(Constants.DATA_NAMETAG, new ByteArrayMeta(""));
+        data.set(Constants.DATA_LEAD_HOLDER_EID, new LongMeta(-1L));
+        data.set(Constants.DATA_SCALE, new FloatMeta(1.0f));
+//		data.set(Constants.DATA_BED_POSITION, new BlockPositionMeta(new BlockPosition(0, 0, 0)));
+        return data;
+    }
+
+    public void set(int key, IEntityMetaDataObject object)
+    {
+        this.map.put(key, object);
+    }
+
+    public void encode()
+    {
+        reset();
+        putUnsignedVarInt(map.size());
+        for (Map.Entry<Integer, IEntityMetaDataObject> entry : this.map.entrySet())
+        {
+            putUnsignedVarInt(entry.getKey());
+            putUnsignedVarInt(entry.getValue().type());
+            entry.getValue().encode(this);
+        }
+    }
+
+    public void setGenericFlag(int flagId, boolean value)
+    {
+        long flag = 0;
+        if (!map.containsKey(Constants.DATA_FLAGS))
+        {
+            map.put(Constants.DATA_FLAGS, new LongMeta(0L));
+        }
+        else
+        {
+            flag = ((LongMeta) map.get(Constants.DATA_FLAGS)).data;
+        }
+        boolean currValue = ((flag >> flagId) & 0b1) > 0;
+        if (currValue != value)
+        {
+            flag ^= (1L << flagId);
+        }
+        ((LongMeta) map.get(Constants.DATA_FLAGS)).data = flag;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("EntityMetaData [\n");
+        for (Map.Entry<Integer, IEntityMetaDataObject> entry : this.map.entrySet())
+        {
+            builder.append("\t- ID: " + entry.getKey() + " " + entry.getValue() + "\n");
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
+    public static class Constants
+    {
 
         public static final int DATA_TYPE_BYTE = 0;
         public static final int DATA_TYPE_SHORT = 1;
@@ -175,73 +258,5 @@ public class EntityMetaData extends BinaryStream {
         public static final int DATA_FLAG_SPIN_ATTACK = 54;
         public static final int DATA_FLAG_SWIMMING = 55;
         public static final int DATA_FLAG_BRIBED = 56;
-    }
-
-    // vars
-    public HashMap<Integer, IEntityMetaDataObject> map;
-
-    // constructor
-    public EntityMetaData() {
-        this.map = new HashMap<>();
-    }
-
-    // public
-    public static EntityMetaData from(BinaryStream source) {
-        // TODO
-        return createDefault();
-    }
-
-    public static EntityMetaData createDefault() {
-        EntityMetaData data = new EntityMetaData();
-        data.setGenericFlag(Constants.DATA_FLAG_BREATHING, true);
-        data.setGenericFlag(Constants.DATA_FLAG_AFFECTED_BY_GRAVITY, true);
-        data.setGenericFlag(Constants.DATA_FLAG_HAS_COLLISION, true);
-        data.setGenericFlag(Constants.DATA_FLAG_CAN_CLIMB, true);
-        data.set(Constants.DATA_AIR, new ShortMeta((short) 400));
-        data.set(Constants.DATA_MAX_AIR, new ShortMeta((short) 400));
-        // data.set(Constants.DATA_NAMETAG, new ByteArrayMeta(""));
-        data.set(Constants.DATA_LEAD_HOLDER_EID, new LongMeta(-1L));
-        data.set(Constants.DATA_SCALE, new FloatMeta(1.0f));
-//		data.set(Constants.DATA_BED_POSITION, new BlockPositionMeta(new BlockPosition(0, 0, 0)));
-        return data;
-    }
-
-    public void set(int key, IEntityMetaDataObject object) {
-        this.map.put(key, object);
-    }
-
-    public void encode() {
-        reset();
-        putUnsignedVarInt(map.size());
-        for (Map.Entry<Integer, IEntityMetaDataObject> entry : this.map.entrySet()) {
-            putUnsignedVarInt(entry.getKey());
-            putUnsignedVarInt(entry.getValue().type());
-            entry.getValue().encode(this);
-        }
-    }
-
-    public void setGenericFlag(int flagId, boolean value) {
-        long flag = 0;
-        if (!map.containsKey(Constants.DATA_FLAGS)) {
-            map.put(Constants.DATA_FLAGS, new LongMeta(0L));
-        } else {
-            flag = ((LongMeta) map.get(Constants.DATA_FLAGS)).data;
-        }
-        boolean currValue = ((flag >> flagId) & 0b1) > 0;
-        if (currValue != value) {
-            flag ^= (1L << flagId);
-        }
-        ((LongMeta) map.get(Constants.DATA_FLAGS)).data = flag;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("EntityMetaData [\n");
-        for (Map.Entry<Integer, IEntityMetaDataObject> entry : this.map.entrySet()) {
-            builder.append("\t- ID: " + entry.getKey() + " " + entry.getValue() + "\n");
-        }
-        builder.append("]");
-        return builder.toString();
     }
 }

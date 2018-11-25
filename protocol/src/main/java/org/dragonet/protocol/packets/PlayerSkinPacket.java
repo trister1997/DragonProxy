@@ -1,15 +1,16 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.data.entity.Skin;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.data.entity.Skin;
 
 import java.util.UUID;
 
 /**
  * Created on 2017/11/26.
  */
-public class PlayerSkinPacket extends PEPacket {
+public class PlayerSkinPacket extends PEPacket
+{
 
     public UUID uuid;
     public String oldSkinName = "";
@@ -18,22 +19,27 @@ public class PlayerSkinPacket extends PEPacket {
     public String geometryModel;
     public String geometryData;
 
-    public PlayerSkinPacket() {
+    public PlayerSkinPacket()
+    {
     }
 
-    public PlayerSkinPacket(UUID uuid) {
+    public PlayerSkinPacket(UUID uuid)
+    {
         this.uuid = uuid;
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAYER_SKIN_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUUID(uuid);
-        if (skin == null) {
+        if (skin == null)
+        {
             skin = Skin.DEFAULT_SKIN_STEVE;
         }
         putString(skin.getModel());
@@ -47,7 +53,15 @@ public class PlayerSkinPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
-
+    public void decodePayload()
+    {
+        uuid = getUUID();
+        skin = new Skin(getString());
+        newSkinName = getString();
+        oldSkinName = getString();
+        skin.setData(getByteArray());
+        skin.setCape(new Skin.Cape(getByteArray()));
+        geometryModel = getString();
+        geometryData = getString();
     }
 }

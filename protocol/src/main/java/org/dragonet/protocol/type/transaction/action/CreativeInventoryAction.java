@@ -5,7 +5,8 @@ import org.dragonet.common.data.inventory.Slot;
 /**
  * @author CreeperFace
  */
-public class CreativeInventoryAction extends InventoryAction {
+public class CreativeInventoryAction extends InventoryAction
+{
     /**
      * Player put an item into the creative window to destroy it.
      */
@@ -17,7 +18,8 @@ public class CreativeInventoryAction extends InventoryAction {
 
     protected int actionType;
 
-    public CreativeInventoryAction(Slot source, Slot target, int action) {
+    public CreativeInventoryAction(Slot source, Slot target, int action)
+    {
         super(source, target);
     }
 }

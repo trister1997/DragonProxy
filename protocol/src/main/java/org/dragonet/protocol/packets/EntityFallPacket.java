@@ -9,33 +9,37 @@ import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
 /**
- *
  * @author Epic
  */
-public class EntityFallPacket extends PEPacket {
+public class EntityFallPacket extends PEPacket
+{
 
     public long rtid;
     public float fallDistance;
     public boolean unk1;
 
-    public EntityFallPacket() {
+    public EntityFallPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ENTITY_FALL_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putFloat(fallDistance);
         putBoolean(unk1);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         fallDistance = getFloat();
         unk1 = getBoolean();

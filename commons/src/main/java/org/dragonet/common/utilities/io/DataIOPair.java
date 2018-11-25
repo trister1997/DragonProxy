@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -15,21 +15,25 @@ package org.dragonet.common.utilities.io;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-public class DataIOPair {
+public class DataIOPair
+{
 
     DataInputStream input;
     DataOutputStream output;
 
-    public DataIOPair(DataInputStream input, DataOutputStream output) {
+    public DataIOPair(DataInputStream input, DataOutputStream output)
+    {
         this.input = input;
         this.output = output;
     }
 
-    public DataInputStream getInput() {
+    public DataInputStream getInput()
+    {
         return input;
     }
 
-    public DataOutputStream getOutput() {
+    public DataOutputStream getOutput()
+    {
         return output;
     }
 }

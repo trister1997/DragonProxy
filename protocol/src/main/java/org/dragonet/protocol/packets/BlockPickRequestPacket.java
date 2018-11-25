@@ -1,10 +1,11 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
-public class BlockPickRequestPacket extends PEPacket {
+public class BlockPickRequestPacket extends PEPacket
+{
 
     public int x;
     public int y;
@@ -13,12 +14,14 @@ public class BlockPickRequestPacket extends PEPacket {
     public int selectedSlot;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.BLOCK_PICK_REQUEST_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         BlockPosition v = this.getSignedBlockPosition();
         this.x = v.x;
         this.y = v.y;
@@ -28,7 +31,8 @@ public class BlockPickRequestPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
 
     }
 }

@@ -6,18 +6,12 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network;
 
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.whirvis.jraknet.RakNetPacket;
 import com.whirvis.jraknet.identifier.MinecraftIdentifier;
@@ -31,24 +25,33 @@ import org.dragonet.proxy.configuration.Lang;
 import org.dragonet.proxy.network.translator.MessageTranslator;
 import org.dragonet.proxy.utilities.pingpassthrough.PingThread;
 
-public class RaknetInterface implements RakNetServerListener {
+import java.net.InetSocketAddress;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+public class RaknetInterface implements RakNetServerListener
+{
 
     public static final Set<String> IMMEDIATE_PACKETS = new HashSet<>();
+
+    static
+    {
+        IMMEDIATE_PACKETS.add("PlayStatus");
+    }
 
     private final DragonProxy proxy;
     private final SessionRegister sessions;
     private final RakNetServer rakServer;
-
+    private final ScheduledFuture updatePing;
     private long serverId = new Random().nextLong();
     private String serverName;
     private int maxPlayers;
-    private final ScheduledFuture updatePing;
 
-    static {
-        IMMEDIATE_PACKETS.add("PlayStatus");
-    }
-
-    public RaknetInterface(DragonProxy proxy, String ip, int port, String serverName, int maxPlayers) {
+    public RaknetInterface(DragonProxy proxy, String ip, int port, String serverName, int maxPlayers)
+    {
         this.proxy = proxy;
         this.serverName = serverName;
         this.maxPlayers = maxPlayers;
@@ -58,33 +61,40 @@ public class RaknetInterface implements RakNetServerListener {
         this.rakServer.setBroadcastingEnabled(true);
         this.sessions = this.proxy.getSessionRegister();
         this.rakServer.startThreaded();
-        this.updatePing = proxy.getGeneralThreadPool().scheduleAtFixedRate(() -> {
+        this.updatePing = proxy.getGeneralThreadPool().scheduleAtFixedRate(() ->
+        {
             //TODO option to display minecraft server players instead of proxy
             setBroadcastName(getServerName(), sessions.getOnlineCount(), getMaxPlayers());
         }, 500, 500, TimeUnit.MILLISECONDS);
     }
 
-    public DragonProxy getProxy() {
+    public DragonProxy getProxy()
+    {
         return proxy;
     }
 
-    public String getServerName() {
+    public String getServerName()
+    {
         return serverName;
     }
 
-    public int getMaxPlayers() {
+    public int getMaxPlayers()
+    {
         return maxPlayers;
     }
 
-    public RakNetServer getRakServer() {
+    public RakNetServer getRakServer()
+    {
         return rakServer;
     }
 
-    public void handlePing(ServerPing ping) {
+    public void handlePing(ServerPing ping)
+    {
         DragonProxy.getInstance().getLogger().debug("PING " + ping.getSender().toString());
     }
 
-    public void handleMessage(RakNetClientSession session, RakNetPacket packet, int channel) {
+    public void handleMessage(RakNetClientSession session, RakNetPacket packet, int channel)
+    {
         UpstreamSession upstream = sessions.getSession(session.getAddress().toString());
         if (upstream == null)
             return;
@@ -93,14 +103,16 @@ public class RaknetInterface implements RakNetServerListener {
         upstream.handlePacketBinary(packet.array());
     }
 
-    public void onClientConnect(RakNetClientSession session) {
+    public void onClientConnect(RakNetClientSession session)
+    {
         DragonProxy.getInstance().getLogger().debug("CLIENT CONNECT");
         String identifier = session.getAddress().toString();
         UpstreamSession upstream = new UpstreamSession(proxy, identifier, session, session.getAddress());
         sessions.newSession(upstream);
     }
 
-    public void onClientDisconnect(RakNetClientSession session, String reason) {
+    public void onClientDisconnect(RakNetClientSession session, String reason)
+    {
         DragonProxy.getInstance().getLogger().debug("CLIENT DISCONNECT");
         UpstreamSession upstream = sessions.getSession(session.getAddress().toString());
         if (upstream == null)
@@ -109,48 +121,59 @@ public class RaknetInterface implements RakNetServerListener {
         // things.
     }
 
-    public void onThreadException(Throwable throwable) {
+    public void onThreadException(Throwable throwable)
+    {
         DragonProxy.getInstance().getLogger().debug("Thread exception: " + throwable.getMessage());
         throwable.printStackTrace();
     }
 
-    public void onHandlerException(InetSocketAddress address, Throwable throwable) {
+    public void onHandlerException(InetSocketAddress address, Throwable throwable)
+    {
         DragonProxy.getInstance().getLogger().debug("Handler exception: " + throwable.getMessage());
         throwable.printStackTrace();
     }
 
-    public void onSessionException(RakNetClientSession session, Throwable throwable) {
+    public void onSessionException(RakNetClientSession session, Throwable throwable)
+    {
         DragonProxy.getInstance().getLogger().debug("Session exception: " + throwable.getMessage());
         throwable.printStackTrace();
     }
 
-    public void setBroadcastName(String serverName, int players, int maxPlayers) {
+    public void setBroadcastName(String serverName, int players, int maxPlayers)
+    {
         if (maxPlayers == -1)
             maxPlayers = Integer.MAX_VALUE;
 
-        if (DragonProxy.getInstance().getConfig().ping_passthrough && PingThread.getInstance() != null) {
+        if (DragonProxy.getInstance().getConfig().ping_passthrough && PingThread.getInstance() != null)
+        {
             ServerStatusInfo info = PingThread.getInstance().getInfo();
-            if (info == null) {
+            if (info == null)
+            {
                 // server offline, should probably do something
-            } else {
-                String motd = MessageTranslator.translate(info.getDescription())
-                        .replace("§k", "") // disabled due to &r not working (?)
-                        .replace("\n", ""); // multiline is not supported atm
-                rakServer.setIdentifier(
-                        new MinecraftIdentifier(motd, ProtocolInfo.CURRENT_PROTOCOL, ProtocolInfo.MINECRAFT_VERSION_NETWORK,
-                                info.getPlayerInfo().getOnlinePlayers(), info.getPlayerInfo().getMaxPlayers(), serverId, "DragonProxy", "Survival"));
             }
-        } else {
+            else
+            {
+                String motd = MessageTranslator.translate(info.getDescription())
+                    .replace("§k", "") // disabled due to &r not working (?)
+                    .replace("\n", ""); // multiline is not supported atm
+                rakServer.setIdentifier(
+                    new MinecraftIdentifier(motd, ProtocolInfo.CURRENT_PROTOCOL, ProtocolInfo.MINECRAFT_VERSION_NETWORK,
+                        info.getPlayerInfo().getOnlinePlayers(), info.getPlayerInfo().getMaxPlayers(), serverId, "DragonProxy", "Survival"));
+            }
+        }
+        else
+        {
             rakServer.setIdentifier(
-                    new MinecraftIdentifier(serverName, ProtocolInfo.CURRENT_PROTOCOL, ProtocolInfo.MINECRAFT_VERSION_NETWORK,
-                            players, maxPlayers, serverId, "DragonProxy", "Survival"));
+                new MinecraftIdentifier(serverName, ProtocolInfo.CURRENT_PROTOCOL, ProtocolInfo.MINECRAFT_VERSION_NETWORK,
+                    players, maxPlayers, serverId, "DragonProxy", "Survival"));
         }
 
         if (!rakServer.isBroadcastingEnabled())
             rakServer.setBroadcastingEnabled(true);
     }
 
-    public void shutdown() {
+    public void shutdown()
+    {
         updatePing.cancel(true);
         rakServer.shutdown();
     }

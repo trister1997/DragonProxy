@@ -1,13 +1,14 @@
 package org.dragonet.protocol.type.transaction;
 
-import java.util.Set;
-
 import org.dragonet.protocol.type.transaction.action.InventoryAction;
+
+import java.util.Set;
 
 /**
  * @author CreeperFace
  */
-public interface InventoryTransaction {
+public interface InventoryTransaction
+{
 
     long getCreationTime();
 

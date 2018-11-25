@@ -2,9 +2,9 @@ package org.dragonet.protocol.packets;
 
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.utilities.Binary;
 
-public class PlayerHotbarPacket extends PEPacket {
+public class PlayerHotbarPacket extends PEPacket
+{
 
     public int selectedHotbarSlot;
     public int windowId = -1;
@@ -14,12 +14,14 @@ public class PlayerHotbarPacket extends PEPacket {
     public boolean selectHotbarSlot = true;
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAYER_HOTBAR_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.selectedHotbarSlot = (int) this.getUnsignedVarInt();
         this.windowId = this.getByte();
 //        int count = (int) this.getUnsignedVarInt();
@@ -32,7 +34,8 @@ public class PlayerHotbarPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.reset();
         this.putUnsignedVarInt(this.selectedHotbarSlot);
         this.putByte((byte) this.windowId);

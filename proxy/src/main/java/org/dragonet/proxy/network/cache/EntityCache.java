@@ -6,30 +6,26 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.cache;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnExpOrbPacket;
-
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.*;
 import org.dragonet.common.data.entity.EntityType;
-import org.dragonet.proxy.network.UpstreamSession;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPaintingPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
 import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.EntityMetaTranslator;
 
-public final class EntityCache {
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+public final class EntityCache
+{
 
     private final UpstreamSession upstream;
     private final CachedEntity clientEntity;
@@ -43,63 +39,77 @@ public final class EntityCache {
     private final Map<Long, Long> mapRemoteToClient = Collections.synchronizedMap(new HashMap<>());
     private final Map<Long, Long> mapClientToRemote = Collections.synchronizedMap(new HashMap<>());
 
-    public EntityCache(UpstreamSession upstream) {
+    public EntityCache(UpstreamSession upstream)
+    {
         this.upstream = upstream;
         this.clientEntity = new CachedEntity(1L, 1L, -1, EntityType.PLAYER, null, true, null);
         reset(false);
     }
 
-    public UpstreamSession getUpstream() {
+    public UpstreamSession getUpstream()
+    {
         return upstream;
     }
 
-    public Map<Long, CachedEntity> getEntities() {
+    public Map<Long, CachedEntity> getEntities()
+    {
         return entities;
     }
 
-    public void reset(boolean clear) {
-        for(CachedEntity entity : entities.values())
+    public void reset(boolean clear)
+    {
+        for (CachedEntity entity : entities.values())
             entity.despawn(upstream);
-        if (clear) {
+        if (clear)
+        {
             entities.clear();
             mapRemoteToClient.clear();
             mapClientToRemote.clear();
         }
     }
 
-    public CachedEntity getClientEntity() {
+    public CachedEntity getClientEntity()
+    {
         return this.clientEntity;
     }
 
-    public void updateClientEntity(ServerJoinGamePacket packet) {
+    public void updateClientEntity(ServerJoinGamePacket packet)
+    {
         clientEntity.eid = packet.getEntityId();
         clientEntity.dimention = packet.getDimension();
         mapClientToRemote.put(clientEntity.proxyEid, clientEntity.eid);
         mapRemoteToClient.put(clientEntity.eid, clientEntity.proxyEid);
     }
 
-    public CachedEntity getByRemoteEID(long eid) {
-        if (!mapRemoteToClient.containsKey(eid)) {
+    public CachedEntity getByRemoteEID(long eid)
+    {
+        if (!mapRemoteToClient.containsKey(eid))
+        {
             return null;
         }
         long proxyEid = mapRemoteToClient.get(eid);
         return entities.get(proxyEid);
     }
 
-    public CachedEntity getByLocalEID(long eid) {
-        if (!mapClientToRemote.containsKey(eid)) {
+    public CachedEntity getByLocalEID(long eid)
+    {
+        if (!mapClientToRemote.containsKey(eid))
+        {
             return null;
         }
         return entities.get(eid);
     }
 
-    public CachedEntity removeByRemoteEID(long eid) {
-        if (!mapRemoteToClient.containsKey(eid)) {
+    public CachedEntity removeByRemoteEID(long eid)
+    {
+        if (!mapRemoteToClient.containsKey(eid))
+        {
             return null;
         }
         long proxyEid = mapRemoteToClient.get(eid);
         CachedEntity e = entities.remove(proxyEid);
-        if (e == null) {
+        if (e == null)
+        {
             return null;
         }
         mapClientToRemote.remove(proxyEid);
@@ -113,9 +123,11 @@ public final class EntityCache {
      * @param packet
      * @return Returns null if that entity isn't supported on MCPE yet.
      */
-    public CachedEntity newEntity(ServerSpawnMobPacket packet) {
+    public CachedEntity newEntity(ServerSpawnMobPacket packet)
+    {
         EntityType peType = EntityType.convertToPE(packet.getType());
-        if (peType == null) {
+        if (peType == null)
+        {
             DragonProxy.getInstance().getLogger().debug("Not supported entity : " + packet.getType().name());
             return null; // Not supported
         }
@@ -133,7 +145,8 @@ public final class EntityCache {
         return e;
     }
 
-    public CachedEntity newEntity(ServerSpawnPaintingPacket packet) {
+    public CachedEntity newEntity(ServerSpawnPaintingPacket packet)
+    {
         CachedEntity e = new CachedEntity(packet.getEntityId(), nextClientEntityId.getAndIncrement(), -1, EntityType.PAINTING, null, false, null);
         e.absoluteMove(packet.getPosition().getX(), packet.getPosition().getY(), packet.getPosition().getZ(), 0, 0);
         entities.put(e.proxyEid, e);
@@ -142,7 +155,8 @@ public final class EntityCache {
         return e;
     }
 
-    public CachedEntity newPlayer(ServerSpawnPlayerPacket packet) {
+    public CachedEntity newPlayer(ServerSpawnPlayerPacket packet)
+    {
         CachedEntity e = new CachedEntity(packet.getEntityId(), nextClientEntityId.getAndIncrement(), -1, EntityType.PLAYER, null, true, packet.getUUID());
         e.absoluteMove(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
         e.pcMeta = packet.getMetadata();
@@ -153,7 +167,8 @@ public final class EntityCache {
         return e;
     }
 
-    public CachedEntity newObject(ServerSpawnObjectPacket packet) {
+    public CachedEntity newObject(ServerSpawnObjectPacket packet)
+    {
         CachedEntity e = new CachedEntity(packet.getEntityId(), nextClientEntityId.getAndIncrement(), -1, EntityType.ITEM, packet.getType(),
             false, null);
         e.absoluteMove(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
@@ -167,7 +182,8 @@ public final class EntityCache {
     }
 
     //special for Object that are not items
-    public CachedEntity newEntity(ServerSpawnObjectPacket packet) {
+    public CachedEntity newEntity(ServerSpawnObjectPacket packet)
+    {
         EntityType peType = EntityMetaTranslator.translateToPE(packet.getType());
         CachedEntity e = new CachedEntity(packet.getEntityId(), nextClientEntityId.getAndIncrement(), MagicValues.value(Integer.class, packet.getType()),
             peType, packet.getType(), false, null);
@@ -182,7 +198,8 @@ public final class EntityCache {
     }
 
     //special for exp orbs
-    public CachedEntity newEntity(ServerSpawnExpOrbPacket packet) {
+    public CachedEntity newEntity(ServerSpawnExpOrbPacket packet)
+    {
         CachedEntity e = new CachedEntity(packet.getEntityId(), nextClientEntityId.getAndIncrement(), 0, EntityType.EXP_ORB, ObjectType.EXP_BOTTLE, false, null);
         e.absoluteMove(packet.getX(), packet.getY(), packet.getZ(), 0, 0);
         entities.put(e.proxyEid, e);
@@ -191,7 +208,8 @@ public final class EntityCache {
         return e;
     }
 
-    public boolean isRemoteEIDPlayerEntity(long eid) {
+    public boolean isRemoteEIDPlayerEntity(long eid)
+    {
         long proxyEid = mapRemoteToClient.get(eid);
         return playerEntities.contains(proxyEid);
     }
@@ -201,11 +219,12 @@ public final class EntityCache {
         return nextClientEntityId;
     }
 
-    public void onTick() {
+    public void onTick()
+    {
         // Disabled this for now
         /*
          * entities.values().stream().map((e) -> { e.x += e.motionX; e.y += e.motionY;
-		 * e.z += e.motionZ; return e; });
+         * e.z += e.motionZ; return e; });
          */
     }
 }

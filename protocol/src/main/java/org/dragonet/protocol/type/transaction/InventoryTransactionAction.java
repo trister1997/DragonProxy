@@ -6,20 +6,21 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.protocol.type.transaction;
 
 import org.dragonet.common.data.inventory.Slot;
-import org.dragonet.protocol.packets.InventoryTransactionPacket;
 import org.dragonet.common.utilities.BinaryStream;
+import org.dragonet.protocol.packets.InventoryTransactionPacket;
 
 /**
  * Created on 2017/10/21.
  */
-public class InventoryTransactionAction {
+public class InventoryTransactionAction
+{
 
     public static final int SOURCE_CONTAINER = 0;
     public static final int SOURCE_WORLD = 2; // drop/pickup item entity
@@ -77,15 +78,18 @@ public class InventoryTransactionAction {
     public Slot oldItem;
     public Slot newItem;
 
-    public InventoryTransactionAction() {
+    public InventoryTransactionAction()
+    {
 
     }
 
-    public static InventoryTransactionAction read(InventoryTransactionPacket packet) {
+    public static InventoryTransactionAction read(InventoryTransactionPacket packet)
+    {
         InventoryTransactionAction action = new InventoryTransactionAction();
         action.sourceType = (int) packet.getUnsignedVarInt();
 
-        switch (action.sourceType) {
+        switch (action.sourceType)
+        {
             case SOURCE_CONTAINER:
                 action.containerId = packet.getVarInt();
                 break;
@@ -96,7 +100,8 @@ public class InventoryTransactionAction {
                 break;
             case SOURCE_TODO:
                 action.containerId = packet.getVarInt();
-                switch (action.containerId) {
+                switch (action.containerId)
+                {
                     case SOURCE_TYPE_CRAFTING_USE_INGREDIENT:
                     case SOURCE_TYPE_CRAFTING_RESULT:
 //				packet.craftingPart = true;
@@ -111,10 +116,12 @@ public class InventoryTransactionAction {
         return action;
     }
 
-    public void write(BinaryStream packet) {
+    public void write(BinaryStream packet)
+    {
         packet.putUnsignedVarInt(sourceType);
 
-        switch (sourceType) {
+        switch (sourceType)
+        {
             case SOURCE_CONTAINER:
                 packet.putVarInt(containerId);
                 break;

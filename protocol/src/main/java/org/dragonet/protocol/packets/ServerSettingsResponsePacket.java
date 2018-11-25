@@ -9,31 +9,35 @@ import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
 /**
- *
  * @author Epic
  */
-public class ServerSettingsResponsePacket extends PEPacket {
+public class ServerSettingsResponsePacket extends PEPacket
+{
 
     public long formId;
     public String formData;
 
-    public ServerSettingsResponsePacket() {
+    public ServerSettingsResponsePacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.SERVER_SETTINGS_RESPONSE_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.putUnsignedVarInt(formId);
         this.putString(formData);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         formId = getUnsignedVarInt();
         formData = getString();
     }

@@ -6,19 +6,23 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class ResourcePacksInfoPacket extends PEPacket {
+public class ResourcePacksInfoPacket extends PEPacket
+{
 
-    public ResourcePacksInfoPacket() {
+    public ResourcePacksInfoPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.RESOURCE_PACKS_INFO_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         // TODO: real encode
         putBoolean(false); //mustAccept
         putLShort(0); //resource pack entries
@@ -26,7 +30,8 @@ public class ResourcePacksInfoPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         // TODO: real decode
     }
 }

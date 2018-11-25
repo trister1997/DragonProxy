@@ -7,7 +7,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class MoveEntityAbsolutePacket extends PEPacket {
+public class MoveEntityAbsolutePacket extends PEPacket
+{
 
     public long rtid;
     public Vector3F position;
@@ -17,21 +18,24 @@ public class MoveEntityAbsolutePacket extends PEPacket {
     public boolean onGround;
     public boolean teleported;
 
-    public MoveEntityAbsolutePacket() {
+    public MoveEntityAbsolutePacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.MOVE_ENTITY_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         byte flags = 0;
-        flags |= teleported ? 0b1 : 0;
-        flags |= onGround ? 0b10 : 0;
+        flags |= teleported ? 0x01 : 0;
+        flags |= onGround ? 0x02 : 0;
         putByte(flags);
         putVector3F(position);
         putByteRotation(pitch);
@@ -40,11 +44,12 @@ public class MoveEntityAbsolutePacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         int flags = getByte();
-        teleported = (flags & 0b1) != 0;
-        onGround = (flags & 0b10) != 0;
+        teleported = (flags & 0x01) != 0;
+        onGround = (flags & 0x02) != 0;
         position = getVector3F();
         pitch = getByteRotation();
         headYaw = getByteRotation();

@@ -7,25 +7,35 @@ import org.dragonet.common.utilities.BinaryStream;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.ModalFormRequestPacket;
 
-public class BedrockPlayer {
+public class BedrockPlayer
+{
 
     private final Player player;
 
     // constructor
-    private BedrockPlayer(Player player) {
+    private BedrockPlayer(Player player)
+    {
         this.player = player;
     }
 
-    // public
-    public Player getPlayer() {
-        return player;
+    // static
+    public static void createForPlayer(Player player)
+    {
+        if (player.hasMetadata("BedrockPlayer"))
+        {
+            DPAddonBukkit.getInstance().getLogger().info("BedrockPlayer " + player.getName() + " already have the Bedrock Metadata");
+            return;
+        }
+        player.setMetadata("BedrockPlayer", new FixedMetadataValue(
+            DPAddonBukkit.getInstance(),
+            new BedrockPlayer(player)
+        ));
     }
 
-    public void process(PEPacket packet) {
-        BedrockPacketProcessor handler = BedrockPacketProcessorRegister.getHandler(packet);
-        if(handler != null) {
-            handler.process(this, packet);
-        }
+    public static BedrockPlayer getForPlayer(Player player)
+    {
+        if (!player.hasMetadata("BedrockPlayer")) return null;
+        return (BedrockPlayer) player.getMetadata("BedrockPlayer").get(0).value();
     }
 
     // NOT SUPPORTED YET
@@ -38,7 +48,26 @@ public class BedrockPlayer {
         player.sendPluginMessage(DPAddonBukkit.getInstance(), "DragonProxy", bis.getBuffer());
     } */
 
-    public void sendForm(int formId, ModalFormComponent form) {
+    // public
+    public Player getPlayer()
+    {
+        return player;
+    }
+
+
+    // private
+
+    public void process(PEPacket packet)
+    {
+        BedrockPacketProcessor handler = BedrockPacketProcessorRegister.getHandler(packet);
+        if (handler != null)
+        {
+            handler.process(this, packet);
+        }
+    }
+
+    public void sendForm(int formId, ModalFormComponent form)
+    {
         String formData = form.serializeToJson().toString();
         ModalFormRequestPacket request = new ModalFormRequestPacket();
         request.formId = formId;
@@ -49,27 +78,6 @@ public class BedrockPlayer {
         bis.putString("SendPacket");
         bis.putByteArray(request.getBuffer());
         player.sendPluginMessage(DPAddonBukkit.getInstance(), "DragonProxy", bis.getBuffer());
-    }
-
-
-    // private
-
-
-    // static
-    public static void createForPlayer(Player player) {
-        if(player.hasMetadata("BedrockPlayer")) {
-            DPAddonBukkit.getInstance().getLogger().info("BedrockPlayer " + player.getName() + " already have the Bedrock Metadata");
-            return;
-        }
-        player.setMetadata("BedrockPlayer", new FixedMetadataValue(
-                DPAddonBukkit.getInstance(),
-                new BedrockPlayer(player)
-        ));
-    }
-
-    public static BedrockPlayer getForPlayer(Player player) {
-        if(!player.hasMetadata("BedrockPlayer")) return null;
-        return (BedrockPlayer) player.getMetadata("BedrockPlayer").get(0).value();
     }
 
 }

@@ -6,30 +6,36 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class RemoveEntityPacket extends PEPacket {
+public class RemoveEntityPacket extends PEPacket
+{
 
     public long eid;
 
-    public RemoveEntityPacket() {
+    public RemoveEntityPacket()
+    {
 
     }
 
-    public RemoveEntityPacket(long eid) {
+    public RemoveEntityPacket(long eid)
+    {
         this.eid = eid;
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.REMOVE_ENTITY_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarLong(eid);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         eid = getVarLong();
     }
 }

@@ -27,7 +27,8 @@ import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-class TimingIdentifier {
+class TimingIdentifier
+{
     static final Map<String, TimingGroup> GROUP_MAP = new IdentityHashMap<>(64);
     static final TimingGroup DEFAULT_GROUP = getGroup("DragonProxy");
 
@@ -36,15 +37,18 @@ class TimingIdentifier {
     final Timing groupTiming;
     private final int hashCode;
 
-    TimingIdentifier(String group, String name, Timing groupTiming) {
+    TimingIdentifier(String group, String name, Timing groupTiming)
+    {
         this.group = group != null ? group.intern() : DEFAULT_GROUP.name;
         this.name = name.intern();
         this.groupTiming = groupTiming;
         this.hashCode = (31 * this.group.hashCode()) + this.name.hashCode();
     }
 
-    static TimingGroup getGroup(String name) {
-        if (name == null) {
+    static TimingGroup getGroup(String name)
+    {
+        if (name == null)
+        {
             return DEFAULT_GROUP;
         }
 
@@ -53,8 +57,10 @@ class TimingIdentifier {
 
     @Override
     @SuppressWarnings("all")
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof TimingIdentifier)) {
+    public boolean equals(Object o)
+    {
+        if (o == null || !(o instanceof TimingIdentifier))
+        {
             return false;
         }
 
@@ -64,18 +70,21 @@ class TimingIdentifier {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return this.hashCode;
     }
 
-    static class TimingGroup {
+    static class TimingGroup
+    {
         private static int idPool = 1;
         final int id = idPool++;
 
         final String name;
         ArrayDeque<Timing> timings = new ArrayDeque<>(64);
 
-        TimingGroup(String name) {
+        TimingGroup(String name)
+        {
             this.name = name.intern();
         }
     }

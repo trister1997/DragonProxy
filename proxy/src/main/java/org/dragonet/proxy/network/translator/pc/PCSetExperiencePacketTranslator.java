@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,15 +14,17 @@ package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerSetExperiencePacket;
 import org.dragonet.common.data.entity.PEEntityAttribute;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.UpdateAttributesPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.UpdateAttributesPacket;
 
-public class PCSetExperiencePacketTranslator implements IPCPacketTranslator<ServerPlayerSetExperiencePacket> {
+public class PCSetExperiencePacketTranslator implements IPCPacketTranslator<ServerPlayerSetExperiencePacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerPlayerSetExperiencePacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerPlayerSetExperiencePacket packet)
+    {
 
         CachedEntity peSelfPlayer = session.getEntityCache().getClientEntity();
 

@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -17,12 +17,7 @@ import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
-import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
-import com.github.steveice10.packetlib.event.session.PacketSendingEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import org.dragonet.protocol.PEPacket;
@@ -32,21 +27,24 @@ import org.dragonet.proxy.configuration.Lang;
 /**
  * Maintaince the connection between the proxy and remote Minecraft server.
  */
-public class PCDownstreamSession implements IDownstreamSession<Packet> {
-
-    public MinecraftProtocol protocol;
+public class PCDownstreamSession implements IDownstreamSession<Packet>
+{
 
     private final DragonProxy proxy;
     private final UpstreamSession upstream;
+    public MinecraftProtocol protocol;
     private Client remoteClient;
 
-    public PCDownstreamSession(DragonProxy proxy, UpstreamSession upstream) {
+    public PCDownstreamSession(DragonProxy proxy, UpstreamSession upstream)
+    {
         this.proxy = proxy;
         this.upstream = upstream;
     }
 
-    public void connect(String addr, int port) {
-        if (this.protocol == null) {
+    public void connect(String addr, int port)
+    {
+        if (this.protocol == null)
+        {
             upstream.onConnected(); // Clear the flags
             upstream.disconnect("ERROR! ");
             return;
@@ -55,18 +53,23 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         remoteClient.getSession().setConnectTimeout(5);
         remoteClient.getSession().setReadTimeout(5);
         remoteClient.getSession().setWriteTimeout(5);
-        remoteClient.getSession().addListener(new SessionAdapter() {
+        remoteClient.getSession().addListener(new SessionAdapter()
+        {
 
             @Override
-            public void connected(ConnectedEvent event) {
+            public void connected(ConnectedEvent event)
+            {
                 proxy.getLogger().info(proxy.getLang().get(Lang.MESSAGE_REMOTE_CONNECTED, upstream.getUsername(), upstream.getRemoteAddress()));
                 upstream.onConnected();
             }
 
             @Override
-            public void packetSending(PacketSendingEvent event) {
-                if(proxy.getAuthMode().equalsIgnoreCase("hybrid")) {
-                    if (protocol.getSubProtocol() == SubProtocol.HANDSHAKE && event.getPacket() instanceof HandshakePacket) {
+            public void packetSending(PacketSendingEvent event)
+            {
+                if (proxy.getAuthMode().equalsIgnoreCase("hybrid"))
+                {
+                    if (protocol.getSubProtocol() == SubProtocol.HANDSHAKE && event.getPacket() instanceof HandshakePacket)
+                    {
                         HandshakePacket packet = event.getPacket();
                         String host = remoteClient.getSession().getHost() + "\0" + upstream.getProfile().getChainJWT();
                         packet = new HandshakePacket(packet.getProtocolVersion(), host, packet.getPort(), packet.getIntent());
@@ -76,34 +79,45 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
             }
 
             @Override
-            public void disconnected(DisconnectedEvent event) {
+            public void disconnected(DisconnectedEvent event)
+            {
                 System.out.println("DisconnectedEvent " + event.getCause() + " " + event.getReason());
                 upstream.disconnect(proxy.getLang().get(event.getReason()));
             }
 
             @Override
-            public void disconnecting(DisconnectingEvent event) {
+            public void disconnecting(DisconnectingEvent event)
+            {
                 System.out.println("DisconnectingEvent " + event.getCause() + " " + event.getReason());
                 upstream.disconnect(proxy.getLang().get(event.getReason()));
             }
 
             @Override
-            public void packetReceived(PacketReceivedEvent event) {
+            public void packetReceived(PacketReceivedEvent event)
+            {
                 // Handle the packet
-                try {
+                try
+                {
                     PEPacket[] packets = PacketTranslatorRegister.translateToPE(upstream, event.getPacket());
-                    if (packets == null) {
+                    if (packets == null)
+                    {
                         return;
                     }
-                    if (packets.length <= 0) {
+                    if (packets.length <= 0)
+                    {
                         return;
                     }
-                    if (packets.length == 1) {
+                    if (packets.length == 1)
+                    {
                         upstream.sendPacket(packets[0]);
-                    } else {
+                    }
+                    else
+                    {
                         upstream.sendAllPackets(packets, false);
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                     throw e;
                 }
@@ -112,42 +126,53 @@ public class PCDownstreamSession implements IDownstreamSession<Packet> {
         remoteClient.getSession().connect();
     }
 
-    public void disconnect() {
-        if (remoteClient != null && remoteClient.getSession().isConnected()) {
+    public void disconnect()
+    {
+        if (remoteClient != null && remoteClient.getSession().isConnected())
+        {
             remoteClient.getSession().disconnect("Disconnect");
         }
     }
 
-    public boolean isConnected() {
+    public boolean isConnected()
+    {
         return remoteClient != null && remoteClient.getSession().isConnected();
     }
 
-    public void send(Packet... packets) {
-        for (Packet p : packets) {
+    public void send(Packet... packets)
+    {
+        for (Packet p : packets)
+        {
             send(p);
         }
     }
 
-    public void send(Packet packet) {
-        if (packet == null) {
+    public void send(Packet packet)
+    {
+        if (packet == null)
+        {
             return;
         }
         remoteClient.getSession().send(packet);
     }
 
-    public void sendChat(String chat) {
+    public void sendChat(String chat)
+    {
         remoteClient.getSession().send(new ClientChatPacket(chat));
     }
 
-    public void onTick() {
+    public void onTick()
+    {
 
     }
 
-    public DragonProxy getProxy() {
+    public DragonProxy getProxy()
+    {
         return proxy;
     }
 
-    public UpstreamSession getUpstream() {
+    public UpstreamSession getUpstream()
+    {
         return upstream;
     }
 }

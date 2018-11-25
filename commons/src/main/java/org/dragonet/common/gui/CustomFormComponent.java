@@ -9,28 +9,32 @@ import java.util.List;
 /**
  * Created on 2017/12/26.
  */
-public class CustomFormComponent extends BaseModalFormComponent {
-
-    private String title;
+public class CustomFormComponent extends BaseModalFormComponent
+{
 
     private final List<ModalFormComponent> components = new ArrayList<>();
+    private String title;
 
-    public CustomFormComponent(String title) {
+    public CustomFormComponent(String title)
+    {
         super("custom_form");
         this.title = title;
     }
 
-    public CustomFormComponent addComponent(ModalFormComponent component) {
+    public CustomFormComponent addComponent(ModalFormComponent component)
+    {
         components.add(component);
         return this;
     }
 
-    public List<ModalFormComponent> getComponents() {
+    public List<ModalFormComponent> getComponents()
+    {
         return components;
     }
 
     @Override
-    public void serializeData(JsonObject out) {
+    public void serializeData(JsonObject out)
+    {
         out.addProperty("title", title);
         JsonArray content = new JsonArray();
         components.forEach((c) -> content.add(c.serializeToJson()));

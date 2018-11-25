@@ -6,49 +6,60 @@ import org.dragonet.common.data.nbt.stream.NBTOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class IntArrayTag extends Tag {
+public class IntArrayTag extends Tag
+{
 
     public int[] data;
 
-    public IntArrayTag(String name) {
+    public IntArrayTag(String name)
+    {
         super(name);
     }
 
-    public IntArrayTag(String name, int[] data) {
+    public IntArrayTag(String name, int[] data)
+    {
         super(name);
         this.data = data;
     }
 
     @Override
-    void write(NBTOutputStream dos) throws IOException {
+    void write(NBTOutputStream dos) throws IOException
+    {
         dos.writeInt(data.length);
-        for (int aData : data) {
+        for (int aData : data)
+        {
             dos.writeInt(aData);
         }
     }
 
     @Override
-    void load(NBTInputStream dis) throws IOException {
+    void load(NBTInputStream dis) throws IOException
+    {
         int length = dis.readInt();
         data = new int[length];
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++)
+        {
             data[i] = dis.readInt();
         }
     }
 
     @Override
-    public byte getId() {
+    public byte getId()
+    {
         return TAG_Int_Array;
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue()
+    {
         return this.data;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj))
+        {
             IntArrayTag intArrayTag = (IntArrayTag) obj;
             return ((data == null && intArrayTag.data == null) || (data != null && Arrays.equals(data, intArrayTag.data)));
         }
@@ -56,7 +67,8 @@ public class IntArrayTag extends Tag {
     }
 
     @Override
-    public Tag copy() {
+    public Tag copy()
+    {
         int[] cp = new int[data.length];
         System.arraycopy(data, 0, cp, 0, data.length);
         return new IntArrayTag(getName(), cp);

@@ -3,7 +3,8 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-public class AnimatePacket extends PEPacket {
+public class AnimatePacket extends PEPacket
+{
 
     public static final int ANIMATION_SWING_ARM = 1;
     public static final int ANIMATION_LEAVE_BED = 3;
@@ -13,28 +14,34 @@ public class AnimatePacket extends PEPacket {
     public long eid;
     public float unknown;
 
-    public AnimatePacket() {
+    public AnimatePacket()
+    {
 
     }
 
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ANIMATE_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.action = this.getVarInt();
         this.eid = getEntityRuntimeId();
-        if ((this.action & 0x80) != 0) {
+        if ((this.action & 0x80) != 0)
+        {
             this.unknown = this.getLFloat();
         }
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.putVarInt(this.action);
         this.putEntityRuntimeId(this.eid);
-        if ((this.action & 0x80) != 0) {
+        if ((this.action & 0x80) != 0)
+        {
             this.putLFloat(this.unknown);
         }
     }

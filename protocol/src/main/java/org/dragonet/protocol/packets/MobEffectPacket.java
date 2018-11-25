@@ -6,7 +6,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class MobEffectPacket extends PEPacket {
+public class MobEffectPacket extends PEPacket
+{
 
     public static final byte EVENT_ADD = 1;
     public static final byte EVENT_MODIFY = 2;
@@ -19,17 +20,20 @@ public class MobEffectPacket extends PEPacket {
     public boolean particles;
     public int duration;
 
-    public MobEffectPacket() {
+    public MobEffectPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.MOB_EFFECT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putUnsignedVarLong(rtid);
         putByte(eventId);
         putVarInt(effectId);
@@ -39,7 +43,8 @@ public class MobEffectPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         rtid = getUnsignedVarLong();
         eventId = (byte) (getByte() & 0xFF);
         effectId = getVarInt();

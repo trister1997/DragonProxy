@@ -6,29 +6,33 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityAnimationPacket;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.AnimatePacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.AnimatePacket;
 
-public class PCAnimationPacketTranslator implements IPCPacketTranslator<ServerEntityAnimationPacket> {
+public class PCAnimationPacketTranslator implements IPCPacketTranslator<ServerEntityAnimationPacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerEntityAnimationPacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerEntityAnimationPacket packet)
+    {
 
         CachedEntity entity = session.getEntityCache().getByRemoteEID(packet.getEntityId());
-        if (entity == null) {
+        if (entity == null)
+        {
             return null;
         }
         AnimatePacket pk = new AnimatePacket();
-        switch (packet.getAnimation()) {
+        switch (packet.getAnimation())
+        {
             case CRITICAL_HIT:
                 pk.action = AnimatePacket.ACTION_CRITICAL_HIT;
                 break;

@@ -1,31 +1,38 @@
 package org.dragonet.proxy.utilities;
 
 import com.github.steveice10.mc.protocol.MinecraftConstants;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import org.bstats.Metrics;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.configuration.PropertiesConfig;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * @author Epic
  */
-public class MetricsManager {
+public class MetricsManager
+{
     private PropertiesConfig config;
 
-    public MetricsManager(DragonProxy proxy) {
+    public MetricsManager(DragonProxy proxy)
+    {
         // Get the config file
-        try {
+        try
+        {
             config = new PropertiesConfig("/metrics.yml", "metrics.yml", true);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             proxy.getLogger().severe("Failed to load configuration file! Make sure the file is writable.");
             ex.printStackTrace();
         }
 
         // Check if the config file exists
-        if (!config.getConfig().contains("serverUuid") || config.getConfig().getProperty("serverUuid").equals("")) {
+        if (!config.getConfig().contains("serverUuid") || config.getConfig().getProperty("serverUuid").equals(""))
+        {
 
             // Add default values
             config.getConfig().setProperty("enabled", "true");
@@ -34,16 +41,21 @@ public class MetricsManager {
             // Should failed request be logged?
             config.getConfig().setProperty("logFailedRequests", "false");
 
-            try {
+            try
+            {
                 config.save();
-            } catch (IOException ignored) {}
+            }
+            catch (IOException ignored)
+            {
+            }
         }
 
         // Load the data
         String serverUUID = config.getConfig().getProperty("serverUuid");
         boolean logFailedRequests = config.getConfig().getProperty("logFailedRequests", "false").equals("true");
         // Only start Metrics, if it's enabled in the config
-        if (config.getConfig().getProperty("enabled", "true").equals("true")) {
+        if (config.getConfig().getProperty("enabled", "true").equals("true"))
+        {
             Metrics metrics = new Metrics("DragonProxy", serverUUID, logFailedRequests, java.util.logging.Logger.getLogger("bStats"));
 
             metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> MinecraftConstants.GAME_VERSION));
@@ -53,7 +65,8 @@ public class MetricsManager {
 
             metrics.addCustomChart(new Metrics.SimplePie("proxy_version", () -> proxy.getVersion()));
 
-            metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+            metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () ->
+            {
                 Map<String, Map<String, Integer>> map = new HashMap<>();
                 String javaVersion = System.getProperty("java.version");
                 Map<String, Integer> entry = new HashMap<>();

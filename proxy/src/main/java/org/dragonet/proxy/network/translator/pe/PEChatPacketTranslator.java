@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,13 +14,15 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.packet.Packet;
+import org.dragonet.protocol.packets.TextPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.translator.IPEPacketTranslator;
-import org.dragonet.protocol.packets.TextPacket;
 
-public class PEChatPacketTranslator implements IPEPacketTranslator<TextPacket> {
+public class PEChatPacketTranslator implements IPEPacketTranslator<TextPacket>
+{
 
-    public Packet[] translate(UpstreamSession session, TextPacket packet) {
+    public Packet[] translate(UpstreamSession session, TextPacket packet)
+    {
         /*if (session.getDataCache().get(CacheKey.AUTHENTICATION_STATE) != null) {
             if (session.getDataCache().get(CacheKey.AUTHENTICATION_STATE).equals("email")) {
                 if (!PatternChecker.matchEmail(packet.message.trim())) {

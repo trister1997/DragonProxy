@@ -23,47 +23,44 @@
  */
 package co.aikar.timings;
 
-import static co.aikar.timings.TimingIdentifier.DEFAULT_GROUP;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.proxy.DragonProxy;
+import org.dragonet.proxy.commands.Command;
+import org.dragonet.proxy.network.translator.IPCPacketTranslator;
+import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-import org.dragonet.proxy.DragonProxy;
-import org.dragonet.proxy.commands.Command;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 
-public final class Timings {
-    private static boolean timingsEnabled = false;
-    private static boolean verboseEnabled = false;
-    private static boolean privacy = false;
-    private static Set<String> ignoredConfigSections = new HashSet<>();
+import static co.aikar.timings.TimingIdentifier.DEFAULT_GROUP;
 
-    private static final int MAX_HISTORY_FRAMES = 12;
-    private static int historyInterval = -1;
-    private static int historyLength = -1;
-
+public final class Timings
+{
     public static final FullServerTickTiming fullServerTickTimer;
     public static final Timing timingsTickTimer;
-//    public static final Timing pluginEventTimer;
-
     public static final Timing connectionTimer;
-//    public static final Timing schedulerTimer;
+    //    public static final Timing schedulerTimer;
 //    public static final Timing schedulerAsyncTimer;
 //    public static final Timing schedulerSyncTimer;
     public static final Timing commandTimer;
-//    public static final Timing serverCommandTimer;
-//    public static final Timing levelSaveTimer;
-
     public static final Timing playerNetworkSendTimer;
     public static final Timing playerNetworkReceiveTimer;
-//    public static final Timing playerChunkOrderTimer;
+    //    public static final Timing playerChunkOrderTimer;
     public static final Timing playerChunkSendTimer;
-//    public static final Timing playerCommandTimer;
-
     public static final Timing tickEntityTimer;
     public static final Timing tickBlockEntityTimer;
+//    public static final Timing pluginEventTimer;
+    public static final Timing pcPacketTranslatorTimer;
+    public static final Timing pePacketTranslatorTimer;
+//    public static final Timing serverCommandTimer;
+//    public static final Timing levelSaveTimer;
+    private static final int MAX_HISTORY_FRAMES = 12;
+    private static boolean timingsEnabled = false;
+    private static boolean verboseEnabled = false;
+//    public static final Timing playerCommandTimer;
+    private static boolean privacy = false;
+    private static Set<String> ignoredConfigSections = new HashSet<>();
 //    public static final Timing entityMoveTimer;
 //    public static final Timing entityBaseTickTimer;
 //    public static final Timing livingEntityBaseTickTimer;
@@ -74,11 +71,11 @@ public final class Timings {
 //
 //    public static final Timing permissibleCalculationTimer;
 //    public static final Timing permissionDefaultTimer;
+    private static int historyInterval = -1;
+    private static int historyLength = -1;
 
-    public static final Timing pcPacketTranslatorTimer;
-    public static final Timing pePacketTranslatorTimer;
-
-    static {
+    static
+    {
         setTimingsEnabled(true);
         setVerboseEnabled(false);
         setHistoryInterval(6000);
@@ -90,10 +87,10 @@ public final class Timings {
 
         if (verboseEnabled)
             DragonProxy.getInstance().getLogger().info("Timings: \n" +
-                    "Enabled - " + isTimingsEnabled() + "\n" +
-                    "Verbose - " + isVerboseEnabled() + "\n" +
-                    "History Interval - " + getHistoryInterval() + "\n" +
-                    "History Length - " + getHistoryLength());
+                "Enabled - " + isTimingsEnabled() + "\n" +
+                "Verbose - " + isVerboseEnabled() + "\n" +
+                "History Interval - " + getHistoryInterval() + "\n" +
+                "History Length - " + getHistoryLength());
 
         fullServerTickTimer = new FullServerTickTiming();
         timingsTickTimer = TimingsManager.getTiming(DEFAULT_GROUP.name, "Timings Tick", fullServerTickTimer);
@@ -130,49 +127,60 @@ public final class Timings {
         pePacketTranslatorTimer = TimingsManager.getTiming("## PE Packet Translator");
     }
 
-    public static boolean isTimingsEnabled() {
+    public static boolean isTimingsEnabled()
+    {
         return timingsEnabled;
     }
 
-    public static void setTimingsEnabled(boolean enabled) {
+    public static void setTimingsEnabled(boolean enabled)
+    {
         timingsEnabled = enabled;
         TimingsManager.reset();
     }
 
-    public static boolean isVerboseEnabled() {
+    public static boolean isVerboseEnabled()
+    {
         return verboseEnabled;
     }
 
-    public static void setVerboseEnabled(boolean enabled) {
+    public static void setVerboseEnabled(boolean enabled)
+    {
         verboseEnabled = enabled;
         TimingsManager.needsRecheckEnabled = true;
     }
 
-    public static boolean isPrivacy() {
+    public static boolean isPrivacy()
+    {
         return privacy;
     }
 
-    public static Set<String> getIgnoredConfigSections() {
+    public static Set<String> getIgnoredConfigSections()
+    {
         return ignoredConfigSections;
     }
 
-    public static int getHistoryInterval() {
+    public static int getHistoryInterval()
+    {
         return historyInterval;
     }
 
-    public static void setHistoryInterval(int interval) {
+    public static void setHistoryInterval(int interval)
+    {
         historyInterval = Math.max(20 * 60, interval);
         //Recheck the history length with the new Interval
-        if (historyLength != -1) {
+        if (historyLength != -1)
+        {
             setHistoryLength(historyLength);
         }
     }
 
-    public static int getHistoryLength() {
+    public static int getHistoryLength()
+    {
         return historyLength;
     }
 
-    public static void setHistoryLength(int length) {
+    public static void setHistoryLength(int length)
+    {
         //Cap at 12 History Frames, 1 hour at 5 minute frames.
         int maxLength = historyInterval * MAX_HISTORY_FRAMES;
         //For special cases of servers with special permission to bypass the max.
@@ -186,66 +194,82 @@ public final class Timings {
 
         Queue<TimingsHistory> oldQueue = TimingsManager.HISTORY;
         int frames = (getHistoryLength() / getHistoryInterval());
-        if (length > maxLength) {
+        if (length > maxLength)
+        {
             DragonProxy.getInstance().getLogger().warning(
-                    "Timings Length too high. Requested " + length + ", max is " + maxLength
-                            + ". To get longer history, you must increase your interval. Set Interval to "
-                            + Math.ceil(length / MAX_HISTORY_FRAMES)
-                            + " to achieve this length.");
+                "Timings Length too high. Requested " + length + ", max is " + maxLength
+                    + ". To get longer history, you must increase your interval. Set Interval to "
+                    + Math.ceil(length / MAX_HISTORY_FRAMES)
+                    + " to achieve this length.");
         }
 
         TimingsManager.HISTORY = new TimingsManager.BoundedQueue<>(frames);
         TimingsManager.HISTORY.addAll(oldQueue);
     }
 
-    public static void reset() {
+    public static void reset()
+    {
         TimingsManager.reset();
     }
 
 
-    public static Timing getCommandTiming(Command command) {
+    public static Timing getCommandTiming(Command command)
+    {
         if (!isTimingsEnabled()) return commandTimer;
-        if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getCommandTiming " + command.getName() + " hit");
+        if (verboseEnabled)
+            DragonProxy.getInstance().getLogger().info("getCommandTiming " + command.getName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "Command: " + command.getName(), commandTimer);
     }
 
-    public static Timing getEntityTiming(String type) {
+    public static Timing getEntityTiming(String type)
+    {
         if (!isTimingsEnabled()) return tickEntityTimer;
         if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getEntityTiming " + type + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Entity Tick: " + type, tickEntityTimer);
     }
 
-    public static Timing getBlockEntityTiming(String type) {
+    public static Timing getBlockEntityTiming(String type)
+    {
         if (!isTimingsEnabled()) return tickBlockEntityTimer;
         if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getBlockEntityTiming " + type + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## BlockEntity Tick: " + type, tickBlockEntityTimer);
     }
-//
-    public static Timing getReceiveDataPacketTiming(PEPacket pk) {
+
+    //
+    public static Timing getReceiveDataPacketTiming(PEPacket pk)
+    {
         if (!isTimingsEnabled()) return playerNetworkReceiveTimer;
-        if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getReceiveDataPacketTiming " + pk.getClass().getSimpleName() + " hit");
+        if (verboseEnabled)
+            DragonProxy.getInstance().getLogger().info("getReceiveDataPacketTiming " + pk.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Receive Packet: " + pk.getClass().getSimpleName(), playerNetworkReceiveTimer);
     }
 
-    public static Timing getSendDataPacketTiming(PEPacket pk) {
+    public static Timing getSendDataPacketTiming(PEPacket pk)
+    {
         if (!isTimingsEnabled()) return playerNetworkSendTimer;
-        if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getSendDataPacketTiming " + pk.getClass().getSimpleName() + " hit");
+        if (verboseEnabled)
+            DragonProxy.getInstance().getLogger().info("getSendDataPacketTiming " + pk.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + pk.getClass().getSimpleName(), playerNetworkSendTimer);
     }
 
-    public static Timing getPcPacketTranslatorTiming(IPCPacketTranslator translator) {
+    public static Timing getPcPacketTranslatorTiming(IPCPacketTranslator translator)
+    {
         if (!isTimingsEnabled()) return pcPacketTranslatorTimer;
-        if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getPcPacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
+        if (verboseEnabled)
+            DragonProxy.getInstance().getLogger().info("getPcPacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + translator.getClass().getSimpleName(), pcPacketTranslatorTimer);
     }
 
-    public static Timing getPePacketTranslatorTiming(IPEPacketTranslator translator) {
+    public static Timing getPePacketTranslatorTiming(IPEPacketTranslator translator)
+    {
         if (!isTimingsEnabled()) return pePacketTranslatorTimer;
-        if (verboseEnabled) DragonProxy.getInstance().getLogger().info("getPePacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
+        if (verboseEnabled)
+            DragonProxy.getInstance().getLogger().info("getPePacketTranslatorTiming " + translator.getClass().getSimpleName() + " hit");
         return TimingsManager.getTiming(DEFAULT_GROUP.name, "## Send Packet: " + translator.getClass().getSimpleName(), pePacketTranslatorTimer);
     }
 
-    public static void stopServer() {
+    public static void stopServer()
+    {
         TimingsExport.reportTimings(null);
         setTimingsEnabled(false);
         TimingsManager.recheckEnabled();

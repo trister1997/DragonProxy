@@ -6,49 +6,54 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.translator.pc;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
-
-import java.util.Arrays;
-import java.util.Iterator;
-
 import org.dragonet.common.data.entity.EntityType;
 import org.dragonet.common.data.entity.meta.EntityMetaData;
 import org.dragonet.common.data.entity.meta.type.Vector3FMeta;
 import org.dragonet.common.maths.Vector3F;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.SetEntityDataPacket;
+import org.dragonet.protocol.packets.SetEntityLinkPacket;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.EntityMetaTranslator;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.SetEntityDataPacket;
-import org.dragonet.protocol.packets.SetEntityLinkPacket;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 
-public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator<ServerEntitySetPassengersPacket> {
+public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator<ServerEntitySetPassengersPacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerEntitySetPassengersPacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerEntitySetPassengersPacket packet)
+    {
 
         CachedEntity vehicle = session.getEntityCache().getByRemoteEID(packet.getEntityId());
-        if (vehicle == null) {
+        if (vehicle == null)
+        {
             return null;
         }
 
         // process not passenger (dismount)
         Iterator<Long> itr = vehicle.passengers.iterator();
-        while (itr.hasNext()) {
+        while (itr.hasNext())
+        {
             long id = itr.next();
             CachedEntity rider = session.getEntityCache().getByLocalEID(id);
 
-            if (rider == null) {
+            if (rider == null)
+            {
                 continue;
             }
-            if (!Arrays.asList(packet.getPassengerIds()).contains(rider.eid)) {
+            if (!Arrays.asList(packet.getPassengerIds()).contains(rider.eid))
+            {
 
                 SetEntityLinkPacket pk = new SetEntityLinkPacket();
                 pk.riding = vehicle.proxyEid;
@@ -66,11 +71,13 @@ public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator
 
         //process mount action
         boolean piloteSet = false;
-        for (int id : packet.getPassengerIds()) {
+        for (int id : packet.getPassengerIds())
+        {
 
             CachedEntity rider = session.getEntityCache().getByRemoteEID(id);
 
-            if (rider == null) {
+            if (rider == null)
+            {
                 continue;
             }
 
@@ -78,11 +85,14 @@ public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator
             pk.riding = vehicle.proxyEid;
             pk.rider = rider.proxyEid;
 
-            if (!piloteSet) {
+            if (!piloteSet)
+            {
                 piloteSet = true;
                 pk.type = SetEntityLinkPacket.TYPE_RIDE;
                 setRiding(session, rider, getSeatOffset(rider.peType, 1));
-            } else {
+            }
+            else
+            {
                 pk.type = SetEntityLinkPacket.TYPE_PASSENGER;
                 setRiding(session, rider, getSeatOffset(rider.peType, 2));
             }
@@ -99,10 +109,12 @@ public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator
     }
 
     //if offset is null, it's a dismount action
-    private void setRiding(UpstreamSession session, CachedEntity rider, Vector3F offset) {
+    private void setRiding(UpstreamSession session, CachedEntity rider, Vector3F offset)
+    {
         EntityMetaData peMeta = EntityMetaTranslator.translateToPE(session, rider.pcMeta, rider.peType);
         peMeta.setGenericFlag(EntityMetaData.Constants.DATA_FLAG_RIDING, offset != null);
-        if (offset != null) {
+        if (offset != null)
+        {
             peMeta.set(EntityMetaData.Constants.DATA_RIDER_SEAT_POSITION, new Vector3FMeta(offset));
         }
 
@@ -112,17 +124,22 @@ public class PCEntitySetPassengerPacketTranslator implements IPCPacketTranslator
         session.putCachePacket(pk);
     }
 
-    private Vector3F getSeatOffset(EntityType peType, int seat) {
-        if (peType != null) {
-            switch (peType) {
+    private Vector3F getSeatOffset(EntityType peType, int seat)
+    {
+        if (peType != null)
+        {
+            switch (peType)
+            {
                 case BOAT:
                 case MINECART:
-                    if (seat > 2) {
+                    if (seat > 2)
+                    {
                         return null; //DISMOUNT
                     }
                     return new Vector3F(0 + seat / 2, 0.35F, 0 + seat / 2);
                 case HORSE:
-                    if (seat > 1) {
+                    if (seat > 1)
+                    {
                         return null; //DISMOUNT
                     }
                     return new Vector3F(0, peType.getOffset(), 0);

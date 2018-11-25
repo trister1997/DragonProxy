@@ -1,30 +1,34 @@
 package org.dragonet.protocol.packets;
 
+import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
-import org.dragonet.common.maths.BlockPosition;
 
 /**
  * Created on 2017/10/21.
  */
-public class PlaySoundPacket extends PEPacket {
+public class PlaySoundPacket extends PEPacket
+{
 
     public String name;
     public BlockPosition blockPosition;
     public float volume;
     public float pitch;
 
-    public PlaySoundPacket() {
+    public PlaySoundPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAY_SOUND_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putString(name);
         putBlockPosition(new BlockPosition(blockPosition.x * 8, blockPosition.y * 8, blockPosition.z * 8));
         putLFloat(volume);
@@ -32,7 +36,8 @@ public class PlaySoundPacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         name = getString();
         blockPosition = getBlockPosition();
         blockPosition.x /= 8;

@@ -6,22 +6,27 @@ import org.dragonet.common.data.nbt.stream.NBTOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class ByteArrayTag extends Tag {
+public class ByteArrayTag extends Tag
+{
 
     public byte[] data;
 
-    public ByteArrayTag(String name) {
+    public ByteArrayTag(String name)
+    {
         super(name);
     }
 
-    public ByteArrayTag(String name, byte[] data) {
+    public ByteArrayTag(String name, byte[] data)
+    {
         super(name);
         this.data = data;
     }
 
     @Override
-    void write(NBTOutputStream dos) throws IOException {
-        if (data == null) {
+    void write(NBTOutputStream dos) throws IOException
+    {
+        if (data == null)
+        {
             dos.writeInt(0);
             return;
         }
@@ -30,25 +35,30 @@ public class ByteArrayTag extends Tag {
     }
 
     @Override
-    void load(NBTInputStream dis) throws IOException {
+    void load(NBTInputStream dis) throws IOException
+    {
         int length = dis.readInt();
         data = new byte[length];
         dis.readFully(data);
     }
 
     @Override
-    public byte getId() {
+    public byte getId()
+    {
         return TAG_Byte_Array;
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue()
+    {
         return this.data;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj))
+        {
             ByteArrayTag byteArrayTag = (ByteArrayTag) obj;
             return ((data == null && byteArrayTag.data == null) || (data != null && Arrays.equals(data, byteArrayTag.data)));
         }
@@ -56,7 +66,8 @@ public class ByteArrayTag extends Tag {
     }
 
     @Override
-    public Tag copy() {
+    public Tag copy()
+    {
         byte[] cp = new byte[data.length];
         System.arraycopy(data, 0, cp, 0, data.length);
         return new ByteArrayTag(getName(), cp);

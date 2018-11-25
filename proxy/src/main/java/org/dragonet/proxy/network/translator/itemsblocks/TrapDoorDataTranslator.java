@@ -6,17 +6,18 @@
 package org.dragonet.proxy.network.translator.itemsblocks;
 
 import org.dragonet.common.data.itemsblocks.IItemDataTranslator;
-import org.dragonet.proxy.network.translator.ItemBlockTranslator;
 
 /**
  * @author vincent
  */
-public class TrapDoorDataTranslator extends IItemDataTranslator {
+public class TrapDoorDataTranslator extends IItemDataTranslator
+{
 
     //https://minecraft.gamepedia.com/Trapdoor
 
     @Override
-    public Integer translateToPE(Integer damage) {
+    public Integer translateToPE(Integer damage)
+    {
         // Here is the magic
         int facing = damage & 0x03;
         boolean open = (damage & 0x04) != 0;
@@ -25,12 +26,14 @@ public class TrapDoorDataTranslator extends IItemDataTranslator {
     }
 
     @Override
-    public Integer translateToPC(Integer damage) {
+    public Integer translateToPC(Integer damage)
+    {
         // Here too
         return damage;
     }
 
-    private int translateFacing(int input) {
+    private int translateFacing(int input)
+    {
         // translate facing
         if (input == 0) // NORTH
             input = 3;

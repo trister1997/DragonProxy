@@ -1,24 +1,18 @@
 package org.dragonet.proxy.network.translator;
 
-import java.util.HashMap;
-
+import com.github.steveice10.mc.protocol.data.game.world.Particle;
 import org.dragonet.common.data.ParticleEffects;
 
-import com.github.steveice10.mc.protocol.data.game.world.Particle;
+import java.util.HashMap;
 
-public class ParticleTranslator {
+public class ParticleTranslator
+{
     private static ParticleTranslator instance;
 
     private HashMap<Particle, Integer> pctope = new HashMap<Particle, Integer>();
 
-    public static ParticleTranslator getInstance() {
-        if (instance == null) {
-            instance = new ParticleTranslator();
-        }
-        return instance;
-    }
-
-    public ParticleTranslator() {
+    public ParticleTranslator()
+    {
         register(Particle.EXPLOSION_NORMAL, ParticleEffects.TYPE_EXPLODE);
         // register(Particle.EXPLOSION_LARGE,);
         register(Particle.EXPLOSION_HUGE, ParticleEffects.TYPE_HUGE_EXPLODE);
@@ -30,7 +24,7 @@ public class ParticleTranslator {
         // register(Particle.SUSPENDED_DEPTH, ); // Removed in upcoming and not in use
         register(Particle.CRIT, ParticleEffects.TYPE_CRITICAL);
         register(Particle.CRIT_MAGIC, ParticleEffects.TYPE_CRITICAL); // do same as crit (magic crit maybe isn't in
-                                                                      // MCBE)
+        // MCBE)
         register(Particle.SMOKE_NORMAL, ParticleEffects.TYPE_SMOKE);
         register(Particle.SMOKE_LARGE, ParticleEffects.TYPE_LARGE_SMOKE);
         // register(Particle.SPELL, );
@@ -69,17 +63,29 @@ public class ParticleTranslator {
         register(Particle.FALLING_DUST, ParticleEffects.TYPE_FALLING_DUST);
         //register(Particle.SPIT,); // Not in MCBE but maybe exists equivalent in another packet
         //register(Particle.TOTEM,);  // Not in MCBE but maybe exists equivalent in another packet
-        
+
     }
 
-    public int translate(Particle particle) {
-        if (!pctope.containsKey(particle)) {
+    public static ParticleTranslator getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new ParticleTranslator();
+        }
+        return instance;
+    }
+
+    public int translate(Particle particle)
+    {
+        if (!pctope.containsKey(particle))
+        {
             return -1;
         }
         return pctope.get(particle);
     }
 
-    private void register(Particle pc, ParticleEffects pe) {
+    private void register(Particle pc, ParticleEffects pe)
+    {
         pctope.put(pc, pe.id);
     }
 }

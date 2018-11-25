@@ -6,17 +6,18 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.translator;
 
 import com.github.steveice10.packetlib.packet.Packet;
-import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.protocol.PEPacket;
+import org.dragonet.proxy.network.UpstreamSession;
 
-public interface IPEPacketTranslator<P extends PEPacket> {
+public interface IPEPacketTranslator<P extends PEPacket>
+{
 
     /**
      * Translate a packet from PE version to PC version.

@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,7 +14,8 @@ package org.dragonet.common.data.entity.meta;
 
 import org.dragonet.common.utilities.BinaryStream;
 
-public interface IEntityMetaDataObject {
+public interface IEntityMetaDataObject
+{
 
     int type();
 

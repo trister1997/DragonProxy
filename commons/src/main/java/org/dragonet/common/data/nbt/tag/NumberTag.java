@@ -3,9 +3,11 @@ package org.dragonet.common.data.nbt.tag;
 /**
  * author: MagicDroidX Nukkit Project
  */
-public abstract class NumberTag<T extends Number> extends Tag {
+public abstract class NumberTag<T extends Number> extends Tag
+{
 
-    protected NumberTag(String name) {
+    protected NumberTag(String name)
+    {
         super(name);
     }
 

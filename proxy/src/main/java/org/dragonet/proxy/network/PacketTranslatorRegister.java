@@ -6,44 +6,36 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.github.steveice10.mc.protocol.packet.ingame.server.*;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.*;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerSetExperiencePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.*;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerOpenWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.*;
 import com.github.steveice10.packetlib.packet.Packet;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.*;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
 import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 import org.dragonet.proxy.network.translator.pc.*;
 import org.dragonet.proxy.network.translator.pe.*;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerBossBarPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerRespawnPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerSetExperiencePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPaintingPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public final class PacketTranslatorRegister {
+public final class PacketTranslatorRegister
+{
 
     private static final Map<Class<? extends Packet>, IPCPacketTranslator<? extends Packet>> PC_TO_PE_TRANSLATOR = new HashMap<>();
     private static final Map<Class<? extends PEPacket>, IPEPacketTranslator<? extends PEPacket>> PE_TO_PC_TRANSLATOR = new HashMap<>();
@@ -51,7 +43,8 @@ public final class PacketTranslatorRegister {
     /*
      * PC to PE
      */
-    static {
+    static
+    {
         // Special
         PC_TO_PE_TRANSLATOR.put(ServerPluginMessagePacket.class, new PCPluginMessagePacketTranslator());
 
@@ -122,7 +115,8 @@ public final class PacketTranslatorRegister {
     /**
      * PE to PC
      */
-    static {
+    static
+    {
         // Map
         PE_TO_PC_TRANSLATOR.put(LevelSoundEventPacket.class, new PESoundEventPacketTranslator());
         PE_TO_PC_TRANSLATOR.put(RequestChunkRadiusPacket.class, new PERequestChunkRadiusPacketTranslator());
@@ -150,7 +144,8 @@ public final class PacketTranslatorRegister {
         PE_TO_PC_TRANSLATOR.put(AnimatePacket.class, new PEAnimatePacketTranslator());
     }
 
-    public static PEPacket[] translateToPE(UpstreamSession session, Packet packet) {
+    public static PEPacket[] translateToPE(UpstreamSession session, Packet packet)
+    {
         if (packet == null)
             return null;
         //session.getProxy().getLogger().debug(packet.toString());
@@ -159,17 +154,21 @@ public final class PacketTranslatorRegister {
             return null;
 
 //        try (Timing timing = Timings.getPcPacketTranslatorTiming(target)) {
-            try {
-                return target.translate(session, packet);
-            } catch (Exception e) {
+        try
+        {
+            return target.translate(session, packet);
+        }
+        catch (Exception e)
+        {
 //                timing.stopTiming();
-                e.printStackTrace();
-                return null;
-            }
+            e.printStackTrace();
+            return null;
+        }
 //        }
     }
 
-    public static Packet[] translateToPC(UpstreamSession session, PEPacket packet) {
+    public static Packet[] translateToPC(UpstreamSession session, PEPacket packet)
+    {
         if (packet == null)
             return null;
         //session.getProxy().getLogger().debug(packet.toString());
@@ -178,13 +177,16 @@ public final class PacketTranslatorRegister {
             return null;
 
 //        try (Timing timing = Timings.getPePacketTranslatorTiming(target)) {
-            try {
-                return target.translate(session, packet);
-            } catch (Exception e) {
+        try
+        {
+            return target.translate(session, packet);
+        }
+        catch (Exception e)
+        {
 //                timing.stopTiming();
-                e.printStackTrace();
-                return null;
-            }
+            e.printStackTrace();
+            return null;
+        }
 //        }
     }
 }

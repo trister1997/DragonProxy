@@ -6,45 +6,53 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.common.data.entity.meta.type;
 
-import java.nio.charset.StandardCharsets;
-
 import org.dragonet.common.data.entity.meta.EntityMetaData;
 import org.dragonet.common.data.entity.meta.IEntityMetaDataObject;
 import org.dragonet.common.utilities.BinaryStream;
 
-public class ByteArrayMeta implements IEntityMetaDataObject {
+import java.nio.charset.StandardCharsets;
+
+public class ByteArrayMeta implements IEntityMetaDataObject
+{
 
     public byte[] data;
 
-    public ByteArrayMeta(byte[] data) {
+    public ByteArrayMeta(byte[] data)
+    {
         this.data = data;
     }
 
-    public ByteArrayMeta(String data) {
+    public ByteArrayMeta(String data)
+    {
         this(data.getBytes(StandardCharsets.UTF_8));
     }
 
-    public int type() {
+    public int type()
+    {
         return EntityMetaData.Constants.DATA_TYPE_STRING;
     }
 
-    public void encode(BinaryStream out) {
+    public void encode(BinaryStream out)
+    {
         out.putByteArray(data);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++)
+        {
             builder.append(data[i]);
-            if (i != data.length) {
+            if (i != data.length)
+            {
                 builder.append(", ");
             }
         }

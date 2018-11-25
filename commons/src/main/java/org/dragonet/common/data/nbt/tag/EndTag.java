@@ -5,32 +5,39 @@ import org.dragonet.common.data.nbt.stream.NBTOutputStream;
 
 import java.io.IOException;
 
-public class EndTag extends Tag {
+public class EndTag extends Tag
+{
 
-    public EndTag() {
+    public EndTag()
+    {
         super(null);
     }
 
     @Override
-    void load(NBTInputStream dis) throws IOException {
+    void load(NBTInputStream dis) throws IOException
+    {
     }
 
     @Override
-    void write(NBTOutputStream dos) throws IOException {
+    void write(NBTOutputStream dos) throws IOException
+    {
     }
 
     @Override
-    public byte getId() {
+    public byte getId()
+    {
         return TAG_End;
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue()
+    {
         return null;
     }
 
     @Override
-    public Tag copy() {
+    public Tag copy()
+    {
         return new EndTag();
     }
 

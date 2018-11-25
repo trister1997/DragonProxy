@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,24 +14,28 @@ package org.dragonet.proxy.network.translator.pe;
 
 import com.github.steveice10.mc.protocol.data.game.entity.player.InteractAction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
-import com.github.steveice10.packetlib.packet.Packet;
-import org.dragonet.proxy.network.UpstreamSession;
-import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerInteractEntityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
-import org.dragonet.proxy.network.cache.CachedEntity;
+import com.github.steveice10.packetlib.packet.Packet;
 import org.dragonet.protocol.packets.InteractPacket;
+import org.dragonet.proxy.network.UpstreamSession;
+import org.dragonet.proxy.network.cache.CachedEntity;
+import org.dragonet.proxy.network.translator.IPEPacketTranslator;
 
-public class PEInteractPacketTranslator implements IPEPacketTranslator<InteractPacket> {
+public class PEInteractPacketTranslator implements IPEPacketTranslator<InteractPacket>
+{
 
-    public Packet[] translate(UpstreamSession session, InteractPacket packet) {
+    public Packet[] translate(UpstreamSession session, InteractPacket packet)
+    {
 
         CachedEntity entity = session.getEntityCache().getByLocalEID(packet.targetRtid);
-        if (entity == null) {
+        if (entity == null)
+        {
             return null;
         }
 
-        switch (packet.type) {
+        switch (packet.type)
+        {
             case InteractPacket.ACTION_RIGHT_CLICK:
                 return new Packet[]{new ClientPlayerInteractEntityPacket((int) (entity.eid), InteractAction.ATTACK)};
             case InteractPacket.ACTION_LEFT_CLICK:

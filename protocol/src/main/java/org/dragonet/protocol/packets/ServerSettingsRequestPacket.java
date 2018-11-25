@@ -9,26 +9,30 @@ import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
 /**
- *
  * @author Epic
  */
-public class ServerSettingsRequestPacket extends PEPacket {
+public class ServerSettingsRequestPacket extends PEPacket
+{
 
-    public ServerSettingsRequestPacket() {
+    public ServerSettingsRequestPacket()
+    {
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.SERVER_SETTINGS_REQUEST_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         //No payload
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         //No payload
     }
 }

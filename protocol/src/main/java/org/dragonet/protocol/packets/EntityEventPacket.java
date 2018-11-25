@@ -3,8 +3,9 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-public class EntityEventPacket extends PEPacket {
-    
+public class EntityEventPacket extends PEPacket
+{
+
     public static final int HURT_ANIMATION = 2;
     public static final int DEATH_ANIMATION = 3;
     public static final int TAME_FAIL = 6;
@@ -26,22 +27,25 @@ public class EntityEventPacket extends PEPacket {
     public long eid;
     public int event;
     public int data;
-    
+
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.ENTITY_EVENT_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         this.reset();
         this.putEntityRuntimeId(this.eid);
         this.putByte((byte) this.event);
-        this.putVarInt((byte) this.data);  
+        this.putVarInt((byte) this.data);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.eid = this.getEntityRuntimeId();
         this.event = this.getByte();
         this.data = this.getVarInt();

@@ -27,21 +27,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import org.dragonet.common.utilities.JsonUtil;
 
-class TimingData {
-    private int id;
+class TimingData
+{
     int count = 0;
-    private int lagCount = 0;
     long totalTime = 0;
-    private long lagTotalTime = 0;
-
     int curTickCount = 0;
     int curTickTotal = 0;
+    private int id;
+    private int lagCount = 0;
+    private long lagTotalTime = 0;
 
-    TimingData(int id) {
+    TimingData(int id)
+    {
         this.id = id;
     }
 
-    TimingData(TimingData data) {
+    TimingData(TimingData data)
+    {
         this.id = data.id;
         this.count = data.count;
         this.lagCount = data.lagCount;
@@ -49,16 +51,19 @@ class TimingData {
         this.lagTotalTime = data.lagTotalTime;
     }
 
-    void add(long diff) {
+    void add(long diff)
+    {
         ++this.curTickCount;
         this.curTickTotal += diff;
     }
 
-    void tick(boolean violated) {
+    void tick(boolean violated)
+    {
         this.count += this.curTickCount;
         this.totalTime += this.curTickTotal;
 
-        if (violated) {
+        if (violated)
+        {
             this.lagCount += this.curTickCount;
             this.lagTotalTime += this.curTickTotal;
         }
@@ -67,7 +72,8 @@ class TimingData {
         this.curTickTotal = 0;
     }
 
-    void reset() {
+    void reset()
+    {
         this.count = 0;
         this.lagCount = 0;
         this.totalTime = 0;
@@ -76,13 +82,16 @@ class TimingData {
         this.curTickTotal = 0;
     }
 
-    protected TimingData clone() {
+    protected TimingData clone()
+    {
         return new TimingData(this);
     }
 
-    JsonArray export() {
+    JsonArray export()
+    {
         JsonArray json = JsonUtil.toArray(this.id, this.count, this.totalTime);
-        if (this.lagCount > 0) {
+        if (this.lagCount > 0)
+        {
             json.add(new JsonPrimitive(this.lagCount));
             json.add(new JsonPrimitive(this.lagTotalTime));
         }

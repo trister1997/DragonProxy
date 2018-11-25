@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -17,18 +17,24 @@ import co.aikar.timings.TimingsExport;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.commands.Command;
 
-public class TimingsCommand extends Command {
+public class TimingsCommand extends Command
+{
 
-    public TimingsCommand(String name) {
+    public TimingsCommand(String name)
+    {
         super(name, "Timings command (start / stop / paste / history)");
     }
 
-    public void execute(DragonProxy proxy, String[] args) {
-        if (args.length == 0) {
+    public void execute(DragonProxy proxy, String[] args)
+    {
+        if (args.length == 0)
+        {
             proxy.getLogger().info("Timings command (start / stop / paste / history)");
         }
-        else {
-            switch(args[0]) {
+        else
+        {
+            switch (args[0])
+            {
                 case "start":
                     Timings.setTimingsEnabled(true);
                     proxy.getLogger().info("Timings started !");

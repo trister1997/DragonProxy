@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -14,19 +14,23 @@ package org.dragonet.proxy;
 
 import co.aikar.timings.Timings;
 
-public class TickerThread extends Thread {
+public class TickerThread extends Thread
+{
 
     private final DragonProxy proxy;
 
-    public TickerThread(DragonProxy proxy) {
+    public TickerThread(DragonProxy proxy)
+    {
         super("TickerThread");
         this.proxy = proxy;
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         long time;
-        while (!proxy.isShuttingDown()) {
+        while (!proxy.isShuttingDown())
+        {
             time = System.currentTimeMillis();
             Timings.fullServerTickTimer.startTiming();
             proxy.onTick();
@@ -35,9 +39,12 @@ public class TickerThread extends Thread {
             if (time >= 50)
                 continue;
             else
-                try {
+                try
+                {
                     Thread.sleep(50 - time);
-                } catch (InterruptedException ex) {
+                }
+                catch (InterruptedException ex)
+                {
                     return;
                 }
         }

@@ -6,7 +6,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class PlayStatusPacket extends PEPacket {
+public class PlayStatusPacket extends PEPacket
+{
 
     public static final int LOGIN_SUCCESS = 0;
     public static final int LOGIN_FAILED_CLIENT = 1;
@@ -20,40 +21,50 @@ public class PlayStatusPacket extends PEPacket {
     public int status;
     public int protocol = ProtocolInfo.CURRENT_PROTOCOL;
 
-    public PlayStatusPacket() {
+    public PlayStatusPacket()
+    {
 
     }
 
-    public PlayStatusPacket(int status) {
+    public PlayStatusPacket(int status)
+    {
         this.status = status;
     }
 
-    public PlayStatusPacket(int status, int protocol) {
+    public PlayStatusPacket(int status, int protocol)
+    {
         this.status = status;
         this.protocol = protocol;
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAY_STATUS_PACKET;
     }
 
     @Override
-    public void encodeHeader() {
-        if (protocol < 130) { // MCPE <= 1.1
+    public void encodeHeader()
+    {
+        if (protocol < 130)
+        { // MCPE <= 1.1
             putByte((byte) (pid() & 0xFF));
-        } else {
+        }
+        else
+        {
             super.encodeHeader();
         }
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putInt(status);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         status = getInt();
     }
 }

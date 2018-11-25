@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -15,7 +15,8 @@ package org.dragonet.proxy.network.translator;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedWindow;
 
-public interface IInventoryTranslator {
+public interface IInventoryTranslator
+{
 
     /**
      * Prepare a window on MCPE, spawn fakeblocks.

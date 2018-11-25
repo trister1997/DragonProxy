@@ -11,16 +11,19 @@ import org.dragonet.proxy.network.translator.ItemBlockTranslator;
 /**
  * @author vincent
  */
-public class EndRodDataTranslator extends IItemDataTranslator {
+public class EndRodDataTranslator extends IItemDataTranslator
+{
 
     @Override
-    public Integer translateToPE(Integer damage) {
+    public Integer translateToPE(Integer damage)
+    {
         // Here is the magic
         return ItemBlockTranslator.invertVerticalFacing(damage);
     }
 
     @Override
-    public Integer translateToPC(Integer damage) {
+    public Integer translateToPC(Integer damage)
+    {
         // Here too
         return damage;
     }

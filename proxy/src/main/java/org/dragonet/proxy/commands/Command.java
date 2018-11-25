@@ -2,27 +2,32 @@ package org.dragonet.proxy.commands;
 
 import org.dragonet.proxy.DragonProxy;
 
-public abstract class Command {
+public abstract class Command
+{
 
     private final String name;
     protected String description = "";
     private CommandRegister commandMap = null;
 
     // constructor
-    public Command(String name) {
+    public Command(String name)
+    {
         this(name, "");
     }
 
-    public Command(String name, String description) {
+    public Command(String name, String description)
+    {
         this.name = name;
         this.description = description;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 

@@ -5,7 +5,8 @@ import com.google.gson.JsonObject;
 /**
  * Created on 2017/12/26.
  */
-public class InputComponent extends BaseModalFormComponent {
+public class InputComponent extends BaseModalFormComponent
+{
 
     private String text;
 
@@ -13,28 +14,34 @@ public class InputComponent extends BaseModalFormComponent {
 
     private String placeholder;
 
-    public InputComponent(String text) {
+    public InputComponent(String text)
+    {
         super("input");
         this.text = text;
     }
 
-    public InputComponent setDefaultValue(String defaultValue) {
+    public InputComponent setDefaultValue(String defaultValue)
+    {
         this.defaultValue = defaultValue;
         return this;
     }
 
-    public InputComponent setPlaceholder(String placeholder) {
+    public InputComponent setPlaceholder(String placeholder)
+    {
         this.placeholder = placeholder;
         return this;
     }
 
     @Override
-    public void serializeData(JsonObject out) {
+    public void serializeData(JsonObject out)
+    {
         out.addProperty("text", text);
-        if (defaultValue != null) {
+        if (defaultValue != null)
+        {
             out.addProperty("default", defaultValue);
         }
-        if (placeholder != null) {
+        if (placeholder != null)
+        {
             out.addProperty("placeholder", placeholder);
         }
     }

@@ -12,7 +12,6 @@
  */
 package org.dragonet.common.utilities;
 
-import com.google.gson.JsonObject;
 import io.netty.util.CharsetUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -23,18 +22,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class HTTP {
+public class HTTP
+{
 
-    public static String performGetRequest(String url) {
+    public static String performGetRequest(String url)
+    {
         if (url == null)
             throw new IllegalArgumentException("URL cannot be null.");
 
         InputStream in = null;
-        try {
+        try
+        {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
@@ -47,7 +48,8 @@ public class HTTP {
             else
                 in = connection.getErrorStream();
 
-            if (in != null) {
+            if (in != null)
+            {
                 int data = -1;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -55,26 +57,36 @@ public class HTTP {
                     bos.write(data);
 
                 return new String(bos.toByteArray(), CharsetUtil.UTF_8);
-            } else
+            }
+            else
                 return null;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return null;
-        } finally {
+        }
+        finally
+        {
             if (in != null)
-                try {
+                try
+                {
                     in.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                 }
         }
     }
 
-    public static String performPostRequest(String url, Map<String, String> params) {
+    public static String performPostRequest(String url, Map<String, String> params)
+    {
         if (url == null)
             throw new IllegalArgumentException("URL cannot be null.");
 
         InputStream in = null;
-        try {
+        try
+        {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
@@ -91,7 +103,8 @@ public class HTTP {
             connection.setFixedLengthStreamingMode(length);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             connection.connect();
-            try (OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream())
+            {
                 os.write(out);
             }
 
@@ -101,7 +114,8 @@ public class HTTP {
             else
                 in = connection.getErrorStream();
 
-            if (in != null) {
+            if (in != null)
+            {
                 int data = -1;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -109,26 +123,36 @@ public class HTTP {
                     bos.write(data);
 
                 return new String(bos.toByteArray(), CharsetUtil.UTF_8);
-            } else
+            }
+            else
                 return null;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return null;
-        } finally {
+        }
+        finally
+        {
             if (in != null)
-                try {
+                try
+                {
                     in.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                 }
         }
     }
 
-    public static String performPostRequest(String url, String params) {
+    public static String performPostRequest(String url, String params)
+    {
         if (url == null)
             throw new IllegalArgumentException("URL cannot be null.");
 
         InputStream in = null;
-        try {
+        try
+        {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
@@ -142,7 +166,8 @@ public class HTTP {
             connection.setFixedLengthStreamingMode(length);
             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             connection.connect();
-            try (OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream())
+            {
                 os.write(out);
             }
 
@@ -152,7 +177,8 @@ public class HTTP {
             else
                 in = connection.getErrorStream();
 
-            if (in != null) {
+            if (in != null)
+            {
                 int data = -1;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -160,16 +186,24 @@ public class HTTP {
                     bos.write(data);
 
                 return new String(bos.toByteArray(), CharsetUtil.UTF_8);
-            } else
+            }
+            else
                 return null;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return null;
-        } finally {
+        }
+        finally
+        {
             if (in != null)
-                try {
+                try
+                {
                     in.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                 }
         }
     }

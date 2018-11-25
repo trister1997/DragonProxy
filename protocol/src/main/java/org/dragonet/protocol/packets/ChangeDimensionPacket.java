@@ -7,30 +7,35 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/11/15.
  */
-public class ChangeDimensionPacket extends PEPacket {
+public class ChangeDimensionPacket extends PEPacket
+{
 
     public int dimension;
     public Vector3F position;
     public boolean respawn;
 
-    public ChangeDimensionPacket() {
+    public ChangeDimensionPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.CHANGE_DIMENSION_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarInt(dimension);
         putVector3F(position);
         putBoolean(respawn);
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
 
     }
 }

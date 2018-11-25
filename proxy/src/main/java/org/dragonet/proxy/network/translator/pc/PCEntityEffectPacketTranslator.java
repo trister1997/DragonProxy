@@ -6,7 +6,7 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
@@ -15,22 +15,28 @@ package org.dragonet.proxy.network.translator.pc;
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEffectPacket;
 import org.dragonet.common.data.PocketPotionEffect;
+import org.dragonet.protocol.PEPacket;
+import org.dragonet.protocol.packets.MobEffectPacket;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedEntity;
 import org.dragonet.proxy.network.translator.IPCPacketTranslator;
-import org.dragonet.protocol.PEPacket;
-import org.dragonet.protocol.packets.MobEffectPacket;
 
-public class PCEntityEffectPacketTranslator implements IPCPacketTranslator<ServerEntityEffectPacket> {
+public class PCEntityEffectPacketTranslator implements IPCPacketTranslator<ServerEntityEffectPacket>
+{
 
-    public PEPacket[] translate(UpstreamSession session, ServerEntityEffectPacket packet) {
+    public PEPacket[] translate(UpstreamSession session, ServerEntityEffectPacket packet)
+    {
 
         CachedEntity entity = session.getEntityCache().getByRemoteEID(packet.getEntityId());
-        if (entity == null) {
-            if (packet.getEntityId() == (int) session.getDataCache().get(CacheKey.PLAYER_EID)) {
+        if (entity == null)
+        {
+            if (packet.getEntityId() == (int) session.getDataCache().get(CacheKey.PLAYER_EID))
+            {
                 entity = session.getEntityCache().getClientEntity();
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
@@ -38,7 +44,8 @@ public class PCEntityEffectPacketTranslator implements IPCPacketTranslator<Serve
         int effectId = MagicValues.value(Integer.class, packet.getEffect());
 
         PocketPotionEffect effect = PocketPotionEffect.getByID(effectId);
-        if (effect == null) {
+        if (effect == null)
+        {
             System.out.println("Unknown effect ID: " + effectId);
             return null;
         }
@@ -46,9 +53,12 @@ public class PCEntityEffectPacketTranslator implements IPCPacketTranslator<Serve
         MobEffectPacket eff = new MobEffectPacket();
         eff.rtid = entity.proxyEid;
         eff.effectId = effect.getEffect();
-        if (entity.effects.contains(effectId)) {
+        if (entity.effects.contains(effectId))
+        {
             eff.eventId = MobEffectPacket.EVENT_MODIFY;
-        } else {
+        }
+        else
+        {
             eff.eventId = MobEffectPacket.EVENT_ADD;
             entity.effects.add(effectId);
         }

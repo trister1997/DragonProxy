@@ -3,7 +3,8 @@ package org.dragonet.protocol.packets;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.ProtocolInfo;
 
-public class PlayerInputPacket extends PEPacket {
+public class PlayerInputPacket extends PEPacket
+{
 
     public float motionX;
     public float motionY;
@@ -12,7 +13,8 @@ public class PlayerInputPacket extends PEPacket {
     public boolean sneaking;
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         this.motionX = this.getLFloat();
         this.motionY = this.getLFloat();
         this.jumping = this.getBoolean();
@@ -20,12 +22,14 @@ public class PlayerInputPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.PLAYER_INPUT_PACKET;
     }
 

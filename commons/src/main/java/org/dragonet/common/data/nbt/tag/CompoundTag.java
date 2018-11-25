@@ -9,251 +9,311 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CompoundTag extends Tag implements Cloneable {
+public class CompoundTag extends Tag implements Cloneable
+{
 
     private final Map<String, Tag> tags = new HashMap<>();
 
-    public CompoundTag() {
+    public CompoundTag()
+    {
         super("");
     }
 
-    public CompoundTag(String name) {
+    public CompoundTag(String name)
+    {
         super(name);
     }
 
     @Override
-    public void write(NBTOutputStream dos) throws IOException {
-        for (Tag tag : tags.values()) {
+    public void write(NBTOutputStream dos) throws IOException
+    {
+        for (Tag tag : tags.values())
+        {
             Tag.writeNamedTag(tag, dos);
         }
         dos.writeByte(Tag.TAG_End);
     }
 
     @Override
-    public void load(NBTInputStream dis) throws IOException {
+    public void load(NBTInputStream dis) throws IOException
+    {
         tags.clear();
         Tag tag;
-        while ((tag = Tag.readNamedTag(dis)).getId() != Tag.TAG_End) {
+        while ((tag = Tag.readNamedTag(dis)).getId() != Tag.TAG_End)
+        {
             tags.put(tag.getName(), tag);
         }
     }
 
-    public Collection<Tag> getAllTags() {
+    public Collection<Tag> getAllTags()
+    {
         return tags.values();
     }
 
     @Override
-    public byte getId() {
+    public byte getId()
+    {
         return TAG_Compound;
     }
 
-    public CompoundTag put(String name, Tag tag) {
+    public CompoundTag put(String name, Tag tag)
+    {
         tags.put(name, tag.setName(name));
         return this;
     }
 
-    public CompoundTag putByte(String name, int value) {
+    public CompoundTag putByte(String name, int value)
+    {
         tags.put(name, new ByteTag(name, value));
         return this;
     }
 
-    public CompoundTag putShort(String name, int value) {
+    public CompoundTag putShort(String name, int value)
+    {
         tags.put(name, new ShortTag(name, value));
         return this;
     }
 
-    public CompoundTag putInt(String name, int value) {
+    public CompoundTag putInt(String name, int value)
+    {
         tags.put(name, new IntTag(name, value));
         return this;
     }
 
-    public CompoundTag putLong(String name, long value) {
+    public CompoundTag putLong(String name, long value)
+    {
         tags.put(name, new LongTag(name, value));
         return this;
     }
 
-    public CompoundTag putFloat(String name, float value) {
+    public CompoundTag putFloat(String name, float value)
+    {
         tags.put(name, new FloatTag(name, value));
         return this;
     }
 
-    public CompoundTag putDouble(String name, double value) {
+    public CompoundTag putDouble(String name, double value)
+    {
         tags.put(name, new DoubleTag(name, value));
         return this;
     }
 
-    public CompoundTag putString(String name, String value) {
+    public CompoundTag putString(String name, String value)
+    {
         tags.put(name, new StringTag(name, value));
         return this;
     }
 
-    public CompoundTag putByteArray(String name, byte[] value) {
+    public CompoundTag putByteArray(String name, byte[] value)
+    {
         tags.put(name, new ByteArrayTag(name, value));
         return this;
     }
 
-    public CompoundTag putIntArray(String name, int[] value) {
+    public CompoundTag putIntArray(String name, int[] value)
+    {
         tags.put(name, new IntArrayTag(name, value));
         return this;
     }
 
-    public CompoundTag putList(ListTag<? extends Tag> listTag) {
+    public CompoundTag putList(ListTag<? extends Tag> listTag)
+    {
         tags.put(listTag.getName(), listTag);
         return this;
     }
 
-    public CompoundTag putCompound(String name, CompoundTag value) {
+    public CompoundTag putCompound(String name, CompoundTag value)
+    {
         tags.put(name, value.setName(name));
         return this;
     }
 
-    public CompoundTag putBoolean(String string, boolean val) {
+    public CompoundTag putBoolean(String string, boolean val)
+    {
         putByte(string, val ? 1 : 0);
         return this;
     }
 
-    public Tag get(String name) {
+    public Tag get(String name)
+    {
         return tags.get(name);
     }
 
-    public boolean contains(String name) {
+    public boolean contains(String name)
+    {
         return tags.containsKey(name);
     }
 
-    public CompoundTag remove(String name) {
+    public CompoundTag remove(String name)
+    {
         tags.remove(name);
         return this;
     }
 
-    public int getByte(String name) {
-        if (!tags.containsKey(name)) {
+    public int getByte(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return (byte) 0;
         }
         return ((NumberTag) tags.get(name)).getData().intValue();
     }
 
-    public int getShort(String name) {
-        if (!tags.containsKey(name)) {
+    public int getShort(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return 0;
         }
         return ((NumberTag) tags.get(name)).getData().intValue();
     }
 
-    public int getInt(String name) {
-        if (!tags.containsKey(name)) {
+    public int getInt(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return 0;
         }
         return ((NumberTag) tags.get(name)).getData().intValue();
     }
 
-    public long getLong(String name) {
-        if (!tags.containsKey(name)) {
+    public long getLong(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return (long) 0;
         }
         return ((NumberTag) tags.get(name)).getData().longValue();
     }
 
-    public float getFloat(String name) {
-        if (!tags.containsKey(name)) {
+    public float getFloat(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return (float) 0;
         }
         return ((NumberTag) tags.get(name)).getData().floatValue();
     }
 
-    public double getDouble(String name) {
-        if (!tags.containsKey(name)) {
+    public double getDouble(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return (double) 0;
         }
         return ((NumberTag) tags.get(name)).getData().doubleValue();
     }
 
-    public String getString(String name) {
-        if (!tags.containsKey(name)) {
+    public String getString(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return "";
         }
         Tag tag = tags.get(name);
-        if (tag instanceof NumberTag) {
+        if (tag instanceof NumberTag)
+        {
             return String.valueOf(((NumberTag) tag).getData());
         }
         return ((StringTag) tag).data;
     }
 
-    public byte[] getByteArray(String name) {
-        if (!tags.containsKey(name)) {
+    public byte[] getByteArray(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return new byte[0];
         }
         return ((ByteArrayTag) tags.get(name)).data;
     }
 
-    public int[] getIntArray(String name) {
-        if (!tags.containsKey(name)) {
+    public int[] getIntArray(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return new int[0];
         }
         return ((IntArrayTag) tags.get(name)).data;
     }
 
-    public CompoundTag getCompound(String name) {
-        if (!tags.containsKey(name)) {
+    public CompoundTag getCompound(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return new CompoundTag(name);
         }
         return (CompoundTag) tags.get(name);
     }
 
     @SuppressWarnings("unchecked")
-    public ListTag<? extends Tag> getList(String name) {
-        if (!tags.containsKey(name)) {
+    public ListTag<? extends Tag> getList(String name)
+    {
+        if (!tags.containsKey(name))
+        {
             return new ListTag<>(name);
         }
         return (ListTag<? extends Tag>) tags.get(name);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Tag> ListTag<T> getList(String name, Class<T> type) {
-        if (tags.containsKey(name)) {
+    public <T extends Tag> ListTag<T> getList(String name, Class<T> type)
+    {
+        if (tags.containsKey(name))
+        {
             return (ListTag<T>) tags.get(name);
         }
         return new ListTag<>(name);
     }
 
-    public Map<String, Tag> getTags() {
+    public Map<String, Tag> getTags()
+    {
         return new HashMap<>(this.tags);
     }
 
-    public boolean getBoolean(String name) {
+    public boolean getBoolean(String name)
+    {
         return getByte(name) != 0;
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue()
+    {
         return this.tags;
     }
 
-    public void print(String prefix, PrintStream out) {
+    public void print(String prefix, PrintStream out)
+    {
         super.print(prefix, out);
         out.println(prefix + "{");
         String orgPrefix = prefix;
         prefix += "   ";
-        for (Tag tag : tags.values()) {
+        for (Tag tag : tags.values())
+        {
             tag.print(prefix, out);
         }
         out.println(orgPrefix + "}");
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return tags.isEmpty();
     }
 
-    public CompoundTag copy() {
+    public CompoundTag copy()
+    {
         CompoundTag tag = new CompoundTag(getName());
-        for (String key : tags.keySet()) {
+        for (String key : tags.keySet())
+        {
             tag.put(key, tags.get(key).copy());
         }
         return tag;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
+    public boolean equals(Object obj)
+    {
+        if (super.equals(obj))
+        {
             CompoundTag o = (CompoundTag) obj;
             return tags.entrySet().equals(o.tags.entrySet());
         }
@@ -266,12 +326,14 @@ public class CompoundTag extends Tag implements Cloneable {
      * @param name - NBT tag Id.
      * @return - true, if tag exists
      */
-    public boolean exist(String name) {
+    public boolean exist(String name)
+    {
         return tags.containsKey(name);
     }
 
     @Override
-    public CompoundTag clone() {
+    public CompoundTag clone()
+    {
         CompoundTag nbt = new CompoundTag();
         this.getTags().forEach((key, value) -> nbt.put(key, value.copy()));
         return nbt;

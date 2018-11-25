@@ -13,7 +13,8 @@ import java.util.Map;
 /**
  * Created on 2017/10/21.
  */
-public class StartGamePacket extends PEPacket {
+public class StartGamePacket extends PEPacket
+{
 
     public long eid;
     public long rtid;
@@ -54,6 +55,7 @@ public class StartGamePacket extends PEPacket {
     public boolean hasLockedBehaviorPack;
     public boolean hasLockedResourcePack;
     public boolean isFromLockedWorldTemplate;
+    public boolean isUsingMsaGamertagOnly;
 
     public String levelId;
     public String worldName;
@@ -65,17 +67,20 @@ public class StartGamePacket extends PEPacket {
 
     public String multiplayerCorrelationId = "";
 
-    public StartGamePacket() {
+    public StartGamePacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.START_GAME_PACKET;
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         putVarLong(eid);
         putUnsignedVarLong(rtid);
         putVarInt(gamemode);
@@ -117,6 +122,7 @@ public class StartGamePacket extends PEPacket {
         putBoolean(hasLockedBehaviorPack);
         putBoolean(hasLockedResourcePack);
         putBoolean(isFromLockedWorldTemplate);
+        putBoolean(isUsingMsaGamertagOnly);
 
         putString(levelId);
         putString(worldName);
@@ -132,7 +138,8 @@ public class StartGamePacket extends PEPacket {
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         eid = getVarLong();
         rtid = getUnsignedVarLong();
         gamemode = getVarInt();

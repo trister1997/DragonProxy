@@ -6,31 +6,34 @@
  * Everyone is permitted to copy and distribute verbatim copies
  * of this license document, but changing it is not allowed.
  *
- * You can view LICENCE file for details. 
+ * You can view LICENCE file for details.
  *
  * @author The Dragonet Team
  */
 package org.dragonet.proxy.network.translator.inv;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import org.dragonet.common.data.inventory.InventoryType;
 import org.dragonet.common.data.inventory.Slot;
 import org.dragonet.common.maths.BlockPosition;
+import org.dragonet.protocol.packets.BlockEntityDataPacket;
+import org.dragonet.protocol.packets.ContainerOpenPacket;
+import org.dragonet.protocol.packets.InventoryContentPacket;
+import org.dragonet.protocol.packets.InventorySlotPacket;
 import org.dragonet.proxy.network.CacheKey;
 import org.dragonet.proxy.network.UpstreamSession;
 import org.dragonet.proxy.network.cache.CachedWindow;
 import org.dragonet.proxy.network.translator.IInventoryTranslator;
 import org.dragonet.proxy.network.translator.ItemBlockTranslator;
-import org.dragonet.protocol.packets.*;
 
-public class ChestWindowTranslator implements IInventoryTranslator {
+import java.util.ArrayList;
 
-    public boolean prepare(UpstreamSession session, CachedWindow window) {
+public class ChestWindowTranslator implements IInventoryTranslator
+{
+
+    public boolean prepare(UpstreamSession session, CachedWindow window)
+    {
         BlockPosition pos = new BlockPosition((int) session.getEntityCache().getClientEntity().x,
-                (int) session.getEntityCache().getClientEntity().y - 4,
-                (int) session.getEntityCache().getClientEntity().z);
+            (int) session.getEntityCache().getClientEntity().y - 4,
+            (int) session.getEntityCache().getClientEntity().z);
 
         session.getDataCache().put(CacheKey.CURRENT_WINDOW_POSITION, pos);
         session.sendFakeBlock(pos.x, pos.y, pos.z, 54, 0);
@@ -38,13 +41,16 @@ public class ChestWindowTranslator implements IInventoryTranslator {
         BlockEntityDataPacket blockEntityData = new BlockEntityDataPacket();
         blockEntityData.blockPosition = pos;
         blockEntityData.tag = ItemBlockTranslator.translateBlockEntityToPE(ItemBlockTranslator.newTileTag("minecraft:chest", pos.x, pos.y, pos.z));
-        if (window.size - 36 > 27) { //DoubleChest
+        if (window.size - 36 > 27)
+        { //DoubleChest
             blockEntityData.tag.putInt("pairx", pos.x + 1);
             blockEntityData.tag.putInt("pairz", pos.z);
-        } else //SimpleChest
+        }
+        else //SimpleChest
             session.sendPacket(blockEntityData);
 
-        if (window.size - 36 > 27) { //DoubleChest
+        if (window.size - 36 > 27)
+        { //DoubleChest
             BlockPosition pos2 = new BlockPosition(pos.x + 1, pos.y, pos.z);
             session.sendFakeBlock(pos2.x, pos2.y, pos2.z, 54, 0);
             BlockEntityDataPacket blockEntityData2 = new BlockEntityDataPacket();
@@ -63,11 +69,12 @@ public class ChestWindowTranslator implements IInventoryTranslator {
         return true;
     }
 
-    public boolean open(UpstreamSession session, CachedWindow window) {
+    public boolean open(UpstreamSession session, CachedWindow window)
+    {
 
         BlockPosition pos = new BlockPosition((int) session.getEntityCache().getClientEntity().x,
-                (int) session.getEntityCache().getClientEntity().y - 4,
-                (int) session.getEntityCache().getClientEntity().z);
+            (int) session.getEntityCache().getClientEntity().y - 4,
+            (int) session.getEntityCache().getClientEntity().z);
 
         ContainerOpenPacket pk = new ContainerOpenPacket();
         pk.windowId = window.windowId;
@@ -78,11 +85,13 @@ public class ChestWindowTranslator implements IInventoryTranslator {
         return true;
     }
 
-    public void updateContent(UpstreamSession session, CachedWindow window) {
+    public void updateContent(UpstreamSession session, CachedWindow window)
+    {
         sendContent(session, window);
     }
 
-    public void updateSlot(UpstreamSession session, CachedWindow win, int slotIndex) {
+    public void updateSlot(UpstreamSession session, CachedWindow win, int slotIndex)
+    {
         InventorySlotPacket pk = new InventorySlotPacket();
         pk.item = ItemBlockTranslator.translateSlotToPE(win.slots[slotIndex]);
         pk.slotId = slotIndex;
@@ -90,7 +99,8 @@ public class ChestWindowTranslator implements IInventoryTranslator {
         session.putCachePacket(pk);
     }
 
-    private void sendContent(UpstreamSession session, CachedWindow win) {
+    private void sendContent(UpstreamSession session, CachedWindow win)
+    {
         InventoryContentPacket pk = new InventoryContentPacket();
         pk.windowId = win.windowId;
         pk.items = new Slot[win.slots.length];

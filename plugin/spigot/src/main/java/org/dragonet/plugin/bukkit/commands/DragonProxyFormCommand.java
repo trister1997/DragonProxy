@@ -5,8 +5,6 @@
  */
 package org.dragonet.plugin.bukkit.commands;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,24 +16,32 @@ import org.dragonet.common.gui.LabelComponent;
 import org.dragonet.plugin.bukkit.BedrockPlayer;
 import org.dragonet.plugin.bukkit.DPAddonBukkit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author Epic
  */
-public class DragonProxyFormCommand implements CommandExecutor {
+public class DragonProxyFormCommand implements CommandExecutor
+{
 
     private final DPAddonBukkit plugin;
 
-    public DragonProxyFormCommand(DPAddonBukkit plugin) {
+    public DragonProxyFormCommand(DPAddonBukkit plugin)
+    {
         this.plugin = plugin; // Store the plugin in situations where you need it.
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("form")) {
-            if ((sender instanceof Player)) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
+        if (cmd.getName().equalsIgnoreCase("form"))
+        {
+            if ((sender instanceof Player))
+            {
                 Player player = (Player) sender;
-                if (this.plugin.isBedrockPlayer(player.getUniqueId())) {
+                if (this.plugin.isBedrockPlayer(player.getUniqueId()))
+                {
                     CustomFormComponent form = new CustomFormComponent("This is a test form");
                     form.addComponent(new LabelComponent("Test label"));
                     form.addComponent(new InputComponent("Test input").setPlaceholder("placeholder"));

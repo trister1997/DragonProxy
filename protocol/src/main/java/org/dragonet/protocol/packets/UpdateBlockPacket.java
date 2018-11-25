@@ -8,7 +8,8 @@ import org.dragonet.protocol.ProtocolInfo;
 /**
  * Created on 2017/10/21.
  */
-public class UpdateBlockPacket extends PEPacket {
+public class UpdateBlockPacket extends PEPacket
+{
 
     public static final int FLAG_NONE = 0b0000;
     public static final int FLAG_NEIGHBORS = 0b0001;
@@ -26,17 +27,20 @@ public class UpdateBlockPacket extends PEPacket {
     public int runtimeId;
     public int dataLayer;
 
-    public UpdateBlockPacket() {
+    public UpdateBlockPacket()
+    {
 
     }
 
     @Override
-    public int pid() {
+    public int pid()
+    {
         return ProtocolInfo.UPDATE_BLOCK_PACKET;
     }
 
     @Override
-    public void decodePayload() {
+    public void decodePayload()
+    {
         blockPosition = getBlockPosition();
         runtimeId = (int) getUnsignedVarInt();
         flags = (int) getUnsignedVarInt();
@@ -44,7 +48,8 @@ public class UpdateBlockPacket extends PEPacket {
     }
 
     @Override
-    public void encodePayload() {
+    public void encodePayload()
+    {
         runtimeId = GlobalBlockPalette.getOrCreateRuntimeId(id, data);
         putBlockPosition(blockPosition);
         putUnsignedVarInt(runtimeId);
