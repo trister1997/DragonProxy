@@ -22,7 +22,7 @@ import org.dragonet.common.maths.BlockPosition;
 import org.dragonet.common.maths.Vector3F;
 import org.dragonet.protocol.PEPacket;
 import org.dragonet.protocol.packets.LevelEventPacket;
-import org.dragonet.protocol.packets.LevelSoundEventPacket;
+import org.dragonet.protocol.packets.LevelSoundEventPacketV1;
 import org.dragonet.protocol.packets.PlaySoundPacket;
 import org.dragonet.protocol.packets.UpdateBlockPacket;
 import org.dragonet.proxy.network.UpstreamSession;
@@ -164,8 +164,8 @@ public class PCBlockChangePacketTranslator implements IPCPacketTranslator<Server
 
     public void build(UpstreamSession session, Position pos, BlockState block)
     {
-        LevelSoundEventPacket pk = new LevelSoundEventPacket();
-        pk.sound = LevelSoundEventPacket.Sound.PLACE;
+        LevelSoundEventPacketV1 pk = new LevelSoundEventPacketV1();
+        pk.sound = LevelSoundEventPacketV1.Sound.PLACE;
         pk.position = new Vector3F(pos.getX(), pos.getY(), pos.getZ());
         ItemEntry entry = ItemBlockTranslator.translateToPE(block.getId(), block.getData());
         pk.extraData = GlobalBlockPalette.getOrCreateRuntimeId(entry.getId(), entry.getPEDamage());

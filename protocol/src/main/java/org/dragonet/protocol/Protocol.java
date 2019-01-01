@@ -56,6 +56,7 @@ public final class Protocol
         packets.put(SET_PLAYER_GAME_TYPE_PACKET, SetPlayerGameTypePacket.class);
         packets.put(ADVENTURE_SETTINGS_PACKET, AdventureSettingsPacket.class);
         packets.put(ANIMATE_PACKET, AnimatePacket.class);
+        packets.put(LEVEL_SOUND_EVENT_PACKET_V1, LevelSoundEventPacketV1.class);
         packets.put(LEVEL_SOUND_EVENT_PACKET, LevelSoundEventPacket.class);
         packets.put(BLOCK_PICK_REQUEST_PACKET, BlockPickRequestPacket.class);
         packets.put(SET_SPAWN_POSITION_PACKET, SetSpawnPositionPacket.class);
@@ -85,6 +86,12 @@ public final class Protocol
         packets.put(CLIENTBOUND_MAP_ITEM_DATA_PACKET, ClientboundMapItemDataPacket.class);
         packets.put(EXPLODE_PACKET, ExplodePacket.class);
         packets.put(ENTITY_FALL_PACKET, EntityFallPacket.class);
+        packets.put(SPAWN_PARTICLE_EFFECT_PACKET, SpawnParticleEffectPacket.class);
+        packets.put(BIOME_DEFINITION_LIST_PACKET, BiomeDefinitionListPacket.class);
+        packets.put(CAMERA_PACKET, CameraPacket.class);
+
+        packets.put(NETWORK_STACK_LATENCY_PACKET, NetworkStackLatencyPacket.class);
+        packets.put(NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET, NetworkChunkPublisherUpdatePacket.class);
 
         packets.put(MODAL_FORM_REQUEST_PACKET, ModalFormRequestPacket.class);
         packets.put(MODAL_FORM_RESPONSE_PACKET, ModalFormResponsePacket.class);
@@ -109,7 +116,9 @@ public final class Protocol
     public static PEPacket[] decode(byte[] data) throws Exception
     {
         if (data == null || data.length < 1)
+        {
             return null;
+        }
 
         byte[] inflated;
         try
@@ -130,9 +139,13 @@ public final class Protocol
             PEPacket decoded = decodeSingle(buffer);
 
             if (decoded != null)
+            {
                 packets.add(decoded);
+            }
             else
+            {
                 System.out.println("decode fail");
+            }
         }
 
         return packets.size() > 0 ? packets.toArray(new PEPacket[0]) : null;
@@ -140,12 +153,12 @@ public final class Protocol
 
     public static PEPacket decodeSingle(byte[] buffer)
     {
-//		try {
-//			FileOutputStream fos = new FileOutputStream("raw_" + System.currentTimeMillis() + ".bin");
-//			fos.write(buffer);
-//			fos.close();
-//		} catch (Exception e) {
-//		}
+        //		try {
+        //			FileOutputStream fos = new FileOutputStream("raw_" + System.currentTimeMillis() + ".bin");
+        //			fos.write(buffer);
+        //			fos.close();
+        //		} catch (Exception e) {
+        //		}
         byte pid = (byte) new BinaryStream(buffer).getUnsignedVarInt();
         if (packets.containsKey(pid))
         {
@@ -164,7 +177,9 @@ public final class Protocol
             }
         }
         else
+        {
             System.out.println("can not decode for pid 0x" + Integer.toHexString(pid));
+        }
         return null;
     }
 }

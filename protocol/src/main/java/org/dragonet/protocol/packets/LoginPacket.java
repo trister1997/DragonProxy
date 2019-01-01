@@ -30,14 +30,10 @@ public class LoginPacket extends PEPacket
     {
         protocol = getInt();
 
-        if (protocol != ProtocolInfo.CURRENT_PROTOCOL)
+        if (protocol == 0)
         {
-            if (protocol > 0xffff)
-            { // guess MCPE <= 1.1
-                offset -= 6;
-                protocol = getInt();
-            }
-            return; // Do not attempt to continue decoding for non-accepted protocols
+            setOffset(getOffset() + 2);
+            protocol = getInt();
         }
 
         byte[] payload = getByteArray();
@@ -51,6 +47,5 @@ public class LoginPacket extends PEPacket
     @Override
     public void encodePayload()
     {
-        // TODO
     }
 }

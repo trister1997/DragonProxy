@@ -6,13 +6,13 @@ import org.dragonet.protocol.ProtocolInfo;
 
 import java.util.Arrays;
 
-public class LevelSoundEventPacket extends PEPacket
+public class LevelSoundEventPacketV1 extends PEPacket
 {
 
     public Sound sound;
     public Vector3F position;
-    public int extraData = -1;
-    public String entityIdentifier;
+    public int extraData = -1; //TODO: Check name
+    public int pitch = 1; //TODO: Check name
     public boolean isBabyMob;
     public boolean isGlobal;
 
@@ -23,30 +23,30 @@ public class LevelSoundEventPacket extends PEPacket
     }
 
     @Override
-    public void encodePayload()
-    {
-        reset();
-        putByte((byte) sound.soundID);
-        putVector3F(position);
-        putVarInt(extraData);
-        putString(entityIdentifier);
-        putBoolean(isBabyMob);
-        putBoolean(isGlobal);
-    }
-
-    @Override
     public void decodePayload()
     {
         this.sound = Sound.fromID(getByte());
         this.position = getVector3F();
         this.extraData = getVarInt();
-        this.entityIdentifier = getString();
+        this.pitch = getVarInt();
         this.isBabyMob = getBoolean();
         this.isGlobal = getBoolean();
     }
 
+    @Override
+    public void encodePayload()
+    {
+        putByte((byte) this.sound.soundID);
+        putVector3F(this.position);
+        putVarInt(this.extraData);
+        putVarInt(this.pitch);
+        putBoolean(this.isBabyMob);
+        putBoolean(this.isGlobal);
+    }
+
     public enum Sound
     {
+
         ITEM_USE_ON,
         HIT,
         STEP,
@@ -221,76 +221,7 @@ public class LevelSoundEventPacket extends PEPacket
         RANDOM_ANVIL_USE,
         BOTTLE_DRAGON_BREATH,
         PORTAL_TRAVEL,
-        ITEM_TRIDENT_HIT,
-        ITEM_TRIDENT_RETURN,
-        ITEM_TRIDENT_RIPTIDE_1,
-        ITEM_TRIDENT_RIPTIDE_2,
-        ITEM_TRIDENT_RIPTIDE_3,
-        ITEM_TRIDENT_THROW,
-        ITEM_TRIDENT_THUNDER,
-        ITEM_TRIDENT_HIT_GROUND,
         DEFAULT,
-        ELEMCONSTRUCT_OPEN,
-        ICEBOMB_HIT,
-        BALLOONPOP,
-        LT_REACTION_ICEBOMB,
-        LT_REACTION_BLEACH,
-        LT_REACTION_EPASTE,
-        LT_REACTION_EPASTE2,
-        LT_REACTION_FERTILIZER,
-        LT_REACTION_FIREBALL,
-        LT_REACTION_MGSALT,
-        LT_REACTION_MISCFIRE,
-        LT_REACTION_FIRE,
-        LT_REACTION_MISCEXPLOSION,
-        LT_REACTION_MISCMYSTICAL,
-        LT_REACTION_MISCMYSTICAL2,
-        LT_REACTION_PRODUCT,
-        SPARKLER_USE,
-        GLOWSTICK_USE,
-        SPARKLER_ACTIVE,
-        CONVERT_TO_DROWNED,
-        BUCKET_FILL_FISH,
-        BUCKET_EMPTY_FISH,
-        BUBBLE_UP,
-        BUBBLE_DOWN,
-        BUBBLE_POP,
-        BUBBLE_UPINSIDE,
-        BUBBLE_DOWNINSIDE,
-        HURT_BABY,
-        DEATH_BABY,
-        STEP_BABY,
-        BORN,
-        BLOCK_TURTLE_EGG_BREAK,
-        BLOCK_TURTLE_EGG_CRACK,
-        BLOCK_TURTLE_EGG_HATCH,
-        BLOCK_TURTLE_EGG_ATTACK,
-        BEACON_ACTIVATE,
-        BEACON_AMBIENT,
-        BEACON_DEACTIVATE,
-        BEACON_POWER,
-        CONDUIT_ACTIVATE,
-        CONDUIT_AMBIENT,
-        CONDUIT_ATTACK,
-        CONDUIT_DEACTIVATE,
-        CONDUIT_SHORT,
-        SWOOP,
-        BLOCK_BAMBOO_SAPLING_PLACE,
-        PRESNEEZE,
-        SNEEZE,
-        AMBIENT_TAME,
-        SCARED,
-        BLOCK_SCAFFOLDING_CLIMB,
-        CROSSBOW_LOADING_START,
-        CROSSBOW_LOADING_MIDDLE,
-        CROSSBOW_LOADING_END,
-        CROSSBOW_SHOOT,
-        CROSSBOW_QUICK_CHARGE_START,
-        CROSSBOW_QUICK_CHARGE_MIDDLE,
-        CROSSBOW_QUICK_CHARGE_END,
-        AMBIENT_AGGRESSIVE,
-        AMBIENT_WORRIED,
-        CANT_BREED,
         UNDEFINED,
         EVENT_SOUND_TNT(1005);
 
@@ -310,5 +241,7 @@ public class LevelSoundEventPacket extends PEPacket
         {
             return Arrays.stream(values()).filter(sound -> sound.soundID == soundID).findFirst().orElse(null);
         }
+
     }
+
 }
